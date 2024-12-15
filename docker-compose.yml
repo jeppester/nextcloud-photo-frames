@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  nextcloud:
+    image: ghcr.io/juliusknorr/nextcloud-dev-php81:latest
+    ports:
+      - 127.0.0.1:8080:80
+    volumes:
+      - .:/var/www/html/apps-extra/photoframe
+      - ./photos:/var/www/html/apps/photos

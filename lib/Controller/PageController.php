@@ -5,25 +5,92 @@ declare(strict_types=1);
 namespace OCA\PhotoFrame\Controller;
 
 use OCA\PhotoFrame\AppInfo\Application;
+use OCA\Photos\Service\UserConfigService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
-use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\Attribute\OpenAPI;
+use OCP\AppFramework\Http\Attribute\PublicPage;
+use OCP\AppFramework\Http\FileDisplayResponse;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCA\Photos\Album\AlbumMapper;
+use OCP\Common\Exception\NotFoundException;
+use OCP\Files\IRootFolder;
+use OCP\IRequest;
+use OCP\IPreview;
+use OCP\Security\Bruteforce\IThrottler;
 
 /**
  * @psalm-suppress UnusedClass
  */
-class PageController extends Controller {
+class PageController extends Controller
+{
+	private const BRUTEFORCE_ACTION = 'photoframe';
+	private AlbumMapper $albumMapper;
+	private IThrottler $throttler;
+	private IRootFolder $rootFolder;
+	private UserConfigService $userConfigService;
+	private IPreview $preview;
+
+	public function __construct(
+		$appName,
+		IRequest $request,
+		AlbumMapper $albumMapper,
+		IThrottler $throttler,
+		IRootFolder $rootFolder,
+		IPreview $preview,
+		UserConfigService $userConfigService,
+	) {
+		parent::__construct($appName, $request);
+		$this->albumMapper = $albumMapper;
+		$this->throttler = $throttler;
+		$this->rootFolder = $rootFolder;
+		$this->userConfigService = $userConfigService;
+		$this->preview = $preview;
+	}
+
 	#[NoCSRFRequired]
-	#[NoAdminRequired]
+	#[PublicPage]
 	#[OpenAPI(OpenAPI::SCOPE_IGNORE)]
 	#[FrontpageRoute(verb: 'GET', url: '/')]
-	public function index(): TemplateResponse {
+	public function index(): TemplateResponse
+	{
 		return new TemplateResponse(
-			Application::APP_ID,
-			'index',
+			appName: Application::APP_ID,
+			templateName: 'index',
+			renderAs: TemplateResponse::RENDER_AS_BLANK
 		);
+	}
+
+	#[NoCSRFRequired]
+	#[PublicPage]
+	#[OpenAPI(OpenAPI::SCOPE_IGNORE)]
+	#[FrontpageRoute(verb: 'GET', url: '/{shareToken}', requirements: ['shareToken' => '.+'])]
+	public function photo($shareToken): FileDisplayResponse
+	{
+		$albums = $this->albumMapper->getSharedAlbumsForCollaboratorWithFiles($shareToken, AlbumMapper::TYPE_LINK);
+
+		if (count($albums) !== 1) {
+			$this->throttler->registerAttempt(self::BRUTEFORCE_ACTION, $this->request->getRemoteAddress());
+			throw new NotFoundException('Unable to find album');
+		}
+
+		$album = $albums[0];
+		$album->getAlbum();
+
+		$albumFile = $album->getFiles()[2];
+
+		$nodes = $this->rootFolder
+			->getUserFolder($albumFile->getOwner() ?: $album->getAlbum()->getUserId())
+			->getById($albumFile->getFileId());
+
+		$node = current($nodes);
+		if (!$node) {
+			throw new NotFoundException('Photo not found user');
+		}
+
+		$preview = $this->preview->getPreview($node, 1000, 1000);
+
+		return new FileDisplayResponse($preview, 200, ['Content-Type' => $albumFile->getMimeType()]);
 	}
 }

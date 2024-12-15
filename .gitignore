@@ -6,6 +6,4 @@
 
 /.php-cs-fixer.cache
 /tests/.phpunit.cache
-
-/node_modules/
-/js/
+photos

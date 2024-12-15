@@ -1,10 +1,6 @@
 {
 	"name": "nextcloud/photoframe",
-	"description": "Photo Frame lets you generate photo frame URL's for your albums which can then be viewed on any screen with a browser.
-
-The possiblities are endless:
-- Use kiosk browsers (like Fully Kiosk Browser) to turn any android device into a photo frame
-- Use collaborative photo albums to co-create and share photo frame content across house hold",
+	"description": "Photo Frame lets you generate photo frame URL's for your albums which can then be viewed on any screen with a browser",
 	"license": "AGPL-3.0-or-later",
 	"authors": [
 		{
@@ -38,6 +34,7 @@ The possiblities are endless:
 	},
 	"require-dev": {
 		"nextcloud/ocp": "dev-stable29",
+		"nextcloud/oca": "dev-stable29",
 		"roave/security-advisories": "dev-latest"
 	},
 	"config": {

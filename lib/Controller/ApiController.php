@@ -13,7 +13,8 @@ use OCP\AppFramework\OCSController;
 /**
  * @psalm-suppress UnusedClass
  */
-class ApiController extends OCSController {
+class ApiController extends OCSController
+{
 	/**
 	 * An example API endpoint
 	 *
@@ -23,7 +24,8 @@ class ApiController extends OCSController {
 	 */
 	#[NoAdminRequired]
 	#[ApiRoute(verb: 'GET', url: '/api')]
-	public function index(): DataResponse {
+	public function index(): DataResponse
+	{
 		return new DataResponse(
 			['message' => 'Hello world!']
 		);
