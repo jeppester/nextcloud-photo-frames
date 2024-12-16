@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OCA\PhotoFrame\Controller;
 
 use OCA\PhotoFrame\AppInfo\Application;
+use OCA\PhotoFrame\Db\EntryMapper;
 use OCA\Photos\Service\UserConfigService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
@@ -26,6 +27,7 @@ use OCP\Security\Bruteforce\IThrottler;
 class PageController extends Controller
 {
 	private const BRUTEFORCE_ACTION = 'photoframe';
+	private EntryMapper $entryMapper;
 	private AlbumMapper $albumMapper;
 	private IThrottler $throttler;
 	private IRootFolder $rootFolder;
@@ -36,6 +38,7 @@ class PageController extends Controller
 		$appName,
 		IRequest $request,
 		AlbumMapper $albumMapper,
+		EntryMapper $entryMapper,
 		IThrottler $throttler,
 		IRootFolder $rootFolder,
 		IPreview $preview,
@@ -43,6 +46,7 @@ class PageController extends Controller
 	) {
 		parent::__construct($appName, $request);
 		$this->albumMapper = $albumMapper;
+		$this->entryMapper = $entryMapper;
 		$this->throttler = $throttler;
 		$this->rootFolder = $rootFolder;
 		$this->userConfigService = $userConfigService;
@@ -65,8 +69,21 @@ class PageController extends Controller
 	#[NoCSRFRequired]
 	#[PublicPage]
 	#[OpenAPI(OpenAPI::SCOPE_IGNORE)]
-	#[FrontpageRoute(verb: 'GET', url: '/{shareToken}', requirements: ['shareToken' => '.+'])]
-	public function photo($shareToken): FileDisplayResponse
+	#[FrontpageRoute(verb: 'GET', url: '/{shareToken}', requirements: ['shareToken' => '[a-zA-Z0-9]+'])]
+	public function photoframe(): TemplateResponse
+	{
+		return new TemplateResponse(
+			appName: Application::APP_ID,
+			templateName: 'index',
+			renderAs: TemplateResponse::RENDER_AS_BLANK
+		);
+	}
+
+	#[NoCSRFRequired]
+	#[PublicPage]
+	#[OpenAPI(OpenAPI::SCOPE_IGNORE)]
+	#[FrontpageRoute(verb: 'GET', url: '/{shareToken}/image', requirements: ['shareToken' => '[a-zA-Z0-9]+'])]
+	public function photoframeImage($shareToken): FileDisplayResponse
 	{
 		$albums = $this->albumMapper->getSharedAlbumsForCollaboratorWithFiles($shareToken, AlbumMapper::TYPE_LINK);
 
@@ -78,7 +95,20 @@ class PageController extends Controller
 		$album = $albums[0];
 		$album->getAlbum();
 
-		$albumFile = $album->getFiles()[2];
+		$usedPhotoIds = $this->entryMapper->getUsedPhotoIds($shareToken);
+
+		$photoIds = $album->getFileIds();
+
+		$unusedIds = array_diff($photoIds, $usedPhotoIds);
+		$chosenId = $unusedIds[array_rand($unusedIds)];
+
+		$albumFile = null;
+		foreach ($album->getFiles() as $photo) {
+			if ($photo->getFileId() === $chosenId) {
+				$albumFile = $photo;
+				break;
+			}
+		}
 
 		$nodes = $this->rootFolder
 			->getUserFolder($albumFile->getOwner() ?: $album->getAlbum()->getUserId())
