@@ -10,7 +10,7 @@ use OCP\DB\Types;
 use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;
 
-class Version010000Date20230524153816 extends SimpleMigrationStep
+class Version010000Date20230524153822 extends SimpleMigrationStep
 {
 
   /**
@@ -40,7 +40,7 @@ class Version010000Date20230524153816 extends SimpleMigrationStep
         'notnull' => true,
         'length' => 4,
       ]);
-      $table->addColumn('photo_id', Types::BIGINT, [
+      $table->addColumn('file_id', Types::BIGINT, [
         'notnull' => true,
         'length' => 4,
       ]);
@@ -48,7 +48,7 @@ class Version010000Date20230524153816 extends SimpleMigrationStep
         'notnull' => true,
         'length' => 32,
       ]);
-      $table->addColumn('shown_at', Types::DATETIME, [
+      $table->addColumn('created_at', Types::DATETIME, [
         'notnull' => true,
       ]);
       $table->setPrimaryKey(['id']);

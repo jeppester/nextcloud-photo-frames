@@ -7,17 +7,17 @@ namespace OCA\PhotoFrame\Db;
 use OCP\AppFramework\Db\Entity;
 
 /**
- * @method string|null getPhotoId()
- * @method void setPhotoId(?string $photoId)
+ * @method int getFileId()
+ * @method void setFileId(int $fileId)
  * @method string getShareToken()
  * @method void setShareToken(string $shareToken)
  * @method int getCreatedAt()
- * @method void setCreatedAt(int $createdAt)
+ * @method void setCreatedAt(\DateTime $createdAt)
  */
 class Entry extends Entity
 {
   /** @var integer */
-  protected $photoId;
+  protected $fileId;
 
   /** @var string */
   protected $shareToken;
@@ -27,8 +27,8 @@ class Entry extends Entity
 
   public function __construct()
   {
-    $this->addType('photoId', 'string');
+    $this->addType('fileId', 'string');
     $this->addType('shareToken', 'string');
-    $this->addType('createdAt', 'integer');
+    $this->addType('createdAt', 'datetime');
   }
 }

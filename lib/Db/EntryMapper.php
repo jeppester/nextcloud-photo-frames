@@ -25,7 +25,7 @@ class EntryMapper extends QBMapper
   {
     $qb = $this->db->getQueryBuilder();
 
-    $qb->select(selects: '*')
+    $qb->select('*')
       ->from($this->getTableName())
       ->where(
         $qb->expr()->eq('share_token', $qb->createNamedParameter($shareToken, IQueryBuilder::PARAM_STR))
@@ -40,34 +40,35 @@ class EntryMapper extends QBMapper
    * @param string $shareToken
    * @return integer[]
    */
-  public function getUsedPhotoIds(string $shareToken): array
+  public function getUsedFileIds(string $shareToken): array
   {
     $qb = $this->db->getQueryBuilder();
 
-    $qb->select('photo_id')
+    $qb->select('file_id')
       ->from($this->getTableName())
       ->where(
-        $qb->expr()->eq('share_token', $qb->createNamedParameter($shareToken, IQueryBuilder::PARAM_INT))
+        $qb->expr()->eq('share_token', $qb->createNamedParameter($shareToken, IQueryBuilder::PARAM_STR))
       );
 
     return array_map(function ($entity) {
-      return $entity['photo_id'];
+      return $entity->getFileId();
     }, $this->findEntities($qb));
   }
 
   /**
-   * @param string $photoId
+   * @param int $fileId
    * @param string $shareToken
    * @return Entry
    * @throws Exception
    */
-  public function createEntry(string $photoId, string $shareToken): Entry
+  public function createEntry(int $fileId, string $shareToken): Entry
   {
     $entry = new Entry();
-    $entry->setPhotoId($photoId);
+    $entry->setFileId($fileId);
     $entry->setShareToken($shareToken);
     $timestamp = new DateTime();
-    $entry->setLastModified($timestamp);
+    $entry->setCreatedAt($timestamp);
+
     return $this->insert($entry);
   }
 
