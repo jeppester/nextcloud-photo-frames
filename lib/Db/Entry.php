@@ -11,12 +11,12 @@ use OCP\AppFramework\Db\Entity;
  * @method void setFileId(int $fileId)
  * @method string getShareToken()
  * @method void setShareToken(string $shareToken)
- * @method int getCreatedAt()
+ * @method DateTime getCreatedAt()
  * @method void setCreatedAt(\DateTime $createdAt)
  */
 class Entry extends Entity
 {
-  /** @var integer */
+  /** @var int */
   protected $fileId;
 
   /** @var string */
@@ -27,7 +27,7 @@ class Entry extends Entity
 
   public function __construct()
   {
-    $this->addType('fileId', 'string');
+    $this->addType('fileId', 'integer');
     $this->addType('shareToken', 'string');
     $this->addType('createdAt', 'datetime');
   }

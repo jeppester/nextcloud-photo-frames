@@ -71,11 +71,12 @@ class PageController extends Controller
 	#[PublicPage]
 	#[OpenAPI(OpenAPI::SCOPE_IGNORE)]
 	#[FrontpageRoute(verb: 'GET', url: '/{shareToken}', requirements: ['shareToken' => '[a-zA-Z0-9]+'])]
-	public function photoframe(): TemplateResponse
+	public function photoframe($shareToken): TemplateResponse
 	{
 		return new TemplateResponse(
 			appName: Application::APP_ID,
 			templateName: 'index',
+			params: ['shareToken' => $shareToken],
 			renderAs: TemplateResponse::RENDER_AS_BLANK
 		);
 	}

@@ -43,8 +43,8 @@ class PhotoFrameService
   public function getCurrentAlbumFile(): AlbumFile
   {
     $latestAlbumFile = null;
-
     $latestEntry = $this->entryMapper->getLatestEntry($this->shareToken);
+
     if ($latestEntry && !$this->entryExpired($latestEntry)) {
       $latestAlbumFile = $this->getAlbumFileById($latestEntry->getFileId());
     }
@@ -61,7 +61,10 @@ class PhotoFrameService
 
   private function entryExpired(Entry $entry): bool
   {
-    return true;
+    $entryYearDay = (int) $entry->getCreatedAt()->format('Yz');
+    $nowYearDay = (int) (new \DateTime())->format('Yz');
+
+    return $nowYearDay > $entryYearDay;
   }
 
   private function pickNewFileId(): int
