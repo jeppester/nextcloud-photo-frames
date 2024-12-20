@@ -8,3 +8,4 @@ services:
     volumes:
       - .:/var/www/html/apps-extra/photoframe
       - ./photos:/var/www/html/apps/photos
+      - ./owncloud.db:/var/www/html/data/owncloud.db

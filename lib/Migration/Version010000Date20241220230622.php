@@ -10,7 +10,7 @@ use OCP\DB\Types;
 use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;
 
-class Version010000Date20230524153822 extends SimpleMigrationStep
+class Version010000Date20241220230622 extends SimpleMigrationStep
 {
 
   /**
@@ -33,26 +33,12 @@ class Version010000Date20230524153822 extends SimpleMigrationStep
     /** @var ISchemaWrapper $schema */
     $schema = $schemaClosure();
 
-    if (!$schema->hasTable('photoframe_entries')) {
-      $table = $schema->createTable('photoframe_entries');
-      $table->addColumn('id', Types::BIGINT, [
-        'autoincrement' => true,
-        'notnull' => true,
-        'length' => 4,
-      ]);
-      $table->addColumn('file_id', Types::BIGINT, [
-        'notnull' => true,
-        'length' => 4,
-      ]);
-      $table->addColumn('share_token', Types::STRING, [
-        'notnull' => true,
-        'length' => 32,
-      ]);
-      $table->addColumn('created_at', Types::DATETIME, [
-        'notnull' => true,
-      ]);
-      $table->setPrimaryKey(['id']);
-      $table->addIndex(['share_token'], 'photoframe_entry_share_token');
+    if ($schema->hasTable('photoframe_frames')) {
+      $schema->dropTable('photoframe_frames');
+    }
+
+    if ($schema->hasTable('photoframe_entries')) {
+      $schema->dropTable('photoframe_entries');
     }
 
     return $schema;
@@ -67,3 +53,4 @@ class Version010000Date20230524153822 extends SimpleMigrationStep
   {
   }
 }
+

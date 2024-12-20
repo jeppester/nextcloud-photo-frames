@@ -18,17 +18,17 @@ class EntryMapper extends QBMapper
   }
 
   /**
-   * @param string $shareToken
+   * @param string $frameId
    * @return Entry
    */
-  public function getLatestEntry(string $shareToken): ?Entry
+  public function getLatestEntry(int $frameId): ?Entry
   {
     $qb = $this->db->getQueryBuilder();
 
     $qb->select('*')
       ->from($this->getTableName())
       ->where(
-        $qb->expr()->eq('share_token', $qb->createNamedParameter($shareToken, IQueryBuilder::PARAM_STR))
+        $qb->expr()->eq('frame_id', $qb->createNamedParameter($frameId, IQueryBuilder::PARAM_INT))
       )
       ->orderBy('created_at', 'desc')
       ->setMaxResults(1);
@@ -37,17 +37,17 @@ class EntryMapper extends QBMapper
   }
 
   /**
-   * @param string $shareToken
+   * @param string $frameId
    * @return integer[]
    */
-  public function getUsedFileIds(string $shareToken): array
+  public function getUsedFileIds(int $frameId): array
   {
     $qb = $this->db->getQueryBuilder();
 
     $qb->select('file_id')
       ->from($this->getTableName())
       ->where(
-        $qb->expr()->eq('share_token', $qb->createNamedParameter($shareToken, IQueryBuilder::PARAM_STR))
+        $qb->expr()->eq('frame_id', $qb->createNamedParameter($frameId, IQueryBuilder::PARAM_INT))
       );
 
     return array_map(function ($entity) {
@@ -57,15 +57,15 @@ class EntryMapper extends QBMapper
 
   /**
    * @param int $fileId
-   * @param string $shareToken
+   * @param int $frameId
    * @return Entry
    * @throws Exception
    */
-  public function createEntry(int $fileId, string $shareToken): Entry
+  public function createEntry(int $fileId, int $frameId): Entry
   {
     $entry = new Entry();
     $entry->setFileId($fileId);
-    $entry->setShareToken($shareToken);
+    $entry->setFrameId($frameId);
     $timestamp = new DateTime();
     $entry->setCreatedAt($timestamp);
 
@@ -73,17 +73,17 @@ class EntryMapper extends QBMapper
   }
 
   /**
-   * @param string $shareToken
+   * @param string $frameId
    * @return void
    * @throws Exception
    */
-  public function deleteEntrieForSharetoken(string $shareToken): void
+  public function deleteFrameEntries(int $frameId): void
   {
     $qb = $this->db->getQueryBuilder();
 
     $qb->delete($this->getTableName())
       ->where(
-        $qb->expr()->eq('share_token', $qb->createNamedParameter($shareToken, IQueryBuilder::PARAM_STR))
+        $qb->expr()->eq('frame_id', $qb->createNamedParameter($frameId, IQueryBuilder::PARAM_INT))
       );
     $qb->executeStatement();
     $qb->resetQueryParts();
