@@ -8,6 +8,7 @@ use OCA\PhotoFrame\Db\Entry;
 use OCA\PhotoFrame\Db\EntryMapper;
 use OCA\PhotoFrame\Db\Frame;
 use OCA\PhotoFrame\Db\FrameFile;
+use OCA\PhotoFrame\Db\FrameMapper;
 use OCP\Files\IRootFolder;
 use OCP\Files\Node;
 
@@ -51,10 +52,45 @@ class PhotoFrameService
 
   private function entryExpired(Entry $entry): bool
   {
-    $entryYearDay = (int) $entry->getCreatedAt()->format('Yz');
-    $nowYearDay = (int) (new \DateTime())->format('Yz');
+    return $this->getEntryExpiry($entry) <= new \DateTime();
+  }
 
-    return $nowYearDay > $entryYearDay;
+  private function getEntryExpiry(Entry $entry)
+  {
+    switch ($this->frame->getEntryLifetime()) {
+      case FrameMapper::ENTRY_LIFETIME_ONE_DAY:
+        $expiry = clone $this->frame->getCreatedAt();
+        $expiry->modify("+1 day");
+        $expiry->modify("00:00:00");
+        return $expiry;
+
+      case FrameMapper::ENTRY_LIFETIME_ONE_HOUR:
+        $createdAt = $this->frame->getCreatedAt();
+        $expiry = clone $createdAt;
+
+        $lastRotation = new \DateTime('today');
+        $lastRotation->modify($this->frame->getEndDayAt());
+        $lastRotation->modify('+1 hour');
+
+        // If created after last rotation, show for the rest of the day
+        if ($createdAt >= $lastRotation) {
+          $expiry->modify('23:59:59');
+          return $expiry;
+        }
+
+        // The first expiry on the creation day is one hour after the rotation has started
+        $expiry->modify($this->frame->getStartDayAt());
+        $expiry->modify('+1 hour');
+
+        // Move expiry time forward until we are past the entry's creation time
+        while ($expiry < $createdAt) {
+          $expiry->modify('+1 hour');
+        }
+        return $expiry;
+
+      default:
+        return -INF;
+    }
   }
 
   private function pickNewFileId(): int
