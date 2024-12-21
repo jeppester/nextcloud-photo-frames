@@ -58,38 +58,56 @@ class PhotoFrameService
     return $this->getEntryExpiry($entry) <= new \DateTime();
   }
 
-  private function getEntryExpiry(Entry $entry)
+  public function getEntryExpiry(Entry $entry)
   {
+    $createdAt = $entry->getCreatedAt();
+
     switch ($this->frame->getEntryLifetime()) {
       case FrameMapper::ENTRY_LIFETIME_ONE_DAY:
-        $expiry = clone $this->frame->getCreatedAt();
-        $expiry->modify("+1 day");
-        $expiry->modify("00:00:00");
+        $expiry = (clone $createdAt)->modify("24:00");
         return $expiry;
 
       case FrameMapper::ENTRY_LIFETIME_ONE_HOUR:
-        $createdAt = $this->frame->getCreatedAt();
-        $expiry = clone $createdAt;
+        $startTime = (clone $createdAt)->modify($this->frame->getStartDayAt());
+        $endTime = (clone $startTime)->modify($this->frame->getEndDayAt());
 
-        $lastRotation = new \DateTime('today');
-        $lastRotation->modify($this->frame->getEndDayAt());
-        $lastRotation->modify('+1 hour');
-
-        // If created after last rotation, show for the rest of the day
-        if ($createdAt >= $lastRotation) {
-          $expiry->modify('23:59:59');
-          return $expiry;
+        // Starting from the first rotation time, move forward until we are past the entry's creation time
+        $rotationTime = (clone $startTime)->modify("+1 hour");
+        while ($rotationTime < $createdAt) {
+          $rotationTime->modify('+1 hour');
         }
 
-        // The first expiry on the creation day is one hour after the rotation has started
-        $expiry->modify($this->frame->getStartDayAt());
-        $expiry->modify('+1 hour');
-
-        // Move expiry time forward until we are past the entry's creation time
-        while ($expiry < $createdAt) {
-          $expiry->modify('+1 hour');
+        // If we are past the end of the day, show the image until next day
+        if ($rotationTime >= $endTime) {
+          $rotationTime->modify('24:00');
         }
-        return $expiry;
+
+        return $rotationTime;
+
+      case FrameMapper::ENTRY_LIFETIME_1_2_DAY:
+      case FrameMapper::ENTRY_LIFETIME_1_3_DAY:
+      case FrameMapper::ENTRY_LIFETIME_1_4_DAY:
+        $numPhotos = [
+          FrameMapper::ENTRY_LIFETIME_1_2_DAY => 2,
+          FrameMapper::ENTRY_LIFETIME_1_3_DAY => 3,
+          FrameMapper::ENTRY_LIFETIME_1_4_DAY => 4,
+        ][$this->frame->getEntryLifetime()];
+
+        $startTime = (clone $createdAt)->modify($this->frame->getStartDayAt());
+        $endTime = (clone $startTime)->modify($this->frame->getEndDayAt());
+        $photoTTL = ceil(num: ($endTime->getTimestamp() - $startTime->getTimestamp()) / $numPhotos);
+
+        // Starting from the first rotation time, move forward until we are past the entry's creation time
+        $rotationTime = (clone $startTime)->modify("+$photoTTL seconds");
+        while ($rotationTime < $createdAt) {
+          $rotationTime->modify("+$photoTTL seconds");
+        }
+
+        // If we are past the end of the day, show the image until next day
+        if ($rotationTime >= $endTime) {
+          $rotationTime = (clone $startTime)->modify('24:00');
+        }
+        return $rotationTime;
 
       default:
         return -INF;

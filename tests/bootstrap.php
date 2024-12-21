@@ -7,3 +7,4 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 \OC_App::loadApp(OCA\PhotoFrame\AppInfo\Application::APP_ID);
 OC_Hook::clear();
+
