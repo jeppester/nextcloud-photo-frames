@@ -74,13 +74,6 @@ class Frame extends Entity
     return $this->frameFiles;
   }
 
-  public function getFileIds()
-  {
-    return array_map(function ($frameFile) {
-      return $frameFile->getFileId();
-    }, $this->getFrameFiles());
-  }
-
   public function __construct()
   {
     $this->addType('name', 'string');

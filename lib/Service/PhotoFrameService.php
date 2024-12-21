@@ -31,7 +31,7 @@ class PhotoFrameService
     $this->frame = $frame;
   }
 
-  public function getCurrentFrameFile(): FrameFile
+  public function getCurrentFrameFile(): ?FrameFile
   {
     $latestFrameFile = null;
     $latestEntry = $this->entryMapper->getLatestEntry($this->frame->getId());
@@ -44,10 +44,13 @@ class PhotoFrameService
       return $latestFrameFile;
     }
 
-    $fileId = $this->pickNewFileId();
-    $this->entryMapper->createEntry($fileId, $this->frame->getId());
+    $pickedFrameFile = $this->pickNewFrameFile();
+    if (!$pickedFrameFile) {
+      return null;
+    }
 
-    return $this->getFrameFileById($fileId);
+    $this->entryMapper->createEntry($pickedFrameFile->getFileId(), $this->frame->getId());
+    return $pickedFrameFile;
   }
 
   private function entryExpired(Entry $entry): bool
@@ -93,18 +96,46 @@ class PhotoFrameService
     }
   }
 
-  private function pickNewFileId(): int
+  private function pickNewFrameFile(): ?FrameFile
   {
     $usedFileIds = $this->entryMapper->getUsedFileIds($this->frame->getId());
-    $fileIds = $this->frame->getFileIds();
-    $unusedIds = array_diff($fileIds, $usedFileIds);
+    $availableFrameFiles = array_filter($this->frame->getFrameFiles(), function ($frameFile) use ($usedFileIds) {
+      return !in_array($frameFile->getFileId(), $usedFileIds);
+    });
 
-    if (count($unusedIds) === 0) {
+    if (count($availableFrameFiles) === 0) {
       $this->entryMapper->deleteFrameEntries($this->frame->getId());
-      $unusedIds = $fileIds;
+      $availableFrameFiles = $this->frame->getFrameFiles();
     }
 
-    return $unusedIds[array_rand($unusedIds)];
+    $picked = null;
+    switch ($this->frame->getSelectionMethod()) {
+      case FrameMapper::SELECTION_METHOD_LATEST:
+        foreach ($availableFrameFiles as $frameFile) {
+          if ($picked) {
+            echo $picked->getAddedAtTimestamp() . '-' . $frameFile->getAddedAtTimestamp() . "\n";
+          }
+
+          if (!$picked || $picked->getAddedAtTimestamp() < $frameFile->getAddedAtTimestamp()) {
+            $picked = $frameFile;
+          }
+        }
+        break;
+
+      case FrameMapper::SELECTION_METHOD_OLDEST:
+        foreach ($availableFrameFiles as $frameFile) {
+          if (!$picked || $picked->getAddedAtTimestamp() > $frameFile->getAddedAtTimestamp()) {
+            $picked = $frameFile;
+          }
+        }
+        break;
+
+      case FrameMapper::SELECTION_METHOD_RANDOM:
+        $picked = $availableFrameFiles[array_rand($availableFrameFiles)];
+        break;
+    }
+
+    return $picked;
   }
 
   private function getFrameFileById(int $fileId): ?FrameFile
