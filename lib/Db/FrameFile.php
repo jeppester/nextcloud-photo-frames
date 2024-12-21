@@ -12,6 +12,7 @@ class FrameFile
   protected string $userUid;
   protected string $mimeType;
   protected int $addedAtTimestamp;
+  protected \DateTime $expiresAt;
 
   public function __construct(int $fileId, string $userUid, string $mimeType, int $addedAtTimestamp)
   {
@@ -39,5 +40,15 @@ class FrameFile
   public function getAddedAtTimestamp()
   {
     return $this->addedAtTimestamp;
+  }
+
+  public function setExpiresAt(\DateTime $expiresAt)
+  {
+    $this->expiresAt = $expiresAt;
+  }
+
+  public function getExpiresAt()
+  {
+    return $this->expiresAt;
   }
 }

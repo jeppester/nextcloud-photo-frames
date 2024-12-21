@@ -17,6 +17,7 @@ use OCP\AppFramework\Http\Attribute\OpenAPI;
 use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\Http\FileDisplayResponse;
 use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCA\Photos\Album\AlbumMapper;
 use OCP\Common\Exception\NotFoundException;
@@ -129,19 +130,25 @@ class PageController extends Controller
 		return new RedirectResponse('/index.php/apps/photoframe');
 	}
 
-
 	#[NoCSRFRequired]
 	#[PublicPage]
 	#[OpenAPI(OpenAPI::SCOPE_IGNORE)]
 	#[FrontpageRoute(verb: 'GET', url: '/{shareToken}', requirements: ['shareToken' => '[a-zA-Z0-9]{64}'])]
 	public function photoframe($shareToken): TemplateResponse
 	{
-		Util::addScript(Application::APP_ID, 'frame');
+		$frame = $this->frameMapper->getByShareTokenWithFiles($shareToken);
+		if (!$frame) {
+			$this->throttler->registerAttempt(self::BRUTEFORCE_ACTION, $this->request->getRemoteAddress());
+			throw new NotFoundException('Unable to find album');
+		}
+
+		$service = new PhotoFrameService($this->entryMapper, $this->rootFolder, $frame);
+		$frameFile = $service->getCurrentFrameFile();
 
 		return new TemplateResponse(
 			appName: Application::APP_ID,
 			templateName: 'frame',
-			params: ['shareToken' => $shareToken],
+			params: ['shareToken' => $shareToken, 'expiresAt' => $frameFile->getExpiresAt()->format(\DateTimeInterface::RFC7231)],
 			renderAs: TemplateResponse::RENDER_AS_BLANK
 		);
 	}
@@ -164,6 +171,6 @@ class PageController extends Controller
 
 		$preview = $this->preview->getPreview($node, 1000, 1000);
 
-		return new FileDisplayResponse($preview, 200, ['Content-Type' => $frameFile->getMimeType()]);
+		return new FileDisplayResponse($preview, 200, ['Expires' => $frameFile->getExpiresAt()->format(format: \DateTimeInterface::RFC7231), 'Content-Type' => $frameFile->getMimeType()]);
 	}
 }

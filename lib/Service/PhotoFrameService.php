@@ -41,6 +41,7 @@ class PhotoFrameService
     }
 
     if ($latestFrameFile) {
+      $latestFrameFile->setExpiresAt($this->getEntryExpiry($latestEntry));
       return $latestFrameFile;
     }
 
@@ -49,7 +50,8 @@ class PhotoFrameService
       return null;
     }
 
-    $this->entryMapper->createEntry($pickedFrameFile->getFileId(), $this->frame->getId());
+    $entry = $this->entryMapper->createEntry($pickedFrameFile->getFileId(), $this->frame->getId());
+    $pickedFrameFile->setExpiresAt($this->getEntryExpiry($entry));
     return $pickedFrameFile;
   }
 
