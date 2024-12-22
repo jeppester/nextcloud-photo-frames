@@ -134,10 +134,6 @@ class PhotoFrameService
     switch ($this->frame->getSelectionMethod()) {
       case FrameMapper::SELECTION_METHOD_LATEST:
         foreach ($availableFrameFiles as $frameFile) {
-          if ($picked) {
-            echo $picked->getAddedAtTimestamp() . '-' . $frameFile->getAddedAtTimestamp() . "\n";
-          }
-
           if (!$picked || $picked->getAddedAtTimestamp() < $frameFile->getAddedAtTimestamp()) {
             $picked = $frameFile;
           }
