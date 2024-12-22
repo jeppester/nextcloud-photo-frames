@@ -20,6 +20,7 @@ class PhotoFrameService
   private EntryMapper $entryMapper;
   private IRootFolder $rootFolder;
   private Frame $frame;
+  private string $timezone;
 
   public function __construct(
     EntryMapper $entryMapper,
@@ -62,7 +63,7 @@ class PhotoFrameService
 
   public function getEntryExpiry(Entry $entry)
   {
-    $createdAt = $entry->getCreatedAt();
+    $createdAt = (clone $entry->getCreatedAt())->setTimezone($this->frame->getTimezone());
 
     switch ($this->frame->getEntryLifetime()) {
       case FrameMapper::ENTRY_LIFETIME_ONE_DAY:
@@ -94,6 +95,7 @@ class PhotoFrameService
           FrameMapper::ENTRY_LIFETIME_1_3_DAY => 3,
           FrameMapper::ENTRY_LIFETIME_1_4_DAY => 4,
         ][$this->frame->getEntryLifetime()];
+
 
         $startTime = (clone $createdAt)->modify($this->frame->getStartDayAt());
         $endTime = (clone $startTime)->modify($this->frame->getEndDayAt());
@@ -156,6 +158,11 @@ class PhotoFrameService
     }
 
     return $picked;
+  }
+
+  private function newInTimezone()
+  {
+
   }
 
   private function getFrameFileById(int $fileId): ?FrameFile

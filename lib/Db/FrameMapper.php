@@ -9,6 +9,7 @@ use OCA\Photos\Album\AlbumMapper;
 use OCP\AppFramework\Db\QBMapper;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\IMimeTypeLoader;
+use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\Security\ISecureRandom;
 
@@ -28,14 +29,16 @@ class FrameMapper extends QBMapper
   private AlbumMapper $albumMapper;
   private IDBConnection $connection;
   private IMimeTypeLoader $mimeTypeLoader;
+  private IConfig $config;
 
-  public function __construct(IDBConnection $db, ISecureRandom $random, AlbumMapper $albumMapper, IDBConnection $connection, IMimeTypeLoader $mimeTypeLoader)
+  public function __construct(IDBConnection $db, ISecureRandom $random, AlbumMapper $albumMapper, IDBConnection $connection, IMimeTypeLoader $mimeTypeLoader, IConfig $config)
   {
     parent::__construct($db, 'photoframe_frames', Frame::class);
     $this->random = $random;
     $this->albumMapper = $albumMapper;
     $this->connection = $connection;
     $this->mimeTypeLoader = $mimeTypeLoader;
+    $this->config = $config;
   }
 
   public function getAllByUser(string $userId)
@@ -79,6 +82,10 @@ class FrameMapper extends QBMapper
     if (!$frame) {
       return null;
     }
+
+    $timezone = date_default_timezone_get();
+    $timezone = $this->config->getUserValue($frame->getUserUid(), 'core', 'timezone', $timezone);
+    $frame->setTimezone(new \DateTimeZone($timezone));
 
     $frameFiles = [];
 

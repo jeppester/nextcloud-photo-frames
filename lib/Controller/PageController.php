@@ -17,13 +17,14 @@ use OCP\AppFramework\Http\Attribute\OpenAPI;
 use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\Http\FileDisplayResponse;
 use OCP\AppFramework\Http\RedirectResponse;
-use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCA\Photos\Album\AlbumMapper;
 use OCP\Common\Exception\NotFoundException;
 use OCP\Files\IRootFolder;
+use OCP\IConfig;
 use OCP\IRequest;
 use OCP\IPreview;
+use OCP\IUser;
 use OCP\IUserSession;
 use OCP\Security\Bruteforce\IThrottler;
 use OCP\Util;
@@ -39,9 +40,9 @@ class PageController extends Controller
 	private AlbumMapper $albumMapper;
 	private IThrottler $throttler;
 	private IRootFolder $rootFolder;
-	private UserConfigService $userConfigService;
 	private IPreview $preview;
-	private IUserSession $userSession;
+	private IConfig $config;
+	private ?IUser $currentUser;
 
 	public function __construct(
 		$appName,
@@ -52,7 +53,7 @@ class PageController extends Controller
 		IThrottler $throttler,
 		IRootFolder $rootFolder,
 		IPreview $preview,
-		UserConfigService $userConfigService,
+		IConfig $config,
 		IUserSession $userSession,
 	) {
 		parent::__construct($appName, $request);
@@ -61,9 +62,9 @@ class PageController extends Controller
 		$this->frameMapper = $frameMapper;
 		$this->throttler = $throttler;
 		$this->rootFolder = $rootFolder;
-		$this->userConfigService = $userConfigService;
 		$this->preview = $preview;
-		$this->userSession = $userSession;
+		$this->config = $config;
+		$this->currentUser = $userSession->getUser();
 	}
 
 	#[NoCSRFRequired]
@@ -72,8 +73,7 @@ class PageController extends Controller
 	#[FrontpageRoute(verb: 'GET', url: '/')]
 	public function index(): TemplateResponse
 	{
-		$uid = $this->userSession->getUser()->getUID();
-
+		$uid = $this->currentUser->getUID();
 		$params = [
 			'frames' => $this->frameMapper->getAllByUser($uid),
 		];
@@ -94,7 +94,7 @@ class PageController extends Controller
 	#[FrontpageRoute(verb: 'GET', url: '/new')]
 	public function new(): TemplateResponse
 	{
-		$uid = $this->userSession->getUser()->getUID();
+		$uid = $this->currentUser->getUID();
 
 		$params = [
 			'albums' => $this->frameMapper->getAvailableAlbums($uid),
@@ -119,7 +119,7 @@ class PageController extends Controller
 		$params = $this->request->getParams();
 		$this->frameMapper->createFrame(
 			$params['name'],
-			$this->userSession->getUser()->getUID(),
+			$this->currentUser->getUID(),
 			(int) $params['album_id'],
 			$params['selection_method'],
 			$params['entry_lifetime'],
@@ -148,7 +148,7 @@ class PageController extends Controller
 		return new TemplateResponse(
 			appName: Application::APP_ID,
 			templateName: 'frame',
-			params: ['shareToken' => $shareToken, 'expiresAt' => $frameFile->getExpiresAt()->format(\DateTimeInterface::RFC7231)],
+			params: ['shareToken' => $shareToken, 'expiresAt' => $frameFile->getExpiresHeader()],
 			renderAs: TemplateResponse::RENDER_AS_BLANK
 		);
 	}
@@ -171,6 +171,6 @@ class PageController extends Controller
 
 		$preview = $this->preview->getPreview($node, 1000, 1000);
 
-		return new FileDisplayResponse($preview, 200, ['Expires' => $frameFile->getExpiresAt()->format(format: \DateTimeInterface::RFC7231), 'Content-Type' => $frameFile->getMimeType()]);
+		return new FileDisplayResponse($preview, 200, ['Expires' => $frameFile->getExpiresHeader(), 'Content-Type' => $frameFile->getMimeType()]);
 	}
 }

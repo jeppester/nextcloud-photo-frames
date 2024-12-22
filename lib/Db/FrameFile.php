@@ -47,8 +47,16 @@ class FrameFile
     $this->expiresAt = $expiresAt;
   }
 
+
   public function getExpiresAt()
   {
     return $this->expiresAt;
+  }
+
+  public function getExpiresHeader()
+  {
+    $gmt = new \DateTimeZone('GMT');
+    $expiresGMT = (clone $this->expiresAt)->setTimezone($gmt);
+    return $expiresGMT->format(\DateTimeInterface::RFC7231);
   }
 }
