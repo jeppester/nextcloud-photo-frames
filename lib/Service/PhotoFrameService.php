@@ -64,6 +64,7 @@ class PhotoFrameService
   public function getEntryExpiry(Entry $entry)
   {
     $createdAt = (clone $entry->getCreatedAt())->setTimezone($this->frame->getTimezone());
+    // return (clone $createdAt)->modify('+1 seconds');
 
     switch ($this->frame->getEntryLifetime()) {
       case FrameMapper::ENTRY_LIFETIME_ONE_DAY:
@@ -130,30 +131,25 @@ class PhotoFrameService
       $availableFrameFiles = $this->frame->getFrameFiles();
     }
 
-    $picked = null;
-    switch ($this->frame->getSelectionMethod()) {
+    $selectionMethod = $this->frame->getSelectionMethod();
+    switch ($selectionMethod) {
       case FrameMapper::SELECTION_METHOD_LATEST:
-        foreach ($availableFrameFiles as $frameFile) {
-          if (!$picked || $picked->getAddedAtTimestamp() < $frameFile->getAddedAtTimestamp()) {
-            $picked = $frameFile;
-          }
-        }
-        break;
-
       case FrameMapper::SELECTION_METHOD_OLDEST:
-        foreach ($availableFrameFiles as $frameFile) {
-          if (!$picked || $picked->getAddedAtTimestamp() > $frameFile->getAddedAtTimestamp()) {
-            $picked = $frameFile;
+        usort($availableFrameFiles, function ($a, $b) {
+          $res = $b->getAddedAtTimestamp() - $a->getAddedAtTimestamp();
+          if ($res === 0) {
+            $res = $b->getModifiedAtTimestamp() - $a->getModifiedAtTimestamp();
           }
-        }
-        break;
+          return $res;
+        });
+
+        return $selectionMethod === FrameMapper::SELECTION_METHOD_LATEST
+          ? $availableFrameFiles[0]
+          : $availableFrameFiles[count($availableFrameFiles) - 1];
 
       case FrameMapper::SELECTION_METHOD_RANDOM:
-        $picked = $availableFrameFiles[array_rand($availableFrameFiles)];
-        break;
+        return $availableFrameFiles[array_rand($availableFrameFiles)];
     }
-
-    return $picked;
   }
 
   private function newInTimezone()

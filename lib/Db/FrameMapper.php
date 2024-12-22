@@ -90,7 +90,7 @@ class FrameMapper extends QBMapper
     $frameFiles = [];
 
     $query = $this->connection->getQueryBuilder();
-    $query->select("file_id", "added", "owner", "mimetype")
+    $query->select("file_id", "added", "path", "owner", "mimetype", "mtime")
       ->from("photos_albums_files", "af")
       ->innerJoin("af", "filecache", "f", $query->expr()->eq("af.file_id", "f.fileid"))
       ->where($query->expr()->eq('af.album_id', $query->createNamedParameter($frame->getAlbumId(), IQueryBuilder::PARAM_INT)));
@@ -98,7 +98,13 @@ class FrameMapper extends QBMapper
 
     foreach ($rows as $row) {
       $mimeType = $this->mimeTypeLoader->getMimetypeById((int) $row['mimetype']);
-      $frameFiles[] = new FrameFile($row['file_id'], $row['owner'], $mimeType, $row['added']);
+      $frameFiles[] = new FrameFile(
+        $row['file_id'],
+        $row['owner'],
+        $mimeType,
+        $row['added'],
+        modifiedAtTimestamp: $row['mtime'],
+      );
     }
 
     $frame->setFrameFiles($frameFiles);
