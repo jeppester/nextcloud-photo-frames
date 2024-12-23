@@ -8,7 +8,6 @@ use OCA\PhotoFrame\AppInfo\Application;
 use OCA\PhotoFrame\Db\EntryMapper;
 use OCA\PhotoFrame\Db\FrameMapper;
 use OCA\PhotoFrame\Service\PhotoFrameService;
-use OCA\Photos\Service\UserConfigService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -17,6 +16,7 @@ use OCP\AppFramework\Http\Attribute\OpenAPI;
 use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\Http\FileDisplayResponse;
 use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCA\Photos\Album\AlbumMapper;
 use OCP\Common\Exception\NotFoundException;
@@ -128,6 +128,20 @@ class PageController extends Controller
 		);
 
 		return new RedirectResponse('/index.php/apps/photoframe');
+	}
+
+	#[NoCSRFRequired]
+	#[NoAdminRequired]
+	#[OpenAPI(OpenAPI::SCOPE_IGNORE)]
+	#[FrontpageRoute(verb: 'DELETE', url: '/{id}', requirements: ['id' => '[0-9]+'])]
+	public function destroy($id): Response
+	{
+		$uid = $this->currentUser->getUID();
+		$frame = $this->frameMapper->getByUserIdAndFrameId($uid, (int) $id);
+
+		$this->frameMapper->destroyFrame($frame);
+
+		return new Response(204);
 	}
 
 	#[NoCSRFRequired]

@@ -55,6 +55,22 @@ class FrameMapper extends QBMapper
     return $this->findEntities($qb);
   }
 
+  public function getByUserIdAndFrameId(string $userId, int $frameId)
+  {
+    $qb = $this->db->getQueryBuilder();
+
+    $qb->select(['*'])
+      ->from($this->getTableName())
+      ->where(
+        $qb->expr()->andx(
+          $qb->expr()->eq('id', $qb->createNamedParameter($frameId, IQueryBuilder::PARAM_STR)),
+          $qb->expr()->eq('user_uid', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
+        ),
+      );
+
+    return $this->findEntity($qb);
+  }
+
   public function getAvailableAlbums(string $userId)
   {
     return array_merge(
@@ -128,5 +144,23 @@ class FrameMapper extends QBMapper
     $frame->setCreatedAt($timestamp);
 
     return $this->insert($frame);
+  }
+
+  public function destroyFrame($frame)
+  {
+    $this->connection->beginTransaction();
+    $frameId = $frame->getId();
+
+    $query = $this->connection->getQueryBuilder();
+    $query->delete('photoframe_entries')
+      ->where($query->expr()->eq('frame_id', $query->createNamedParameter($frameId, IQueryBuilder::PARAM_INT)))
+      ->executeStatement();
+
+    $query = $this->connection->getQueryBuilder();
+    $query->delete('photoframe_frames')
+      ->where($query->expr()->eq('id', $query->createNamedParameter($frameId, IQueryBuilder::PARAM_INT)))
+      ->executeStatement();
+
+    $this->connection->commit();
   }
 }

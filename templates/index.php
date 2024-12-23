@@ -45,6 +45,10 @@ use OCA\PhotoFrame\Db\FrameMapper;
             <a target="_BLANK" href="/index.php/apps/photoframe/<?php echo $frame->getShareToken() ?>">
               <button>Show frame</button>
             </a>
+            <form data-delete data-confirm="Are you sure that you want to delete the frame"
+              action="/index.php/apps/photoframe/<?php echo $frame->getId() ?>">
+              <button>Delete frame</button>
+            </form>
           </th>
         </tr>
       <?php endforeach; ?>
@@ -55,3 +59,20 @@ use OCA\PhotoFrame\Db\FrameMapper;
     <button>Create a new frame</button>
   </a>
 </div>
+
+<script type="text/javascript" nonce="<?php echo $_['cspNonce']; ?>">
+  [...document.querySelectorAll('form[data-confirm]')].forEach((form) => {
+    form.addEventListener('submit', async (event) => {
+      if (!confirm(form.getAttribute('data-confirm'))) {
+        event.preventDefault();
+        return;
+      }
+
+      if (form.hasAttribute('data-delete')) {
+        event.preventDefault();
+        const response = await fetch(form.action, { method: 'DELETE' })
+        if (response.ok) location.reload()
+      }
+    })
+  })
+</script>
