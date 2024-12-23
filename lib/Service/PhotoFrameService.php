@@ -152,11 +152,6 @@ class PhotoFrameService
     }
   }
 
-  private function newInTimezone()
-  {
-
-  }
-
   private function getFrameFileById(int $fileId): ?FrameFile
   {
     foreach ($this->frame->getFrameFiles() as $frameFile) {
