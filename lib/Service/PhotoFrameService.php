@@ -32,6 +32,19 @@ class PhotoFrameService
     $this->frame = $frame;
   }
 
+  public function getLastFrameFile(): ?FrameFile
+  {
+    $latestEntry = $this->entryMapper->getLatestEntry($this->frame->getId());
+    if ($latestEntry) {
+      return $this->getFrameFileById($latestEntry->getFileId());
+    }
+
+    $frameFile = $this->pickNewFrameFile();
+    $this->entryMapper->createEntry($frameFile->getFileId(), $this->frame->getId());
+
+    return $frameFile;
+  }
+
   public function getCurrentFrameFile(): ?FrameFile
   {
     $latestFrameFile = null;
