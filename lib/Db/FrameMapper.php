@@ -79,6 +79,19 @@ class FrameMapper extends QBMapper
     );
   }
 
+  public function validAlbumForUser(string $userId, int $albumId)
+  {
+    $albums = $this->getAvailableAlbums($userId);
+
+    foreach ($albums as $album) {
+      if ($album->getId() === $albumId) {
+        return $albumId;
+      }
+    }
+
+    return null;
+  }
+
   /**
    * @param string $shareToken
    * @return Frame
@@ -144,6 +157,19 @@ class FrameMapper extends QBMapper
     $frame->setCreatedAt($timestamp);
 
     return $this->insert($frame);
+  }
+
+  public function updateFrame(Frame $frame, string $name, string $userUid, int $albumId, string $selectionMethod, string $entryLifetime, string $startDayAt, string $endDayAt): Frame
+  {
+    $frame->setName($name);
+    $frame->setUserUid($userUid);
+    $frame->setAlbumId($albumId);
+    $frame->setSelectionMethod($selectionMethod);
+    $frame->setEntryLifetime($entryLifetime);
+    $frame->setStartDayAt($startDayAt);
+    $frame->setEndDayAt($endDayAt);
+
+    return $this->update($frame);
   }
 
   public function destroyFrame($frame)

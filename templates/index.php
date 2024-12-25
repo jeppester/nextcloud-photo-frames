@@ -45,6 +45,9 @@ use OCA\PhotoFrame\Db\FrameMapper;
             <a target="_BLANK" href="/index.php/apps/photoframe/<?php echo $frame->getShareToken() ?>">
               <button>Show frame</button>
             </a>
+            <a target="_BLANK" href="/index.php/apps/photoframe/<?php echo $frame->getId() ?>/edit">
+              <button>Edit frame</button>
+            </a>
             <form data-delete data-confirm="Are you sure that you want to delete the frame"
               action="/index.php/apps/photoframe/<?php echo $frame->getId() ?>">
               <button>Delete frame</button>
@@ -71,7 +74,7 @@ use OCA\PhotoFrame\Db\FrameMapper;
       if (form.hasAttribute('data-delete')) {
         event.preventDefault();
         const response = await fetch(form.action, { method: 'DELETE' })
-        if (response.ok) location.reload()
+        if (response.ok) form.closest('tr').remove();
       }
     })
   })

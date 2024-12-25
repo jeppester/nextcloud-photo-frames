@@ -6,6 +6,7 @@ namespace OCA\PhotoFrame\Controller;
 
 use OCA\PhotoFrame\AppInfo\Application;
 use OCA\PhotoFrame\Db\EntryMapper;
+use OCA\PhotoFrame\Db\Frame;
 use OCA\PhotoFrame\Db\FrameMapper;
 use OCA\PhotoFrame\Service\PhotoFrameService;
 use OCP\AppFramework\Controller;
@@ -97,6 +98,7 @@ class PageController extends Controller
 		$uid = $this->currentUser->getUID();
 
 		$params = [
+			'frame' => new Frame(),
 			'albums' => $this->frameMapper->getAvailableAlbums($uid),
 		];
 
@@ -120,7 +122,54 @@ class PageController extends Controller
 		$this->frameMapper->createFrame(
 			$params['name'],
 			$this->currentUser->getUID(),
-			(int) $params['album_id'],
+			$this->frameMapper->validAlbumForUser($this->currentUser->getUID(), (int) $params['album_id']),
+			$params['selection_method'],
+			$params['entry_lifetime'],
+			$params['start_day_at'],
+			$params['end_day_at'],
+		);
+
+		return new RedirectResponse('/index.php/apps/photoframe');
+	}
+
+	#[NoCSRFRequired]
+	#[NoAdminRequired]
+	#[OpenAPI(OpenAPI::SCOPE_IGNORE)]
+	#[FrontpageRoute(verb: 'GET', url: '/{id}/edit', requirements: ['id' => '[0-9]+'])]
+	public function edit($id): TemplateResponse
+	{
+		$uid = $this->currentUser->getUID();
+
+		$params = [
+			'frame' => $this->frameMapper->getByUserIdAndFrameId($uid, (int) $id),
+			'albums' => $this->frameMapper->getAvailableAlbums($uid),
+		];
+
+		Util::addStyle(Application::APP_ID, 'main');
+
+		return new TemplateResponse(
+			appName: Application::APP_ID,
+			templateName: 'edit',
+			renderAs: TemplateResponse::RENDER_AS_USER,
+			params: $params,
+		);
+	}
+
+	#[NoCSRFRequired]
+	#[NoAdminRequired]
+	#[OpenAPI(OpenAPI::SCOPE_IGNORE)]
+	#[FrontpageRoute(verb: 'POST', url: '/{id}', requirements: ['id' => '[0-9]+'])]
+	public function update($id): Response
+	{
+		$uid = $this->currentUser->getUID();
+		$frame = $this->frameMapper->getByUserIdAndFrameId($uid, (int) $id);
+		$params = $this->request->getParams();
+
+		$this->frameMapper->updateFrame(
+			$frame,
+			$params['name'],
+			$this->currentUser->getUID(),
+			$this->frameMapper->validAlbumForUser($this->currentUser->getUID(), (int) $params['album_id']),
 			$params['selection_method'],
 			$params['entry_lifetime'],
 			$params['start_day_at'],
