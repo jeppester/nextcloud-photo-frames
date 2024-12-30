@@ -37,7 +37,7 @@ declare(strict_types=1);
   </style>
 
   <script type="text/javascript" defer nonce="<?php echo $_['cspNonce']; ?>">
-    const expiry = new Date("<?php echo $_['expiresAt']; ?>")
+    let expiry = new Date("<?php echo $_['expiresAt']; ?>")
     const imageUrl = `${location.href}/image`
     const refreshInterval = 1000 * 60 // Check if expired every minutes
 
@@ -48,15 +48,14 @@ declare(strict_types=1);
       setTimeout(updateImage, refreshInterval)
 
       if (now > expiry) {
-        const response = await fetch(imageUrl, { method: "HEAD", cache: "reload" })
-        const nextExpiresAt = new Date(response.headers.get('expires'))
+        const headResponse = await fetch(imageUrl, { method: "HEAD", cache: "reload" })
+        const nextExpiresAt = new Date(headResponse.headers.get('expires'))
 
-        const isNewImage = nextExpiresAt > now
-
+        const isNewImage = nextExpiresAt > expiry
         if (!isNewImage) return;
 
-        const res = await fetch(imageUrl)
-        const blob = await res.blob()
+        const imageResponse = await fetch(imageUrl)
+        const blob = await imageResponse.blob()
         // Read the Blob as DataURL using the FileReader API
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -65,6 +64,9 @@ declare(strict_types=1);
           newFrame.classList.add('photoFrame')
           newFrame.style.backgroundImage = `url('${reader.result}')`;
           document.body.appendChild(newFrame)
+
+          // Now that the new image is loaded, update the expiry
+          expiry = new Date(imageResponse.headers.get('expires'))
 
           // We cannot rely on the animation as it might not happen when the window is not focused
           setTimeout(() => {
