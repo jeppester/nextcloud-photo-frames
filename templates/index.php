@@ -55,9 +55,12 @@ use OCA\PhotoFrame\Db\FrameMapper; ?>
             <a target="_BLANK" href="/index.php/apps/photoframe/<?= $frame->getShareToken() ?>">
               <button>Show</button>
             </a>
-            <a href="/index.php/apps/photoframe/<?= $frame->getId() ?>/edit">
+            <a href=" /index.php/apps/photoframe/<?= $frame->getId() ?>/edit">
               <button>Edit</button>
             </a>
+            <button class="primary" data-copy-link="/index.php/apps/photoframe/<?= $frame->getShareToken() ?>">
+              Copy link
+            </button>
           </div>
         </div>
       </div>
@@ -70,6 +73,24 @@ use OCA\PhotoFrame\Db\FrameMapper; ?>
 </div>
 
 <script type="text/javascript" nonce="<?= $_['cspNonce']; ?>">
+  [...document.querySelectorAll('button[data-copy-link]')].forEach((button) => {
+    button.addEventListener('click', async () => {
+      const prevContent = button.innerHTML
+      button.disabled = true
+      button.innerHTML = "Copied"
+
+      try {
+        await navigator.clipboard.writeText(`${location.origin}${button.getAttribute('data-copy-link')}`)
+      }
+      finally {
+        setTimeout(() => {
+          button.disabled = false
+          button.innerHTML = prevContent
+        }, 1000)
+      }
+    })
+  });
+
   [...document.querySelectorAll('form[data-confirm]')].forEach((form) => {
     form.addEventListener('submit', async (event) => {
       if (!confirm(form.getAttribute('data-confirm'))) {
@@ -83,5 +104,5 @@ use OCA\PhotoFrame\Db\FrameMapper; ?>
         if (response.ok) form.closest('tr').remove();
       }
     })
-  })
+  });
 </script>
