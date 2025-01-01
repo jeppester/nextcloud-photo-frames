@@ -1,3 +1,5 @@
+<input type="hidden" name="requesttoken" value="<?= OCP\Util::callRegister(); ?>" />
+
 <div>
   <p class="field-title">Name</p>
 
@@ -10,7 +12,7 @@
   <select name="album_id" required>
     <option value="" disabled<?= $_['frame']->getAlbumId() ? '' : ' selected' ?>>Choose an album</option>
     <?php foreach ($_['albums'] as $album): ?>
-      <option value="<?= $album->getId() ?>"<?= $_['frame']->getAlbumId() === $album->getId() ? ' selected' : '' ?>>
+      <option value="<?= $album->getId() ?>" <?= $_['frame']->getAlbumId() === $album->getId() ? ' selected' : '' ?>>
         <?php echo $album->getTitle() ?>
       </option>
     <?php endforeach ?>
@@ -32,17 +34,17 @@
   </p>
 
   <label>
-    <input type="radio" name="selection_method" value="latest" required<?= $_['frame']->getSelectionMethod() === 'latest' ? ' checked' : '' ?>/>
+    <input type="radio" name="selection_method" value="latest" required<?= $_['frame']->getSelectionMethod() === 'latest' ? ' checked' : '' ?> />
     <span>Pick the <strong>latest</strong> photo</span>
   </label>
 
   <label>
-    <input type="radio" name="selection_method" value="oldest" required<?= $_['frame']->getSelectionMethod() === 'oldest' ? ' checked' : '' ?>/>
+    <input type="radio" name="selection_method" value="oldest" required<?= $_['frame']->getSelectionMethod() === 'oldest' ? ' checked' : '' ?> />
     <span>Pick the <strong>oldest</strong> photo</span>
   </label>
 
   <label>
-    <input type="radio" name="selection_method" value="random" required<?= $_['frame']->getSelectionMethod() === 'random' ? ' checked' : '' ?>/>
+    <input type="radio" name="selection_method" value="random" required<?= $_['frame']->getSelectionMethod() === 'random' ? ' checked' : '' ?> />
     <span>Pick a <strong>random</strong> photo</span>
   </label>
 </div>
@@ -55,12 +57,18 @@
   </p>
 
   <select name="entry_lifetime" required>
-    <option value="" disabled<?= $_['frame']->getEntryLifetime() === null ? ' selected' : '' ?>>Choose a rotation frequency</option>
-    <option value="one_hour"<?= $_['frame']->getEntryLifetime() === 'one_hour' ? ' selected' : '' ?>>1 photo per hour</option>
-    <option value="1_4_day"<?= $_['frame']->getEntryLifetime() === '1_4_day' ? ' selected' : '' ?>>4 photos per day</option>
-    <option value="1_3_day"<?= $_['frame']->getEntryLifetime() === '1_3_day' ? ' selected' : '' ?>>3 photos per day</option>
-    <option value="1_2_day"<?= $_['frame']->getEntryLifetime() === '1_2_day' ? ' selected' : '' ?>>2 photos per day</option>
-    <option value="one_day"<?= $_['frame']->getEntryLifetime() === 'one_day' ? ' selected' : '' ?>>1 photo per day</option>
+    <option value="" disabled<?= $_['frame']->getEntryLifetime() === null ? ' selected' : '' ?>>Choose a rotation frequency
+    </option>
+    <option value="one_hour" <?= $_['frame']->getEntryLifetime() === 'one_hour' ? ' selected' : '' ?>>1 photo per hour
+    </option>
+    <option value="1_4_day" <?= $_['frame']->getEntryLifetime() === '1_4_day' ? ' selected' : '' ?>>4 photos per day
+    </option>
+    <option value="1_3_day" <?= $_['frame']->getEntryLifetime() === '1_3_day' ? ' selected' : '' ?>>3 photos per day
+    </option>
+    <option value="1_2_day" <?= $_['frame']->getEntryLifetime() === '1_2_day' ? ' selected' : '' ?>>2 photos per day
+    </option>
+    <option value="one_day" <?= $_['frame']->getEntryLifetime() === 'one_day' ? ' selected' : '' ?>>1 photo per day
+    </option>
   </select>
 </div>
 
