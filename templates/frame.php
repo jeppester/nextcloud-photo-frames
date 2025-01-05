@@ -48,7 +48,6 @@ declare(strict_types=1);
       left: 0;
       padding: .5rem 1rem .3rem;
       background-color: #333;
-      /* border-top-right-radius: 1rem; */
       font-size: 1.5rem;
       font-weight: normal;
       color: #bba;
