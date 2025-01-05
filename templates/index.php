@@ -51,6 +51,10 @@ use OCA\PhotoFrame\Db\FrameMapper; ?>
             <strong>End day at:</strong>
             <?= $frame->getEndDayAt() ?>
           </p>
+          <p>
+            <strong>Show date:</strong>
+            <?= $frame->getShowPhotoTimestamp() ? "Enabled" : "Disabled" ?>
+          </p>
           <div class="actions">
             <a target="_BLANK" href="/index.php/apps/photoframe/<?= $frame->getShareToken() ?>">
               <button>Show</button>
