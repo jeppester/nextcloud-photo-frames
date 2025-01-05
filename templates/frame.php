@@ -48,11 +48,11 @@ declare(strict_types=1);
       /* border-top-right-radius: 1rem; */
       font-size: 1.5rem;
       font-weight: normal;
-      color: #ffd;
+      color: #bba;
       border: 1px solid rgba(255, 255, 255, 0.05);
       outline: 1px solid #333;
       text-shadow: 0px 1px 0px black;
-      box-shadow: 0px 10px 40px rgba(0, 0, 0, 1)
+      box-shadow: 0px 5px 40px rgba(0, 0, 0, .2)
     }
   </style>
 
