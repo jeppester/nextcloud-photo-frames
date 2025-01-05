@@ -13,6 +13,7 @@ declare(strict_types=1);
     :root,
     body {
       margin: 0;
+      font-size: 16px;
     }
 
     @keyframes fade-in {
@@ -34,10 +35,30 @@ declare(strict_types=1);
       background-repeat: no-repeat;
       background-size: contain;
     }
+
+    .photoFrame h1 {
+      text-transform: uppercase;
+      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+      position: absolute;
+      margin: 0;
+      bottom: 0;
+      left: 0;
+      padding: .5rem 1rem .3rem;
+      background-color: #333;
+      /* border-top-right-radius: 1rem; */
+      font-size: 1.5rem;
+      font-weight: normal;
+      color: #ffd;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      outline: 1px solid #333;
+      text-shadow: 0px 1px 0px black;
+      box-shadow: 0px 10px 40px rgba(0, 0, 0, 1)
+    }
   </style>
 
   <script type="text/javascript" defer nonce="<?php echo $_['cspNonce']; ?>">
-    let expiry = new Date("<?php echo $_['expiresAt']; ?>")
+    let expiry = new Date("<?php echo $_['frameFile']->getExpiresHeader(); ?>")
+
     const imageUrl = `${location.href}/image`
     const refreshInterval = 1000 * 60 // Check if expired every minutes
 
@@ -67,6 +88,11 @@ declare(strict_types=1);
 
           // Now that the new image is loaded, update the expiry
           expiry = new Date(imageResponse.headers.get('expires'))
+          const timestampElement = document.createElement('h1')
+          const timestamp = new Date(imageResponse.headers.get('X-Photo-Timestamp') * 1000)
+          const formattedTimestamp = Intl.DateTimeFormat(navigator.locale, { month: 'long', year: "numeric" }).format(date)
+          timestampElement.innerHTML = formattedTimestamp
+          newFrame.append(timestampElement)
 
           // We cannot rely on the animation as it might not happen when the window is not focused
           setTimeout(() => {
@@ -82,6 +108,13 @@ declare(strict_types=1);
 </head>
 
 <div class="photoFrame"
-  style="background-image: url('/index.php/apps/photoframe/<?php echo $_['shareToken'] ?>/image')"></div>
+  style="background-image: url('/index.php/apps/photoframe/<?php echo $_['shareToken'] ?>/image')">
+  <h1>
+    <script type="text/javascript" nonce="<?php echo $_['cspNonce']; ?>">
+      const date = new Date(<?php echo $_['frameFile']->getModifiedAtTimestamp(); ?>000);
+      document.write(Intl.DateTimeFormat(navigator.locale, { month: 'long', year: "numeric" }).format(date))
+    </script>
+  </h1>
+</div>
 
 </html>

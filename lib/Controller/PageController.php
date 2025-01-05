@@ -209,7 +209,7 @@ class PageController extends Controller
 		return new TemplateResponse(
 			appName: Application::APP_ID,
 			templateName: 'frame',
-			params: ['shareToken' => $shareToken, 'expiresAt' => $frameFile->getExpiresHeader()],
+			params: ['shareToken' => $shareToken, 'frameFile' => $frameFile],
 			renderAs: TemplateResponse::RENDER_AS_BLANK
 		);
 	}
@@ -232,6 +232,6 @@ class PageController extends Controller
 
 		$preview = $this->preview->getPreview($node, 1000, 1000);
 
-		return new FileDisplayResponse($preview, 200, ['Expires' => $frameFile->getExpiresHeader(), 'Content-Type' => $frameFile->getMimeType()]);
+		return new FileDisplayResponse($preview, 200, ['X-Photo-Timestamp' => $frameFile->getModifiedAtTimestamp(), 'Expires' => $frameFile->getExpiresHeader(), 'Content-Type' => $frameFile->getMimeType()]);
 	}
 }

@@ -132,7 +132,7 @@ class FrameMapper extends QBMapper
         $row['owner'],
         $mimeType,
         $row['added'],
-        modifiedAtTimestamp: $row['mtime'],
+        $row['mtime'],
       );
     }
 
