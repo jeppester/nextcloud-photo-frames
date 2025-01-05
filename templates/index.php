@@ -101,7 +101,7 @@ use OCA\PhotoFrame\Db\FrameMapper; ?>
       if (form.hasAttribute('data-delete')) {
         event.preventDefault();
         const response = await fetch(form.action, { method: 'DELETE' })
-        if (response.ok) form.closest('tr').remove();
+        if (response.ok) form.closest('.frame').remove();
       }
     })
   });
