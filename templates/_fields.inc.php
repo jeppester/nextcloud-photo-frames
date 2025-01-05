@@ -99,13 +99,23 @@
 
   <div class="flex">
     <div>
-      <h5>Day starts at</h5>
+      <p><strong>Day starts at</strong></p>
       <input type="time" name="start_day_at" value="<?= $_['frame']->getStartDayAt() ?: '07:00' ?>" required />
     </div>
 
     <div>
-      <h5>Day ends at</h5>
+      <p><strong>Day ends at</strong></p>
       <input type="time" name="end_day_at" value="<?= $_['frame']->getEndDayAt() ?: '22:00' ?>" required />
     </div>
   </div>
+
+  <div>
+    <p class="field-title">Display options</p>
+
+    <label>
+      <input type="checkbox" name="show_photo_timestamp" value="1" <?= $_['frame']->getShowPhotoTimestamp() ? ' checked' : '' ?> />
+      <span>Show photo date</span>
+    </label>
+  </div>
+
 </div>

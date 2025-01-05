@@ -126,6 +126,7 @@ class PageController extends Controller
 			$params['entry_lifetime'],
 			$params['start_day_at'],
 			$params['end_day_at'],
+			(bool) $params['show_photo_timestamp'],
 		);
 
 		return new RedirectResponse('/index.php/apps/photoframe');
@@ -172,6 +173,7 @@ class PageController extends Controller
 			$params['entry_lifetime'],
 			$params['start_day_at'],
 			$params['end_day_at'],
+			(bool) $params['show_photo_timestamp'],
 		);
 
 		return new RedirectResponse('/index.php/apps/photoframe');
@@ -209,7 +211,7 @@ class PageController extends Controller
 		return new TemplateResponse(
 			appName: Application::APP_ID,
 			templateName: 'frame',
-			params: ['shareToken' => $shareToken, 'frameFile' => $frameFile],
+			params: ['shareToken' => $shareToken, 'frameFile' => $frameFile, 'showPhotoTimestamp' => $frame->getShowPhotoTimestamp()],
 			renderAs: TemplateResponse::RENDER_AS_BLANK
 		);
 	}

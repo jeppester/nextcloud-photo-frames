@@ -37,6 +37,9 @@ declare(strict_types=1);
     }
 
     .photoFrame h1 {
+      display:
+        <?= $_['showPhotoTimestamp'] ? "block" : "none" ?>
+      ;
       text-transform: uppercase;
       font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
       position: absolute;

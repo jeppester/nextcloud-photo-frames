@@ -141,7 +141,7 @@ class FrameMapper extends QBMapper
     return $frame;
   }
 
-  public function createFrame(string $name, string $userUid, int $albumId, string $selectionMethod, string $entryLifetime, string $startDayAt, string $endDayAt): Frame
+  public function createFrame(string $name, string $userUid, int $albumId, string $selectionMethod, string $entryLifetime, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp): Frame
   {
     $frame = new Frame();
     $frame->setName($name);
@@ -151,6 +151,7 @@ class FrameMapper extends QBMapper
     $frame->setEntryLifetime($entryLifetime);
     $frame->setStartDayAt($startDayAt);
     $frame->setEndDayAt($endDayAt);
+    $frame->setShowPhotoTimestamp($showPhotoTimestamp);
     $frame->setShareToken($this->random->generate(64, ISecureRandom::CHAR_ALPHANUMERIC));
 
     $timestamp = new DateTime();
@@ -159,7 +160,7 @@ class FrameMapper extends QBMapper
     return $this->insert($frame);
   }
 
-  public function updateFrame(Frame $frame, string $name, string $userUid, int $albumId, string $selectionMethod, string $entryLifetime, string $startDayAt, string $endDayAt): Frame
+  public function updateFrame(Frame $frame, string $name, string $userUid, int $albumId, string $selectionMethod, string $entryLifetime, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp): Frame
   {
     $frame->setName($name);
     $frame->setUserUid($userUid);
@@ -168,6 +169,7 @@ class FrameMapper extends QBMapper
     $frame->setEntryLifetime($entryLifetime);
     $frame->setStartDayAt($startDayAt);
     $frame->setEndDayAt($endDayAt);
+    $frame->setShowPhotoTimestamp($showPhotoTimestamp);
 
     return $this->update($frame);
   }
