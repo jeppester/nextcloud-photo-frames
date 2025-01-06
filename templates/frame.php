@@ -42,7 +42,7 @@ declare(strict_types=1);
       ;
       text-transform: uppercase;
       font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-      position: absolute;
+      position: fixed;
       margin: 0;
       bottom: 0;
       left: 0;
