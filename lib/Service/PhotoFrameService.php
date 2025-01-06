@@ -151,7 +151,7 @@ class PhotoFrameService
         usort($availableFrameFiles, function ($a, $b) {
           $res = $b->getAddedAtTimestamp() - $a->getAddedAtTimestamp();
           if ($res === 0) {
-            $res = $b->getModifiedAtTimestamp() - $a->getModifiedAtTimestamp();
+            $res = $b->getCapturedAtTimestamp() - $a->getCapturedAtTimestamp();
           }
           return $res;
         });

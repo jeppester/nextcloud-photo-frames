@@ -234,6 +234,6 @@ class PageController extends Controller
 
 		$preview = $this->preview->getPreview($node, 1000, 1000);
 
-		return new FileDisplayResponse($preview, 200, ['X-Photo-Timestamp' => $frameFile->getModifiedAtTimestamp(), 'Expires' => $frameFile->getExpiresHeader(), 'Content-Type' => $frameFile->getMimeType()]);
+		return new FileDisplayResponse($preview, 200, ['X-Photo-Timestamp' => $frameFile->getCapturedAtTimestamp(), 'Expires' => $frameFile->getExpiresHeader(), 'Content-Type' => $frameFile->getMimeType()]);
 	}
 }

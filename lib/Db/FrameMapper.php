@@ -119,20 +119,23 @@ class FrameMapper extends QBMapper
     $frameFiles = [];
 
     $query = $this->connection->getQueryBuilder();
-    $query->select("file_id", "added", "path", "owner", "mimetype", "mtime")
-      ->from("photos_albums_files", "af")
-      ->innerJoin("af", "filecache", "f", $query->expr()->eq("af.file_id", "f.fileid"))
-      ->where($query->expr()->eq('af.album_id', $query->createNamedParameter($frame->getAlbumId(), IQueryBuilder::PARAM_INT)));
+    $query->select("album_files.file_id", "added", "path", "owner", "mimetype", "mtime", "json")
+      ->from("photos_albums_files", "album_files")
+      ->innerJoin("album_files", "filecache", "cache", $query->expr()->eq("album_files.file_id", "cache.fileid"))
+      ->innerJoin("album_files", "files_metadata", "metadata", $query->expr()->eq("album_files.file_id", "metadata.file_id"))
+      ->where($query->expr()->eq('album_files.album_id', $query->createNamedParameter($frame->getAlbumId(), IQueryBuilder::PARAM_INT)));
     $rows = $query->executeQuery()->fetchAll();
 
     foreach ($rows as $row) {
       $mimeType = $this->mimeTypeLoader->getMimetypeById((int) $row['mimetype']);
+      $metadata = json_decode($row['json']);
+
       $frameFiles[] = new FrameFile(
         $row['file_id'],
         $row['owner'],
         $mimeType,
         $row['added'],
-        $row['mtime'],
+        isset($metadata->{'photos-original_date_time'}->value) ? $metadata->{'photos-original_date_time'}->value : $row['mtime'],
       );
     }
 

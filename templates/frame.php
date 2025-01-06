@@ -113,7 +113,7 @@ declare(strict_types=1);
   style="background-image: url('/index.php/apps/photoframe/<?php echo $_['shareToken'] ?>/image')">
   <h1>
     <script type="text/javascript" nonce="<?php echo $_['cspNonce']; ?>">
-      const date = new Date(<?php echo $_['frameFile']->getModifiedAtTimestamp(); ?>000);
+      const date = new Date(<?php echo $_['frameFile']->getCapturedAtTimestamp(); ?>000);
       document.write(Intl.DateTimeFormat(navigator.locale, { month: 'long', year: "numeric" }).format(date))
     </script>
   </h1>

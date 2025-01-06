@@ -12,16 +12,16 @@ class FrameFile
   protected string $userUid;
   protected string $mimeType;
   protected int $addedAtTimestamp;
-  protected int $modifiedAtTimestamp;
+  protected int $capturedAtTimestamp;
   protected \DateTime $expiresAt;
 
-  public function __construct(int $fileId, string $userUid, string $mimeType, int $addedAtTimestamp, int $modifiedAtTimestamp)
+  public function __construct(int $fileId, string $userUid, string $mimeType, int $addedAtTimestamp, int $capturedAtTimestamp)
   {
     $this->fileId = $fileId;
     $this->userUid = $userUid;
     $this->mimeType = $mimeType;
     $this->addedAtTimestamp = $addedAtTimestamp;
-    $this->modifiedAtTimestamp = $modifiedAtTimestamp;
+    $this->capturedAtTimestamp = $capturedAtTimestamp;
   }
 
   public function getFileId()
@@ -44,9 +44,9 @@ class FrameFile
     return $this->addedAtTimestamp;
   }
 
-  public function getModifiedAtTimestamp()
+  public function getCapturedAtTimestamp()
   {
-    return $this->modifiedAtTimestamp;
+    return $this->capturedAtTimestamp;
   }
 
   public function setExpiresAt(\DateTime $expiresAt)
