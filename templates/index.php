@@ -62,6 +62,9 @@ use OCA\PhotoFrame\Db\FrameMapper; ?>
             <a href=" /index.php/apps/photoframe/<?= $frame->getId() ?>/edit">
               <button>Edit</button>
             </a>
+            <button data-qr-link="/index.php/apps/photoframe/<?= $frame->getShareToken() ?>">
+              Show QR
+            </button>
             <button class="primary" data-copy-link="/index.php/apps/photoframe/<?= $frame->getShareToken() ?>">
               Copy link
             </button>
@@ -74,6 +77,15 @@ use OCA\PhotoFrame\Db\FrameMapper; ?>
   <a href="/index.php/apps/photoframe/new">
     <button class="primary">New frame</button>
   </a>
+
+  <div class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-content"></div>
+      <button class="modal-close primary">
+        Close
+      </button>
+    </div>
+  </div>
 </div>
 
 <script type="text/javascript" nonce="<?= $_['cspNonce']; ?>">
@@ -109,4 +121,29 @@ use OCA\PhotoFrame\Db\FrameMapper; ?>
       }
     })
   });
+
+  [...document.querySelectorAll('button[data-qr-link]')].forEach((button) => {
+    button.addEventListener('click', async (event) => {
+      const link = `${location.origin}${button.getAttribute('data-qr-link')}`
+      const modalContent = document.querySelector('.modal-content')
+      modalContent.innerHTML = ''
+
+      const div = document.createElement('div')
+      div.style.border = "10px solid white";
+      modalContent.append(div)
+
+      document.querySelector('.modal-backdrop').classList.add('modal-backdrop--visible')
+
+      new QRCode(div, link);
+    })
+  });
+
+  document.querySelector('.modal-close').addEventListener('click', () => {
+    document.querySelector('.modal-backdrop').classList.remove('modal-backdrop--visible')
+  })
+  document.querySelector('.modal-backdrop').addEventListener('click', (event) => {
+    if (event.target === event.currentTarget) {
+      event.currentTarget.classList.remove('modal-backdrop--visible')
+    }
+  })
 </script>

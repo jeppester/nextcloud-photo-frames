@@ -80,6 +80,7 @@ class PageController extends Controller
 		];
 
 		Util::addStyle(Application::APP_ID, 'main');
+		Util::addScript(Application::APP_ID, 'qrcode.min');
 
 		return new TemplateResponse(
 			appName: Application::APP_ID,

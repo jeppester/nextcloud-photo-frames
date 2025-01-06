@@ -55,6 +55,7 @@
 
 .app-photoframe .frame .actions {
   display: flex;
+  flex-wrap: wrap;
   margin-top: 1rem;
   gap: .5rem;
 }
@@ -80,6 +81,33 @@
 
 .app-photoframe .field-title {
   font-weight: 600;
+}
+
+.app-photoframe .modal-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.app-photoframe .modal-backdrop.modal-backdrop--visible {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-photoframe .modal {
+  background-color: var(--color-main-background);
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+  align-items: center;
+  border-radius: .5rem;
+  box-shadow: 0px 10px 50px rgba(0,0,0,0.4);
 }
 
 @media (max-width: calc(550px + 3rem)) {
