@@ -168,7 +168,8 @@ class PhotoFrameService
           : array_reverse($frameFiles);
 
       case FrameMapper::SELECTION_METHOD_RANDOM:
-        return shuffle($frameFiles);
+        shuffle($frameFiles);
+        return $frameFiles;
     }
   }
 
