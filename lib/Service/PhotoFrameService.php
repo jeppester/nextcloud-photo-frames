@@ -144,11 +144,18 @@ class PhotoFrameService
       $availableFrameFiles = $this->frame->getFrameFiles();
     }
 
+    $sortedFrameFiles = $this->sortFrameFilesBySelectionMethod($availableFrameFiles);
+    return $sortedFrameFiles[0];
+  }
+
+  public function sortFrameFilesBySelectionMethod($frameFiles)
+  {
     $selectionMethod = $this->frame->getSelectionMethod();
+
     switch ($selectionMethod) {
       case FrameMapper::SELECTION_METHOD_LATEST:
       case FrameMapper::SELECTION_METHOD_OLDEST:
-        usort($availableFrameFiles, function ($a, $b) {
+        usort($frameFiles, function ($a, $b) {
           $res = $b->getAddedAtTimestamp() - $a->getAddedAtTimestamp();
           if ($res === 0) {
             $res = $b->getCapturedAtTimestamp() - $a->getCapturedAtTimestamp();
@@ -157,11 +164,11 @@ class PhotoFrameService
         });
 
         return $selectionMethod === FrameMapper::SELECTION_METHOD_LATEST
-          ? $availableFrameFiles[0]
-          : $availableFrameFiles[count($availableFrameFiles) - 1];
+          ? $frameFiles
+          : array_reverse($frameFiles);
 
       case FrameMapper::SELECTION_METHOD_RANDOM:
-        return $availableFrameFiles[array_rand($availableFrameFiles)];
+        return shuffle($frameFiles);
     }
   }
 

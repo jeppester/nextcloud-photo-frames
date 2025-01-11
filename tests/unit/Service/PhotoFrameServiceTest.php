@@ -7,6 +7,7 @@ namespace Service;
 use OCA\PhotoFrame\Db\Entry;
 use OCA\PhotoFrame\Db\EntryMapper;
 use OCA\PhotoFrame\Db\Frame;
+use OCA\PhotoFrame\Db\FrameFile;
 use OCA\PhotoFrame\Db\FrameMapper;
 use OCA\PhotoFrame\Service\PhotoFrameService;
 use OCP\Files\IRootFolder;
@@ -23,6 +24,7 @@ class PhotoFrameServiceTest extends TestCase
     $frame->setEntryLifetime(FrameMapper::ENTRY_LIFETIME_ONE_HOUR);
     $frame->setStartDayAt('06:30');
     $frame->setEndDayAt('20:00');
+    $frame->setTimezone(new \DateTimeZone('UTC'));
 
     $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
 
@@ -49,6 +51,7 @@ class PhotoFrameServiceTest extends TestCase
     $frame->setEntryLifetime(FrameMapper::ENTRY_LIFETIME_ONE_DAY);
     $frame->setStartDayAt('06:30');
     $frame->setEndDayAt('20:00');
+    $frame->setTimezone(new \DateTimeZone('UTC'));
 
     $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
 
@@ -75,6 +78,7 @@ class PhotoFrameServiceTest extends TestCase
     $frame->setEntryLifetime(FrameMapper::ENTRY_LIFETIME_1_2_DAY);
     $frame->setStartDayAt('06:00');
     $frame->setEndDayAt('20:00');
+    $frame->setTimezone(new \DateTimeZone('UTC'));
 
     $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
 
@@ -102,6 +106,7 @@ class PhotoFrameServiceTest extends TestCase
     $frame->setEntryLifetime(FrameMapper::ENTRY_LIFETIME_1_3_DAY);
     $frame->setStartDayAt('07:00');
     $frame->setEndDayAt('22:00');
+    $frame->setTimezone(new \DateTimeZone('UTC'));
 
     $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
 
@@ -131,6 +136,7 @@ class PhotoFrameServiceTest extends TestCase
     $frame->setEntryLifetime(FrameMapper::ENTRY_LIFETIME_1_4_DAY);
     $frame->setStartDayAt('00:00');
     $frame->setEndDayAt('24:00');
+    $frame->setTimezone(new \DateTimeZone('UTC'));
 
     $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
 
@@ -151,5 +157,53 @@ class PhotoFrameServiceTest extends TestCase
       $entry->setCreatedAt((new \DateTime)->modify($testTime[0]));
       $this->assertEquals($service->getEntryExpiry($entry), (new \DateTime)->modify($testTime[1]));
     }
+  }
+
+  public function testSortFrameFilesBySelectionMethodLatest()
+  {
+    $entryMapper = $this->createMock(EntryMapper::class);
+    $rootFolder = $this->createMock(IRootFolder::class);
+
+    $frame = new Frame();
+    $frame->setSelectionMethod(FrameMapper::SELECTION_METHOD_LATEST);
+
+    $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
+
+    $frameFiles = [
+      new FrameFile(1, "admin", 'image/jpg', 1700025000, 1600025000),
+      new FrameFile(1, "admin", 'image/jpg', 1700025000, 1600020000),
+      new FrameFile(1, "admin", 'image/jpg', 1700025000, 1600015000),
+      new FrameFile(1, "admin", 'image/jpg', 1700020000, 1600020000),
+      new FrameFile(1, "admin", 'image/jpg', 1700020000, 1600015000),
+      new FrameFile(1, "admin", 'image/jpg', 1700015000, 1600025000),
+    ];
+
+    $randomized = $frameFiles;
+    shuffle($randomized);
+    $this->assertEquals($frameFiles, $service->sortFrameFilesBySelectionMethod($randomized));
+  }
+
+  public function testSortFrameFilesBySelectionMethodOldest()
+  {
+    $entryMapper = $this->createMock(EntryMapper::class);
+    $rootFolder = $this->createMock(IRootFolder::class);
+
+    $frame = new Frame();
+    $frame->setSelectionMethod(FrameMapper::SELECTION_METHOD_OLDEST);
+
+    $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
+
+    $frameFiles = [
+      new FrameFile(1, "admin", 'image/jpg', 1700015000, 1600025000),
+      new FrameFile(1, "admin", 'image/jpg', 1700020000, 1600015000),
+      new FrameFile(1, "admin", 'image/jpg', 1700020000, 1600020000),
+      new FrameFile(1, "admin", 'image/jpg', 1700025000, 1600015000),
+      new FrameFile(1, "admin", 'image/jpg', 1700025000, 1600020000),
+      new FrameFile(1, "admin", 'image/jpg', 1700025000, 1600025000),
+    ];
+
+    $randomized = $frameFiles;
+    shuffle($randomized);
+    $this->assertEquals($frameFiles, $service->sortFrameFilesBySelectionMethod($randomized));
   }
 }
