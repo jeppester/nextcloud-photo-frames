@@ -28,6 +28,7 @@ declare(strict_types=1);
 
     .photoFrame {
       animation: fade-in 2s ease-in-out;
+      background-color: #222;
       position: absolute;
       width: 100vw;
       height: 100vh;
