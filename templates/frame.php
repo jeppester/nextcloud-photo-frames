@@ -93,7 +93,7 @@ declare(strict_types=1);
           expiry = new Date(imageResponse.headers.get('expires'))
           const timestampElement = document.createElement('h1')
           const timestamp = new Date(imageResponse.headers.get('X-Photo-Timestamp') * 1000)
-          const formattedTimestamp = Intl.DateTimeFormat(navigator.locale, { month: 'long', year: "numeric" }).format(date)
+          const formattedTimestamp = Intl.DateTimeFormat(navigator.locale, { month: 'long', year: "numeric" }).format(timestamp)
           timestampElement.innerHTML = formattedTimestamp
           newFrame.append(timestampElement)
 
@@ -114,8 +114,10 @@ declare(strict_types=1);
   style="background-image: url('/index.php/apps/photoframe/<?php echo $_['shareToken'] ?>/image')">
   <h1>
     <script type="text/javascript" nonce="<?php echo $_['cspNonce']; ?>">
-      const date = new Date(<?php echo $_['frameFile']->getCapturedAtTimestamp(); ?>000);
-      document.write(Intl.DateTimeFormat(navigator.locale, { month: 'long', year: "numeric" }).format(date))
+      {
+        const timestamp = new Date(<?php echo $_['frameFile']->getCapturedAtTimestamp(); ?>000);
+        document.write(Intl.DateTimeFormat(navigator.locale, { month: 'long', year: "numeric" }).format(timestamp))
+      }
     </script>
   </h1>
 </div>
