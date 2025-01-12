@@ -63,7 +63,7 @@ declare(strict_types=1);
     let expiry = new Date("<?php echo $_['frameFile']->getExpiresHeader(); ?>")
 
     const imageUrl = `${location.href}/image`
-    const refreshInterval = 1000 * 60 // Check if expired every minutes
+    const refreshInterval = 1000 * 60 // Check if expired every minute
 
     async function updateImage() {
       const now = new Date();
