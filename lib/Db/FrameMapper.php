@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace OCA\PhotoFrame\Db;
 
 use DateTime;
-use OCA\Photos\Album\AlbumMapper;
 use OCP\AppFramework\Db\QBMapper;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\IMimeTypeLoader;
@@ -26,16 +25,14 @@ class FrameMapper extends QBMapper
   public const ENTRY_LIFETIME_ONE_DAY = 'one_day';
 
   private ISecureRandom $random;
-  private AlbumMapper $albumMapper;
   private IDBConnection $connection;
   private IMimeTypeLoader $mimeTypeLoader;
   private IConfig $config;
 
-  public function __construct(IDBConnection $db, ISecureRandom $random, AlbumMapper $albumMapper, IDBConnection $connection, IMimeTypeLoader $mimeTypeLoader, IConfig $config)
+  public function __construct(IDBConnection $db, ISecureRandom $random, IDBConnection $connection, IMimeTypeLoader $mimeTypeLoader, IConfig $config)
   {
     parent::__construct($db, 'photoframe_frames', Frame::class);
     $this->random = $random;
-    $this->albumMapper = $albumMapper;
     $this->connection = $connection;
     $this->mimeTypeLoader = $mimeTypeLoader;
     $this->config = $config;
@@ -74,9 +71,54 @@ class FrameMapper extends QBMapper
   public function getAvailableAlbums(string $userId)
   {
     return array_merge(
-      $this->albumMapper->getForUser($userId),
-      $this->albumMapper->getSharedAlbumsForCollaborator($userId, AlbumMapper::TYPE_USER),
+      $this->getForUser($userId),
+      $this->getSharedAlbumsForCollaborator($userId),
     );
+  }
+
+  /**
+   * @param string $userId
+   * @return AlbumInfo[]
+   */
+  public function getForUser(string $userId): array
+  {
+    $query = $this->connection->getQueryBuilder();
+    $query->select("album_id", "name", "location", "created", "last_added_photo")
+      ->from("photos_albums")
+      ->where($query->expr()->eq('user', $query->createNamedParameter($userId)));
+    $rows = $query->executeQuery()->fetchAll();
+    return array_map(function (array $row) use ($userId) {
+      return new AlbumInfo((int) $row['album_id'], $userId, $row['name'], $row['location'], (int) $row['created'], (int) $row['last_added_photo']);
+    }, $rows);
+  }
+
+  /**
+   * @param string $collaboratorId
+   * @param int $collaboratorType
+   * @return AlbumInfo[]
+   */
+  public function getSharedAlbumsForCollaborator(string $collaboratorId): array
+  {
+    $query = $this->connection->getQueryBuilder();
+    $rows = $query
+      ->select("a.album_id", "name", "user", "location", "created", "last_added_photo")
+      ->from("photos_albums_collabs", "c")
+      ->leftJoin("c", "photos_albums", "a", $query->expr()->eq("a.album_id", "c.album_id"))
+      ->where($query->expr()->eq('collaborator_id', $query->createNamedParameter($collaboratorId)))
+      ->andWhere($query->expr()->eq('collaborator_type', $query->createNamedParameter(0, IQueryBuilder::PARAM_INT)))
+      ->executeQuery()
+      ->fetchAll();
+
+    return array_map(function (array $row) {
+      return new AlbumInfo(
+        (int) $row['album_id'],
+        $row['user'],
+        $row['name'] . ' (' . $row['user'] . ')',
+        $row['location'],
+        (int) $row['created'],
+        (int) $row['last_added_photo']
+      );
+    }, $rows);
   }
 
   public function validAlbumForUser(string $userId, int $albumId)

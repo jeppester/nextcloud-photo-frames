@@ -19,7 +19,6 @@ use OCP\AppFramework\Http\FileDisplayResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http\TemplateResponse;
-use OCA\Photos\Album\AlbumMapper;
 use OCP\Common\Exception\NotFoundException;
 use OCP\Files\IRootFolder;
 use OCP\IConfig;
@@ -38,7 +37,6 @@ class PageController extends Controller
 	private const BRUTEFORCE_ACTION = 'photoframe';
 	private EntryMapper $entryMapper;
 	private FrameMapper $frameMapper;
-	private AlbumMapper $albumMapper;
 	private IThrottler $throttler;
 	private IRootFolder $rootFolder;
 	private IPreview $preview;
@@ -48,7 +46,6 @@ class PageController extends Controller
 	public function __construct(
 		$appName,
 		IRequest $request,
-		AlbumMapper $albumMapper,
 		EntryMapper $entryMapper,
 		FrameMapper $frameMapper,
 		IThrottler $throttler,
@@ -58,7 +55,6 @@ class PageController extends Controller
 		IUserSession $userSession,
 	) {
 		parent::__construct($appName, $request);
-		$this->albumMapper = $albumMapper;
 		$this->entryMapper = $entryMapper;
 		$this->frameMapper = $frameMapper;
 		$this->throttler = $throttler;
