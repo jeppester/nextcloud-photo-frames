@@ -78,30 +78,29 @@ class FrameMapper extends QBMapper
 
   /**
    * @param string $userId
-   * @return AlbumInfo[]
+   * @return Album[]
    */
   public function getForUser(string $userId): array
   {
     $query = $this->connection->getQueryBuilder();
-    $query->select("album_id", "name", "location", "created", "last_added_photo")
+    $query->select("album_id", "name", "created")
       ->from("photos_albums")
       ->where($query->expr()->eq('user', $query->createNamedParameter($userId)));
     $rows = $query->executeQuery()->fetchAll();
     return array_map(function (array $row) use ($userId) {
-      return new AlbumInfo((int) $row['album_id'], $userId, $row['name'], $row['location'], (int) $row['created'], (int) $row['last_added_photo']);
+      return new Album((int) $row['album_id'], $row['name']);
     }, $rows);
   }
 
   /**
    * @param string $collaboratorId
-   * @param int $collaboratorType
-   * @return AlbumInfo[]
+   * @return Album[]
    */
   public function getSharedAlbumsForCollaborator(string $collaboratorId): array
   {
     $query = $this->connection->getQueryBuilder();
     $rows = $query
-      ->select("a.album_id", "name", "user", "location", "created", "last_added_photo")
+      ->select("a.album_id", "name", "user", "created")
       ->from("photos_albums_collabs", "c")
       ->leftJoin("c", "photos_albums", "a", $query->expr()->eq("a.album_id", "c.album_id"))
       ->where($query->expr()->eq('collaborator_id', $query->createNamedParameter($collaboratorId)))
@@ -110,13 +109,9 @@ class FrameMapper extends QBMapper
       ->fetchAll();
 
     return array_map(function (array $row) {
-      return new AlbumInfo(
+      return new Album(
         (int) $row['album_id'],
-        $row['user'],
         $row['name'] . ' (' . $row['user'] . ')',
-        $row['location'],
-        (int) $row['created'],
-        (int) $row['last_added_photo']
       );
     }, $rows);
   }
