@@ -74,9 +74,12 @@ use OCA\PhotoFrame\Db\FrameMapper; ?>
     <?php endforeach; ?>
   </div>
 
-  <a href="/index.php/apps/photoframe/new">
-    <button class="primary">New frame</button>
-  </a>
+  <div class="flex actions">
+    <div class="grow"></div>
+    <a href="/index.php/apps/photoframe/new">
+      <button class="primary">New frame</button>
+    </a>
+  </div>
 
   <div class="modal-backdrop">
     <div class="modal">

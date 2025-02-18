@@ -8,6 +8,10 @@ declare(strict_types=1);
 
     <?php echo $this->inc('_fields.inc'); ?>
 
-    <button type="submit">Update frame</button>
+    <div class="flex actions">
+      <div class="grow"></div>
+      <a href="/index.php/apps/photoframe" class="button" type="submit">Back</a>
+      <button type="submit" class="primary">Update frame</button>
+    </div>
   </form>
 </div>
