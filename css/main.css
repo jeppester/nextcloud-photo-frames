@@ -60,7 +60,31 @@
   gap: .5rem;
 }
 
+.app-photoframe .row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 1rem;
+}
+
+.app-photoframe .col {
+  flex: 1 1 1%;
+}
+
 .app-photoframe label {
+  display: inline-flex;
+  align-items: center;
+}
+
+.app-photoframe .radio-buttons {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-photoframe input {
+  height: auto;
+  min-height: 1.5rem;
   display: inline-flex;
   align-items: center;
 }
@@ -80,7 +104,14 @@
 }
 
 .app-photoframe .field-title {
+  margin-top: 1.5rem;
+  margin-bottom: .5rem;
+  font-size: 1.2rem;
   font-weight: 600;
+}
+
+.app-photoframe .field-title + * {
+  margin-top: 0;
 }
 
 .app-photoframe .modal-backdrop {
