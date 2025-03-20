@@ -103,7 +103,7 @@ use OCA\PhotoFrame\Db\FrameMapper; ?>
       button.innerHTML = "Copied"
 
       try {
-        await navigator.clipboard.writeText(`${location.origin}${button.getAttribute('data-copy-link')}`)
+        await navigator.clipboard.writeText(button.getAttribute('data-copy-link'))
       }
       finally {
         setTimeout(() => {
@@ -131,7 +131,7 @@ use OCA\PhotoFrame\Db\FrameMapper; ?>
 
   [...document.querySelectorAll('button[data-qr-link]')].forEach((button) => {
     button.addEventListener('click', async (event) => {
-      const link = `${location.origin}${button.getAttribute('data-qr-link')}`
+      const link = button.getAttribute('data-qr-link')
       const modalContent = document.querySelector('.modal-content')
       modalContent.innerHTML = ''
 
