@@ -7,7 +7,8 @@ use OCA\PhotoFrame\Db\FrameMapper; ?>
   <div class="list">
     <?php foreach ($_['frames'] as $frame): ?>
       <div class="frame">
-        <img src="/index.php/apps/photoframe/<?= $frame->getShareToken() ?>/image" />
+        <img
+          src="<?= $urlGenerator->linkToRouteAbsolute('photoframe.page.photoframeImage', ["shareToken" => $frame->getShareToken()]) ?>" />
         <div class="grow">
           <div class="flex">
             <h2 class="grow">
@@ -15,7 +16,7 @@ use OCA\PhotoFrame\Db\FrameMapper; ?>
             </h2>
 
             <form data-delete data-confirm="Are you sure that you want to delete the frame"
-              action="/index.php/apps/photoframe/<?= $frame->getId() ?>">
+              action="<?= $urlGenerator->linkToRoute('photoframe.page.destroy', ["id" => $frame->getId()]) ?>">
               <button class="error">Delete</button>
             </form>
           </div>
@@ -56,16 +57,19 @@ use OCA\PhotoFrame\Db\FrameMapper; ?>
             <?= $frame->getShowPhotoTimestamp() ? "Enabled" : "Disabled" ?>
           </p>
           <div class="actions">
-            <a target="_BLANK" href="/index.php/apps/photoframe/<?= $frame->getShareToken() ?>">
+            <a target="_BLANK"
+              href="<?= $urlGenerator->linkToRoute('photoframe.page.photoframe', ["shareToken" => $frame->getShareToken()]) ?>">
               <button>Show</button>
             </a>
-            <a href=" /index.php/apps/photoframe/<?= $frame->getId() ?>/edit">
+            <a href="<?= $urlGenerator->linkToRoute('photoframe.page.edit', ["id" => $frame->getId()]) ?>">
               <button>Edit</button>
             </a>
-            <button data-qr-link="/index.php/apps/photoframe/<?= $frame->getShareToken() ?>">
+            <button
+              data-qr-link="<?= $urlGenerator->linkToRouteAbsolute('photoframe.page.photoframe', ["shareToken" => $frame->getShareToken()]) ?>">
               Show QR
             </button>
-            <button class="primary" data-copy-link="/index.php/apps/photoframe/<?= $frame->getShareToken() ?>">
+            <button class="primary"
+              data-copy-link="<?= $urlGenerator->linkToRouteAbsolute('photoframe.page.photoframe', ["shareToken" => $frame->getShareToken()]) ?>">
               Copy link
             </button>
           </div>
@@ -76,7 +80,7 @@ use OCA\PhotoFrame\Db\FrameMapper; ?>
 
   <div class="flex actions">
     <div class="grow"></div>
-    <a href="/index.php/apps/photoframe/new">
+    <a href="<?= $urlGenerator->linkToRoute('photoframe.page.new') ?>">
       <button class="primary">New frame</button>
     </a>
   </div>

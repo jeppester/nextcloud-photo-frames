@@ -5,7 +5,8 @@
     <div>
       <h3 class="field-title">Name</h3>
 
-      <input name="name" placeholder="Pick a name for your photo frame" required value="<?= $_['frame']->getName() ?>" />
+      <input name="name" placeholder="Pick a name for your photo frame" required
+        value="<?= $_['frame']->getName() ?>" />
     </div>
 
     <div>
@@ -26,17 +27,20 @@
 
       <div class="radio-buttons">
         <label>
-          <input type="radio" name="selection_method" value="latest" required<?= $_['frame']->getSelectionMethod() === 'latest' ? ' checked' : '' ?> />
+          <input type="radio" name="selection_method" value="latest"
+            required<?= $_['frame']->getSelectionMethod() === 'latest' ? ' checked' : '' ?> />
           <span>Pick the <strong>latest</strong> photo</span>
         </label>
-        
+
         <label>
-          <input type="radio" name="selection_method" value="oldest" required<?= $_['frame']->getSelectionMethod() === 'oldest' ? ' checked' : '' ?> />
+          <input type="radio" name="selection_method" value="oldest"
+            required<?= $_['frame']->getSelectionMethod() === 'oldest' ? ' checked' : '' ?> />
           <span>Pick the <strong>oldest</strong> photo</span>
         </label>
-        
+
         <label>
-          <input type="radio" name="selection_method" value="random" required<?= $_['frame']->getSelectionMethod() === 'random' ? ' checked' : '' ?> />
+          <input type="radio" name="selection_method" value="random"
+            required<?= $_['frame']->getSelectionMethod() === 'random' ? ' checked' : '' ?> />
           <span>Pick a <strong>random</strong> photo</span>
         </label>
       </div>

@@ -26,6 +26,7 @@ use OCP\IRequest;
 use OCP\IPreview;
 use OCP\IUser;
 use OCP\IUserSession;
+use OCP\IURLGenerator;
 use OCP\Security\Bruteforce\IThrottler;
 use OCP\Util;
 
@@ -42,6 +43,7 @@ class PageController extends Controller
 	private IPreview $preview;
 	private IConfig $config;
 	private ?IUser $currentUser;
+	private IURLGenerator $urlGenerator;
 
 	public function __construct(
 		$appName,
@@ -53,6 +55,7 @@ class PageController extends Controller
 		IPreview $preview,
 		IConfig $config,
 		IUserSession $userSession,
+		IURLGenerator $urlGenerator,
 	) {
 		parent::__construct($appName, $request);
 		$this->entryMapper = $entryMapper;
@@ -62,6 +65,7 @@ class PageController extends Controller
 		$this->preview = $preview;
 		$this->config = $config;
 		$this->currentUser = $userSession->getUser();
+		$this->urlGenerator = $urlGenerator;
 	}
 
 	#[NoCSRFRequired]
@@ -73,6 +77,7 @@ class PageController extends Controller
 		$uid = $this->currentUser->getUID();
 		$params = [
 			'frames' => $this->frameMapper->getAllByUser($uid),
+			'urlGenerator' => $this->urlGenerator,
 		];
 
 		Util::addStyle(Application::APP_ID, 'main');
@@ -97,6 +102,7 @@ class PageController extends Controller
 		$params = [
 			'frame' => new Frame(),
 			'albums' => $this->frameMapper->getAvailableAlbums($uid),
+			'urlGenerator' => $this->urlGenerator,
 		];
 
 		Util::addStyle(Application::APP_ID, 'main');
@@ -140,6 +146,7 @@ class PageController extends Controller
 		$params = [
 			'frame' => $this->frameMapper->getByUserIdAndFrameId($uid, (int) $id),
 			'albums' => $this->frameMapper->getAvailableAlbums($uid),
+			'urlGenerator' => $this->urlGenerator,
 		];
 
 		Util::addStyle(Application::APP_ID, 'main');
