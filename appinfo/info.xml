@@ -1,31 +1,31 @@
 <?xml version="1.0"?>
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
-	<id>photoframe</id>
-	<name>Photo Frame</name>
-	<summary>Turn any screen with a browser into a neat photo frame</summary>
-	<description>Photo Frame lets you generate photo frame URL's for your albums which can then be
-		viewed on any screen with a browser.
+  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+  <id>photoframe</id>
+  <name>Photo Frame</name>
+  <summary>Turn any screen with a browser into a neat photo frame</summary>
+  <description>Photo Frame lets you generate photo frame URL's for your albums which can then be
+    viewed on any screen with a browser.
 
-		The possiblities are endless:
-		- Use kiosk browsers (like Fully Kiosk Browser) to turn any android device into a photo frame
-		- Use collaborative photo albums to co-create and share photo frame content across households</description>
-	<version>1.0.0</version>
-	<licence>agpl</licence>
-	<author mail="jeppester1@gmail.com" homepage="https://jsorensen.dk">Jesper Sørensen</author>
-	<namespace>PhotoFrame</namespace>
-	<category>multimedia</category>
-	<bugs>https://github.com/jeppester/nextcloud-photo-frame/issues</bugs>
-	<dependencies>
-		<nextcloud min-version="29" max-version="29" />
-	</dependencies>
-	<navigations>
-		<navigation>
-			<id>photoframe</id>
-			<name>Photo Frame</name>
-			<route>photoframe.page.index</route>
-			<icon>app.svg</icon>
-			<type>link</type>
-		</navigation>
-	</navigations>
+    The possiblities are endless:
+    - Use kiosk browsers (like Fully Kiosk Browser) to turn any android device into a photo frame
+    - Use collaborative photo albums to co-create and share photo frame content across households</description>
+  <version>1.0.0</version>
+  <licence>agpl</licence>
+  <author mail="jeppester1@gmail.com" homepage="https://jsorensen.dk">Jesper Sørensen</author>
+  <namespace>PhotoFrame</namespace>
+  <category>multimedia</category>
+  <bugs>https://github.com/jeppester/nextcloud-photo-frame/issues</bugs>
+  <dependencies>
+    <nextcloud min-version="29" max-version="29" />
+  </dependencies>
+  <navigations>
+    <navigation>
+      <id>photoframe</id>
+      <name>Photo Frame</name>
+      <route>photoframe.page.index</route>
+      <icon>app.svg</icon>
+      <type>link</type>
+    </navigation>
+  </navigations>
 </info>

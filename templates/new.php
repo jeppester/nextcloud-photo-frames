@@ -6,7 +6,7 @@ declare(strict_types=1);
   <form action="<?= $urlGenerator->linkToRoute('photoframe.page.create') ?>" method="post">
     <h2>New photo frame</h2>
 
-    <?php echo $this->inc('_fields.inc', ['frame' => ['']]); ?>
+    <?php echo $this->inc('_fields.inc'); ?>
 
     <div class="flex actions">
       <div class="grow"></div>

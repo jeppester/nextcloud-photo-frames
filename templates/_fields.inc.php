@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col"> 
+  <div class="col">
     <input type="hidden" name="requesttoken" value="<?= OCP\Util::callRegister(); ?>" />
 
     <div>
@@ -69,12 +69,18 @@
 
       <p>
         <select name="entry_lifetime" required>
-          <option value="" disabled<?= $_['frame']->getEntryLifetime() === null ? ' selected' : '' ?>>Choose a rotation frequency</option>option
-          <option value="one_hour" <?= $_['frame']->getEntryLifetime() === 'one_hour' ? ' selected' : '' ?>>1 photo per hour</option>
-          <option value="1_4_day" <?= $_['frame']->getEntryLifetime() === '1_4_day' ? ' selected' : '' ?>>4 photos per day</option>
-          <option value="1_3_day" <?= $_['frame']->getEntryLifetime() === '1_3_day' ? ' selected' : '' ?>>3 photos per day</option>
-          <option value="1_2_day" <?= $_['frame']->getEntryLifetime() === '1_2_day' ? ' selected' : '' ?>>2 photos per day</option>
-          <option value="one_day" <?= $_['frame']->getEntryLifetime() === 'one_day' ? ' selected' : '' ?>>1 photo per day</option>
+          <option value="" disabled<?= $_['frame']->getEntryLifetime() === null ? ' selected' : '' ?>>Choose a rotation
+            frequency</option>option
+          <option value="one_hour" <?= $_['frame']->getEntryLifetime() === 'one_hour' ? ' selected' : '' ?>>1 photo per
+            hour</option>
+          <option value="1_4_day" <?= $_['frame']->getEntryLifetime() === '1_4_day' ? ' selected' : '' ?>>4 photos per day
+          </option>
+          <option value="1_3_day" <?= $_['frame']->getEntryLifetime() === '1_3_day' ? ' selected' : '' ?>>3 photos per day
+          </option>
+          <option value="1_2_day" <?= $_['frame']->getEntryLifetime() === '1_2_day' ? ' selected' : '' ?>>2 photos per day
+          </option>
+          <option value="one_day" <?= $_['frame']->getEntryLifetime() === 'one_day' ? ' selected' : '' ?>>1 photo per day
+          </option>
         </select>
       </p>
     </div>
