@@ -1,4 +1,4 @@
-.app-photoframe .app-content {
+.app-photo_frames .app-content {
   width: 100%;
   height: 100%;
   overflow-y: scroll;
@@ -6,11 +6,11 @@
   padding: 1.5rem;
 }
 
-.app-photoframe p, .app-photoframe ul {
+.app-photo_frames p, .app-photo_frames ul {
   margin-top: 1rem;
 }
 
-.app-photoframe .list {
+.app-photo_frames .list {
   width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
@@ -19,7 +19,7 @@
   margin-bottom: 1rem;
 }
 
-.app-photoframe .frame {
+.app-photo_frames .frame {
   border: 2px solid #00679e88;
   background-color: #00679e09;
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
@@ -30,75 +30,84 @@
   overflow: hidden;
 }
 
-.app-photoframe .frame img {
+.app-photo_frames .frame img {
   width: 250px;
   object-fit: cover;
   margin: -1.5rem;
   margin-right: 0;
 }
 
-.app-photoframe h2 {
+.app-photo_frames h2 {
   margin: 0 0 .5rem;
 }
 
-.app-photoframe .frame h2 {
+.app-photo_frames .frame h2 {
   font-size: 1.5rem;
   font-weight: 500;
   margin: 0 0 .5rem;
 }
 
-.app-photoframe .frame p {
+.app-photo_frames .frame p {
   font-size: 16px;
   font-weight: 500;
   margin: 0;
 }
 
-.app-photoframe .frame .actions {
+.app-photo_frames .frame .actions {
   display: flex;
   flex-wrap: wrap;
   margin-top: 1rem;
   gap: .5rem;
 }
 
-.app-photoframe label {
+.app-photo_frames label {
   display: inline-flex;
   align-items: center;
 }
 
-.app-photoframe .radio-buttons {
+.app-photo_frames .radio-buttons {
   margin-top: 1rem;
   display: flex;
   flex-direction: column;
 }
 
-.app-photoframe input {
+.app-photo_frames input {
   height: auto;
   min-height: 1.5rem;
   display: inline-flex;
   align-items: center;
 }
 
-.app-photoframe li {
+.app-photo_frames li {
   list-style-type: initial;
   margin-left: 1rem;
 }
 
-.app-photoframe .field-title {
+.app-photo_frames .field-title {
   margin-top: 1.5rem;
   margin-bottom: .5rem;
   font-size: 1.2rem;
   font-weight: 600;
 }
 
-.app-photoframe .field-title + * {
+.app-photo_frames .field-title + * {
   margin-top: 0;
 }
 
-.app-photoframe .actions {
+.app-photo_frames .actions {
   margin-top: 1rem;
 }
 
-.app-photoframe .modal-backdrop {
+.app-photo_frames .alert {
+  padding: 1rem;
+
+  border: 1px solid var(--color-error);
+  display: inline-block;
+  border-radius: 1rem;
+  color: var(--color-error-text);
+}
+
+.app-photo_frames .modal-backdrop {
   display: none;
   position: fixed;
   top: 0;
@@ -108,13 +117,13 @@
   background-color: rgba(0,0,0,0.4);
 }
 
-.app-photoframe .modal-backdrop.modal-backdrop--visible {
+.app-photo_frames .modal-backdrop.modal-backdrop--visible {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.app-photoframe .modal {
+.app-photo_frames .modal {
   background-color: var(--color-main-background);
   padding: 1rem;
   display: flex;
@@ -126,7 +135,7 @@
 }
 
 @media (max-width: calc(550px + 3rem)) {
-  .app-photoframe .list {
+  .app-photo_frames .list {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -135,11 +144,11 @@
     margin-bottom: 1rem;
   }
 
-  .app-photoframe .frame {
+  .app-photo_frames .frame {
     flex-direction: column;
   }
 
-  .app-photoframe .frame img {
+  .app-photo_frames .frame img {
     width: calc(100% + 3rem);
     margin-right: -1.5rem;
     margin-bottom: 0;
@@ -148,22 +157,22 @@
 }
 
 /* Utils */
-.app-photoframe .flex {
+.app-photo_frames .flex {
   display: flex;
   gap: 1rem;
 }
 
-.app-photoframe .flex-col {
+.app-photo_frames .flex-col {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.app-photoframe .grow {
+.app-photo_frames .grow {
   flex-grow: 1;
 }
 
-.app-photoframe .row {
+.app-photo_frames .row {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -171,12 +180,12 @@
 }
 
 @media screen and (max-width: 768px) {
-  .app-photoframe .row {
+  .app-photo_frames .row {
     flex-direction: column;
     gap: 0;
   }  
 }
 
-.app-photoframe .col {
+.app-photo_frames .col {
   flex: 1 1 1%;
 }

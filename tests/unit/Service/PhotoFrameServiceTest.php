@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Service;
 
-use OCA\PhotoFrame\Db\Entry;
-use OCA\PhotoFrame\Db\EntryMapper;
-use OCA\PhotoFrame\Db\Frame;
-use OCA\PhotoFrame\Db\FrameFile;
-use OCA\PhotoFrame\Db\FrameMapper;
-use OCA\PhotoFrame\Service\PhotoFrameService;
+use OCA\PhotoFrames\Db\Entry;
+use OCA\PhotoFrames\Db\EntryMapper;
+use OCA\PhotoFrames\Db\Frame;
+use OCA\PhotoFrames\Db\FrameFile;
+use OCA\PhotoFrames\Db\FrameMapper;
+use OCA\PhotoFrames\Service\PhotoFrameService;
 use OCP\Files\IRootFolder;
 use PHPUnit\Framework\TestCase;
 

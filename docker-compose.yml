@@ -1,4 +1,4 @@
-version: '3.4'
+version: "3.4"
 
 services:
   nextcloud:
@@ -6,6 +6,6 @@ services:
     ports:
       - 127.0.0.1:8080:80
     volumes:
-      - .:/var/www/html/apps-extra/photoframe
+      - .:/var/www/html/apps-extra/photo_frames
       - ./photos:/var/www/html/apps/photos
-      - ./owncloud.db:/var/www/html/data/owncloud.db
+      # - ./owncloud.db:/var/www/html/data/owncloud.db

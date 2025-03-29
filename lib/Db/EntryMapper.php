@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\PhotoFrame\Db;
+namespace OCA\PhotoFrames\Db;
 
 use DateTime;
 use OCP\AppFramework\Db\QBMapper;
@@ -14,7 +14,7 @@ class EntryMapper extends QBMapper
 {
   public function __construct(IDBConnection $db)
   {
-    parent::__construct($db, 'photoframe_entries', Entry::class);
+    parent::__construct($db, 'photo_frames_entries', Entry::class);
   }
 
   /**

@@ -1,29 +1,32 @@
 <?xml version="1.0"?>
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
-  <id>photoframe</id>
-  <name>Photo Frame</name>
+  <id>photo_frames</id>
+  <name>Photo Frames</name>
   <summary>Turn any screen with a browser into a neat photo frame</summary>
-  <description>Photo Frame lets you generate photo frame URL's for your albums which can then be
-    viewed on any screen with a browser.
+  <description>
+    Generate easily sharable photo frame URLs for your nextcloud albums.
 
     The possiblities are endless:
-    - Use kiosk browsers (like Fully Kiosk Browser) to turn any android device into a photo frame
-    - Use collaborative photo albums to co-create and share photo frame content across households</description>
+
+    - Turn any android device into a smart photo frame (with the help of a kiosk browser)
+    - Co-create photo frames with nextcloud's collaborative albums
+    - Share photo frames across households
+</description>
   <version>1.0.0</version>
   <licence>agpl</licence>
   <author mail="jeppester1@gmail.com" homepage="https://jsorensen.dk">Jesper Sørensen</author>
-  <namespace>PhotoFrame</namespace>
+  <namespace>PhotoFrames</namespace>
   <category>multimedia</category>
-  <bugs>https://github.com/jeppester/nextcloud-photo-frame/issues</bugs>
+  <bugs>https://github.com/jeppester/nextcloud-photo-frames/issues</bugs>
   <dependencies>
-    <nextcloud min-version="29" max-version="29" />
+    <nextcloud min-version="29" max-version="32" />
   </dependencies>
   <navigations>
     <navigation>
-      <id>photoframe</id>
-      <name>Photo Frame</name>
-      <route>photoframe.page.index</route>
+      <id>photo_frame</id>
+      <name>Photo Frames</name>
+      <route>photo_frames.page.index</route>
       <icon>app.svg</icon>
       <type>link</type>
     </navigation>

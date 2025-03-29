@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\PhotoFrame\Db;
+namespace OCA\PhotoFrames\Db;
 
 use DateTime;
 use OCP\AppFramework\Db\QBMapper;
@@ -31,7 +31,7 @@ class FrameMapper extends QBMapper
 
   public function __construct(IDBConnection $db, ISecureRandom $random, IDBConnection $connection, IMimeTypeLoader $mimeTypeLoader, IConfig $config)
   {
-    parent::__construct($db, 'photoframe_frames', Frame::class);
+    parent::__construct($db, 'photo_frames_frames', Frame::class);
     $this->random = $random;
     $this->connection = $connection;
     $this->mimeTypeLoader = $mimeTypeLoader;
@@ -220,12 +220,12 @@ class FrameMapper extends QBMapper
     $frameId = $frame->getId();
 
     $query = $this->connection->getQueryBuilder();
-    $query->delete('photoframe_entries')
+    $query->delete('photo_frames_entries')
       ->where($query->expr()->eq('frame_id', $query->createNamedParameter($frameId, IQueryBuilder::PARAM_INT)))
       ->executeStatement();
 
     $query = $this->connection->getQueryBuilder();
-    $query->delete('photoframe_frames')
+    $query->delete('photo_frames_frames')
       ->where($query->expr()->eq('id', $query->createNamedParameter($frameId, IQueryBuilder::PARAM_INT)))
       ->executeStatement();
 

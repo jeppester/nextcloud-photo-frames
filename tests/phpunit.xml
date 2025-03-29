@@ -3,7 +3,7 @@
   timeoutForSmallTests="900" timeoutForMediumTests="900" timeoutForLargeTests="900"
   xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.4/phpunit.xsd"
   cacheDirectory=".phpunit.cache">
-  <testsuite name="Photo Frame Tests">
+  <testsuite name="Photo Frames Tests">
     <directory suffix="Test.php">.</directory>
   </testsuite>
   <source>

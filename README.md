@@ -1,7 +1,9 @@
-# Photo Frame
+# Photo Frames
 
-Photo Frame lets you generate photo frame URL's for your albums which can then be viewed on any screen with a browser.
+Generate easily sharable photo frame URLs for your nextcloud albums.
 
 The possiblities are endless:
-- Use kiosk browsers (like Fully Kiosk Browser) to turn any android device into a photo frame
-- Use collaborative photo albums to co-create and share photo frame content across households
+
+- Turn any android device into a smart photo frame (with the help of a kiosk browser)
+- Co-create photo frames with nextcloud's collaborative albums
+- Share photo frames across households

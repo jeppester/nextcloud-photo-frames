@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\PhotoFrame\Migration;
+namespace OCA\PhotoFrames\Migration;
 
 use Closure;
 use OCP\DB\ISchemaWrapper;
@@ -33,8 +33,8 @@ class Version010000Date20241220230730 extends SimpleMigrationStep
     /** @var ISchemaWrapper $schema */
     $schema = $schemaClosure();
 
-    if (!$schema->hasTable('photoframe_frames')) {
-      $table = $schema->createTable('photoframe_frames');
+    if (!$schema->hasTable('photo_frames_frames')) {
+      $table = $schema->createTable('photo_frames_frames');
 
       $table->addColumn('id', Types::BIGINT, ['autoincrement' => true, 'notnull' => true, 'length' => 4]);
       $table->addColumn('user_uid', Types::STRING, ['notnull' => true, 'length' => 64]);
@@ -46,14 +46,15 @@ class Version010000Date20241220230730 extends SimpleMigrationStep
       $table->addColumn('start_day_at', Types::TIME, ['notnull' => true, 'length' => 50]);
       $table->addColumn('end_day_at', Types::TIME, ['notnull' => true, 'length' => 50]);
       $table->addColumn('created_at', Types::DATETIME, ['notnull' => true,]);
+      $table->addColumn('show_photo_timestamp', Types::BOOLEAN, ['notnull' => false]);
 
       $table->setPrimaryKey(['id']);
-      $table->addIndex(['user_uid'], 'photoframe_frame_user_id');
-      $table->addUniqueIndex(['share_token'], 'photoframe_share_token');
+      $table->addIndex(['user_uid'], 'user_id');
+      $table->addUniqueIndex(['share_token'], 'share_token');
     }
 
-    if (!$schema->hasTable('photoframe_entries')) {
-      $table = $schema->createTable('photoframe_entries');
+    if (!$schema->hasTable('photo_frames_entries')) {
+      $table = $schema->createTable('photo_frames_entries');
 
       $table->addColumn('id', Types::BIGINT, ['autoincrement' => true, 'notnull' => true, 'length' => 4]);
       $table->addColumn('file_id', Types::BIGINT, ['notnull' => true, 'length' => 4]);
@@ -61,8 +62,8 @@ class Version010000Date20241220230730 extends SimpleMigrationStep
       $table->addColumn('created_at', Types::DATETIME, ['notnull' => true]);
 
       $table->setPrimaryKey(['id']);
-      $table->addIndex(['frame_id'], 'photoframe_entries_frame_id');
-      $table->addIndex(['created_at'], 'photoframe_entries_created_at');
+      $table->addIndex(['frame_id'], 'frame_id');
+      $table->addIndex(['created_at'], 'created_at');
     }
 
     return $schema;

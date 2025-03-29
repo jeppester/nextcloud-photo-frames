@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace OCA\PhotoFrame\Controller;
+namespace OCA\PhotoFrames\Controller;
 
-use OCA\PhotoFrame\AppInfo\Application;
-use OCA\PhotoFrame\Db\EntryMapper;
-use OCA\PhotoFrame\Db\Frame;
-use OCA\PhotoFrame\Db\FrameMapper;
-use OCA\PhotoFrame\Service\PhotoFrameService;
+use OCA\PhotoFrames\AppInfo\Application;
+use OCA\PhotoFrames\Db\EntryMapper;
+use OCA\PhotoFrames\Db\Frame;
+use OCA\PhotoFrames\Db\FrameMapper;
+use OCA\PhotoFrames\Service\PhotoFrameService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -22,6 +22,7 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\Common\Exception\NotFoundException;
 use OCP\Files\IRootFolder;
 use OCP\IConfig;
+use OCP\IDBConnection;
 use OCP\IRequest;
 use OCP\IPreview;
 use OCP\IUser;
@@ -35,7 +36,7 @@ use OCP\Util;
  */
 class PageController extends Controller
 {
-  private const BRUTEFORCE_ACTION = 'photoframe';
+  private const BRUTEFORCE_ACTION = 'photo_frames';
   private EntryMapper $entryMapper;
   private FrameMapper $frameMapper;
   private IThrottler $throttler;
@@ -44,6 +45,7 @@ class PageController extends Controller
   private IConfig $config;
   private ?IUser $currentUser;
   private IURLGenerator $urlGenerator;
+  private IDBConnection $db;
 
   public function __construct(
     $appName,
@@ -56,6 +58,7 @@ class PageController extends Controller
     IConfig $config,
     IUserSession $userSession,
     IURLGenerator $urlGenerator,
+    IDBConnection $db,
   ) {
     parent::__construct($appName, $request);
     $this->entryMapper = $entryMapper;
@@ -66,6 +69,7 @@ class PageController extends Controller
     $this->config = $config;
     $this->currentUser = $userSession->getUser();
     $this->urlGenerator = $urlGenerator;
+    $this->db = $db;
   }
 
   #[NoCSRFRequired]
@@ -74,14 +78,23 @@ class PageController extends Controller
   #[FrontpageRoute(verb: 'GET', url: '/')]
   public function index(): TemplateResponse
   {
+    Util::addStyle(Application::APP_ID, 'main');
+
+    if (!$this->db->tableExists('photos_albums')) {
+      return new TemplateResponse(
+        appName: Application::APP_ID,
+        templateName: 'photos_not_installed',
+        renderAs: TemplateResponse::RENDER_AS_USER,
+      );
+    }
+
+    Util::addScript(Application::APP_ID, 'qrcode.min');
+
     $uid = $this->currentUser->getUID();
     $params = [
       'frames' => $this->frameMapper->getAllByUser($uid),
       'urlGenerator' => $this->urlGenerator,
     ];
-
-    Util::addStyle(Application::APP_ID, 'main');
-    Util::addScript(Application::APP_ID, 'qrcode.min');
 
     return new TemplateResponse(
       appName: Application::APP_ID,
