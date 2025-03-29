@@ -228,7 +228,12 @@ class PageController extends Controller
     return new TemplateResponse(
       appName: Application::APP_ID,
       templateName: 'frame',
-      params: ['shareToken' => $shareToken, 'frameFile' => $frameFile, 'showPhotoTimestamp' => $frame->getShowPhotoTimestamp()],
+      params: [
+        'shareToken' => $shareToken,
+        'frameFile' => $frameFile,
+        'showPhotoTimestamp' => $frame->getShowPhotoTimestamp(),
+        'urlGenerator' => $this->urlGenerator,
+      ],
       renderAs: TemplateResponse::RENDER_AS_BLANK
     );
   }

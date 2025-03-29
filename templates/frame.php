@@ -60,7 +60,7 @@ declare(strict_types=1);
   </style>
 
   <script type="text/javascript" defer nonce="<?php echo $_['cspNonce']; ?>">
-    let expiry = new Date("<?php echo $_['frameFile']->getExpiresHeader(); ?>")
+    let expiry = new Date("<?php echo $frameFile->getExpiresHeader(); ?>")
 
     const imageUrl = `${location.href}/image`
     const refreshInterval = 1000 * 60 // Check if expired every minute
@@ -111,11 +111,11 @@ declare(strict_types=1);
 </head>
 
 <div class="photoFrame"
-  style="background-image: url('/index.php/apps/photoframe/<?php echo $_['shareToken'] ?>/image')">
+  style="background-image: url('<?= $urlGenerator->linkToRouteAbsolute('photo_frames.page.photoframe', ["shareToken" => $shareToken]) ?>/image')">
   <h1>
     <script type="text/javascript" nonce="<?php echo $_['cspNonce']; ?>">
       {
-        const timestamp = new Date(<?php echo $_['frameFile']->getCapturedAtTimestamp(); ?>000);
+        const timestamp = new Date(<?php echo $frameFile->getCapturedAtTimestamp(); ?>000);
         document.write(Intl.DateTimeFormat(navigator.locale, { month: 'long', year: "numeric" }).format(timestamp))
       }
     </script>
