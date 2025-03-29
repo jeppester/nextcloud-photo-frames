@@ -4,6 +4,12 @@ use OCA\PhotoFrames\Db\FrameMapper; ?>
 <div class="app-content">
   <h2>Photo Frames</h2>
 
+  <?php if (!$isTestedPhotosVersion): ?>
+    <p class="alert alert--info">
+      You are using an untested version of photos. Tested version are 3, 4, and 5<br />
+    </p>
+  <?php endif; ?>
+
   <div class="list">
     <?php foreach ($_['frames'] as $frame): ?>
       <div class="frame">

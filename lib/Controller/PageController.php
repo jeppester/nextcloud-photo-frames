@@ -30,6 +30,7 @@ use OCP\IUserSession;
 use OCP\IURLGenerator;
 use OCP\Security\Bruteforce\IThrottler;
 use OCP\Util;
+use OCP\App\IAppManager;
 
 /**
  * @psalm-suppress UnusedClass
@@ -46,6 +47,7 @@ class PageController extends Controller
   private ?IUser $currentUser;
   private IURLGenerator $urlGenerator;
   private IDBConnection $db;
+  private IAppManager $appManager;
 
   public function __construct(
     $appName,
@@ -59,6 +61,7 @@ class PageController extends Controller
     IUserSession $userSession,
     IURLGenerator $urlGenerator,
     IDBConnection $db,
+    IAppManager $appManager,
   ) {
     parent::__construct($appName, $request);
     $this->entryMapper = $entryMapper;
@@ -70,6 +73,7 @@ class PageController extends Controller
     $this->currentUser = $userSession->getUser();
     $this->urlGenerator = $urlGenerator;
     $this->db = $db;
+    $this->appManager = $appManager;
   }
 
   #[NoCSRFRequired]
@@ -80,7 +84,7 @@ class PageController extends Controller
   {
     Util::addStyle(Application::APP_ID, 'main');
 
-    if (!$this->db->tableExists('photos_albums')) {
+    if (!$this->photosIsInstalled()) {
       return new TemplateResponse(
         appName: Application::APP_ID,
         templateName: 'photos_not_installed',
@@ -94,6 +98,7 @@ class PageController extends Controller
     $params = [
       'frames' => $this->frameMapper->getAllByUser($uid),
       'urlGenerator' => $this->urlGenerator,
+      'isTestedPhotosVersion' => $this->isTestedPhotosVersion(),
     ];
 
     return new TemplateResponse(
@@ -257,5 +262,17 @@ class PageController extends Controller
     $preview = $this->preview->getPreview($node, 1000, 1000);
 
     return new FileDisplayResponse($preview, 200, ['X-Photo-Timestamp' => $frameFile->getCapturedAtTimestamp(), 'Expires' => $frameFile->getExpiresHeader(), 'Content-Type' => $frameFile->getMimeType()]);
+  }
+
+  private function photosIsInstalled()
+  {
+    return $this->appManager->isInstalled('photos');
+  }
+
+  private function isTestedPhotosVersion()
+  {
+    $testedVersions = [3, 4, 5];
+    $photosVersion = (int) $this->appManager->getAppVersion('photos')[0];
+    return in_array($photosVersion, $testedVersions);
   }
 }
