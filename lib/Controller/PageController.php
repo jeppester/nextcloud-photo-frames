@@ -110,7 +110,6 @@ class PageController extends Controller
       return new TemplateResponse(
         appName: Application::APP_ID,
         templateName: 'index',
-        renderAs: TemplateResponse::RENDER_AS_USER,
         params: $params,
       );
     } catch (Exception $error) {
@@ -151,7 +150,6 @@ class PageController extends Controller
     return new TemplateResponse(
       appName: Application::APP_ID,
       templateName: 'new',
-      renderAs: TemplateResponse::RENDER_AS_USER,
       params: $params,
     );
   }
@@ -195,7 +193,6 @@ class PageController extends Controller
     return new TemplateResponse(
       appName: Application::APP_ID,
       templateName: 'edit',
-      renderAs: TemplateResponse::RENDER_AS_USER,
       params: $params,
     );
   }
