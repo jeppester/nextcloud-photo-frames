@@ -24,7 +24,7 @@
   </dependencies>
   <navigations>
     <navigation>
-      <id>photo_frame</id>
+      <id>photo_frames</id>
       <name>Photo Frames</name>
       <route>photo_frames.page.index</route>
       <icon>app.svg</icon>
