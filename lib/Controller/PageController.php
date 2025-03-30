@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OCA\PhotoFrames\Controller;
 
+use Exception;
 use OCA\PhotoFrames\AppInfo\Application;
 use OCA\PhotoFrames\Db\EntryMapper;
 use OCA\PhotoFrames\Db\Frame;
@@ -49,6 +50,8 @@ class PageController extends Controller
   private IDBConnection $db;
   private IAppManager $appManager;
 
+  private $testedPhotosVersions = [3, 4, 5];
+
   public function __construct(
     $appName,
     IRequest $request,
@@ -87,26 +90,46 @@ class PageController extends Controller
     if (!$this->photosIsInstalled()) {
       return new TemplateResponse(
         appName: Application::APP_ID,
-        templateName: 'photos_not_installed',
+        templateName: 'error',
         renderAs: TemplateResponse::RENDER_AS_USER,
+        params: [
+          "message" => "Photo Frames cannot function without the Photos app.<br />Please activate the Photos app and try again."
+        ]
       );
     }
 
     Util::addScript(Application::APP_ID, 'qrcode.min');
 
-    $uid = $this->currentUser->getUID();
-    $params = [
-      'frames' => $this->frameMapper->getAllByUser($uid),
-      'urlGenerator' => $this->urlGenerator,
-      'isTestedPhotosVersion' => $this->isTestedPhotosVersion(),
-    ];
+    try {
+      $uid = $this->currentUser->getUID();
+      $params = [
+        'frames' => $this->frameMapper->getAllByUser($uid),
+        'urlGenerator' => $this->urlGenerator,
+      ];
 
-    return new TemplateResponse(
-      appName: Application::APP_ID,
-      templateName: 'index',
-      renderAs: TemplateResponse::RENDER_AS_USER,
-      params: $params,
-    );
+      return new TemplateResponse(
+        appName: Application::APP_ID,
+        templateName: 'index',
+        renderAs: TemplateResponse::RENDER_AS_USER,
+        params: $params,
+      );
+    } catch (Exception $error) {
+      $testedVersionsString = join(', ', $this->testedPhotosVersions);
+      $photosVersion = $this->getPhotosVersion();
+      $message = $this->isTestedPhotosVersion()
+        ? "Something went wrong. Please try disabling and reenabling the Photos and Photo Frames apps."
+        : "You are using an unsupported version of the Photos app ($photosVersion), supported versions are: $testedVersionsString";
+
+      return new TemplateResponse(
+        appName: Application::APP_ID,
+        templateName: 'error',
+        renderAs: TemplateResponse::RENDER_AS_USER,
+        params: [
+          'isTestedPhotosVersion' => $this->isTestedPhotosVersion(),
+          "message" => $message
+        ]
+      );
+    }
   }
 
   #[NoCSRFRequired]
@@ -269,10 +292,13 @@ class PageController extends Controller
     return $this->appManager->isInstalled('photos');
   }
 
+  private function getPhotosVersion()
+  {
+    return (int) $this->appManager->getAppVersion('photos')[0];
+  }
+
   private function isTestedPhotosVersion()
   {
-    $testedVersions = [3, 4, 5];
-    $photosVersion = (int) $this->appManager->getAppVersion('photos')[0];
-    return in_array($photosVersion, $testedVersions);
+    return in_array($this->getPhotosVersion(), $this->testedPhotosVersions);
   }
 }
