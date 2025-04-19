@@ -8,3 +8,4 @@
 /tests/.phpunit.cache
 photos
 /owncloud.db
+/photo_frames.key
