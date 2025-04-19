@@ -4,15 +4,13 @@
   <id>photo_frames</id>
   <name>Photo Frames</name>
   <summary>Turn any screen with a browser into a neat photo frame</summary>
-  <description>
-    Generate easily sharable photo frame URLs for your nextcloud albums.
+  <description><![CDATA[Generate easily sharable photo frame URLs for your Nextcloud albums.
 
-    The possiblities are endless:
+The possiblities are endless:
 
-    - Turn any android device into a smart photo frame (with the help of a kiosk browser)
-    - Co-create photo frames with nextcloud's collaborative albums
-    - Share photo frames across households
-  </description>
+- Turn any android device into a smart photo frame (with the help of a kiosk browser)
+- Co-create photo frames with Nextcloud's collaborative albums
+- Share photo frames across households]]></description>
   <version>1.0.0</version>
   <licence>agpl</licence>
   <author mail="jeppester1@gmail.com" homepage="https://jsorensen.dk">Jesper Sørensen</author>
