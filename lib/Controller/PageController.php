@@ -171,7 +171,7 @@ class PageController extends Controller
       (bool) $params['show_photo_timestamp'],
     );
 
-    return new RedirectResponse('/index.php/apps/photoframe');
+    return new RedirectResponse($this->urlGenerator->linkToRoute('photo_frames.page.index'));
   }
 
   #[NoCSRFRequired]
@@ -218,7 +218,7 @@ class PageController extends Controller
       (bool) $params['show_photo_timestamp'],
     );
 
-    return new RedirectResponse('/index.php/apps/photoframe');
+    return new RedirectResponse($this->urlGenerator->linkToRoute('photo_frames.page.index'));
   }
 
   #[NoCSRFRequired]
