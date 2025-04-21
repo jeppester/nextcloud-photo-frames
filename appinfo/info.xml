@@ -11,7 +11,7 @@ The possiblities are endless:
 - Turn any android device into a smart photo frame (with the help of a kiosk browser)
 - Co-create photo frames with Nextcloud's collaborative albums
 - Share photo frames across households]]></description>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
   <licence>agpl</licence>
   <author mail="jeppester1@gmail.com" homepage="https://jsorensen.dk">Jesper Sørensen</author>
   <namespace>PhotoFrames</namespace>
