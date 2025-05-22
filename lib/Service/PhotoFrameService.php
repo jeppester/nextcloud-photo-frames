@@ -79,57 +79,57 @@ class PhotoFrameService
     $createdAt = (clone $entry->getCreatedAt())->setTimezone($this->frame->getTimezone());
     // return (clone $createdAt)->modify('+1 seconds');
 
-    switch ($this->frame->getEntryLifetime()) {
-      case FrameMapper::ENTRY_LIFETIME_ONE_DAY:
-        $expiry = (clone $createdAt)->modify("24:00");
-        return $expiry;
+    $startTime = (clone $createdAt)->modify($this->frame->getStartDayAt());
+    $endTime = (clone $startTime)->modify($this->frame->getEndDayAt());
 
-      case FrameMapper::ENTRY_LIFETIME_ONE_HOUR:
-        $startTime = (clone $createdAt)->modify($this->frame->getStartDayAt());
-        $endTime = (clone $startTime)->modify($this->frame->getEndDayAt());
+    $unit = $this->frame->getRotationUnit();
+    $rotations = $this->frame->getRotationsPerUnit();
 
-        // Starting from the first rotation time, move forward until we are past the entry's creation time
-        $rotationTime = (clone $startTime)->modify("+1 hour");
-        while ($rotationTime < $createdAt) {
-          $rotationTime->modify('+1 hour');
+    $unitStart = null;
+    $photoTTL = null;
+
+    switch ($unit) {
+      case FrameMapper::ROTATION_UNIT_DAY:
+        $unitStart = clone $startTime;
+        $photoTTL = ceil(($endTime->getTimestamp() - $startTime->getTimestamp()) / $rotations);
+        break;
+      case FrameMapper::ROTATION_UNIT_HOUR:
+        if ($createdAt <= $startTime) {
+          $unitStart = $startTime;
+        } else {
+          $unitStart = (clone $createdAt)->modify($createdAt->format("G") . ":" . $startTime->format('i'));
+          if ($unitStart >= $createdAt) {
+            $unitStart->modify("-1 hour");
+          }
         }
-
-        // If we are past the end of the day, show the image until next day
-        if ($rotationTime >= $endTime) {
-          $rotationTime->modify('24:00');
+        $photoTTL = ceil(3600 / $rotations);
+        break;
+      case FrameMapper::ROTATION_UNIT_MINUTE:
+        if ($createdAt <= $startTime) {
+          $unitStart = $startTime;
+        } else {
+          $unitStart = clone $createdAt;
+          $unitStart->modify($createdAt->format("G") . ":" . $createdAt->format('i') . ":00");
         }
-
-        return $rotationTime;
-
-      case FrameMapper::ENTRY_LIFETIME_1_2_DAY:
-      case FrameMapper::ENTRY_LIFETIME_1_3_DAY:
-      case FrameMapper::ENTRY_LIFETIME_1_4_DAY:
-        $numPhotos = [
-          FrameMapper::ENTRY_LIFETIME_1_2_DAY => 2,
-          FrameMapper::ENTRY_LIFETIME_1_3_DAY => 3,
-          FrameMapper::ENTRY_LIFETIME_1_4_DAY => 4,
-        ][$this->frame->getEntryLifetime()];
-
-
-        $startTime = (clone $createdAt)->modify($this->frame->getStartDayAt());
-        $endTime = (clone $startTime)->modify($this->frame->getEndDayAt());
-        $photoTTL = ceil(num: ($endTime->getTimestamp() - $startTime->getTimestamp()) / $numPhotos);
-
-        // Starting from the first rotation time, move forward until we are past the entry's creation time
-        $rotationTime = (clone $startTime)->modify("+$photoTTL seconds");
-        while ($rotationTime < $createdAt) {
-          $rotationTime->modify("+$photoTTL seconds");
-        }
-
-        // If we are past the end of the day, show the image until next day
-        if ($rotationTime >= $endTime) {
-          $rotationTime = (clone $startTime)->modify('24:00');
-        }
-        return $rotationTime;
-
-      default:
-        return -INF;
+        $photoTTL = ceil(60 / $rotations);
+        break;
     }
+
+    $startTime = (clone $createdAt)->modify($this->frame->getStartDayAt());
+    $endTime = (clone $startTime)->modify($this->frame->getEndDayAt());
+
+    // Starting from the first rotation time, move forward until we are past the entry's creation time
+    $rotationTime = (clone $unitStart)->modify("+$photoTTL seconds");
+    while ($rotationTime <= $createdAt) {
+      $rotationTime->modify("+$photoTTL seconds");
+    }
+
+    // If we are past the end of the day, show the image until next day
+    if ($rotationTime >= $endTime) {
+      $rotationTime = (clone $startTime)->modify('24:00');
+    }
+
+    return $rotationTime;
   }
 
   private function pickNewFrameFile(): ?FrameFile

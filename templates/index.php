@@ -35,13 +35,14 @@ use OCA\PhotoFrames\Db\FrameMapper; ?>
           </p>
           <p>
             <strong>Rotation:</strong>
+            <?= $frame->getRotationsPerUnit() ?>
+            <?= $frame->getRotationsPerUnit() === 1 ? "photo" : "photos" ?>
+            per
             <?= [
-              FrameMapper::ENTRY_LIFETIME_ONE_HOUR => "1 per hour",
-              FrameMapper::ENTRY_LIFETIME_1_4_DAY => "4 per day",
-              FrameMapper::ENTRY_LIFETIME_1_3_DAY => "3 per day",
-              FrameMapper::ENTRY_LIFETIME_1_2_DAY => "2 per day",
-              FrameMapper::ENTRY_LIFETIME_ONE_DAY => "1 per day"
-            ][$frame->getEntryLifetime()];
+              FrameMapper::ROTATION_UNIT_DAY => "day",
+              FrameMapper::ROTATION_UNIT_HOUR => "hour",
+              FrameMapper::ROTATION_UNIT_MINUTE => "minute",
+            ][$frame->getRotationUnit()];
             ?>
           </p>
           <p>

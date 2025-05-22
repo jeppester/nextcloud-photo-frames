@@ -24,6 +24,10 @@ class FrameMapper extends QBMapper
   public const ENTRY_LIFETIME_1_2_DAY = '1_2_day';
   public const ENTRY_LIFETIME_ONE_DAY = 'one_day';
 
+  public const ROTATION_UNIT_HOUR = 'hour';
+  public const ROTATION_UNIT_DAY = 'day';
+  public const ROTATION_UNIT_MINUTE = 'minute';
+
   private ISecureRandom $random;
   private IDBConnection $connection;
   private IMimeTypeLoader $mimeTypeLoader;
@@ -181,14 +185,15 @@ class FrameMapper extends QBMapper
     return $frame;
   }
 
-  public function createFrame(string $name, string $userUid, int $albumId, string $selectionMethod, string $entryLifetime, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp): Frame
+  public function createFrame(string $name, string $userUid, int $albumId, string $selectionMethod, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp): Frame
   {
     $frame = new Frame();
     $frame->setName($name);
     $frame->setUserUid($userUid);
     $frame->setAlbumId($albumId);
     $frame->setSelectionMethod($selectionMethod);
-    $frame->setEntryLifetime($entryLifetime);
+    $frame->setRotationUnit($rotationUnit);
+    $frame->setRotationsPerUnit($rotationsPerUnit);
     $frame->setStartDayAt($startDayAt);
     $frame->setEndDayAt($endDayAt);
     $frame->setShowPhotoTimestamp($showPhotoTimestamp);
@@ -200,13 +205,14 @@ class FrameMapper extends QBMapper
     return $this->insert($frame);
   }
 
-  public function updateFrame(Frame $frame, string $name, string $userUid, int $albumId, string $selectionMethod, string $entryLifetime, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp): Frame
+  public function updateFrame(Frame $frame, string $name, string $userUid, int $albumId, string $selectionMethod, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp): Frame
   {
     $frame->setName($name);
     $frame->setUserUid($userUid);
     $frame->setAlbumId($albumId);
     $frame->setSelectionMethod($selectionMethod);
-    $frame->setEntryLifetime($entryLifetime);
+    $frame->setRotationUnit($rotationUnit);
+    $frame->setRotationsPerUnit($rotationsPerUnit);
     $frame->setStartDayAt($startDayAt);
     $frame->setEndDayAt($endDayAt);
     $frame->setShowPhotoTimestamp($showPhotoTimestamp);

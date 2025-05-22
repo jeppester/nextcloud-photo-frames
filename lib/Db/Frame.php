@@ -12,7 +12,8 @@ use OCP\AppFramework\Db\Entity;
  * @method int getAlbumId()
  * @method string getShareToken()
  * @method string getSelectionMethod()
- * @method string getEntryLifetime()
+ * @method string getRotationUnit()
+ * @method string getRotationsPerUnit()
  * @method string getStartDayAt()
  * @method string getEndDayAt()
  * @method bool getShowPhotoTimestamp()
@@ -23,7 +24,8 @@ use OCP\AppFramework\Db\Entity;
  * @method void setAlbumId(int $albumId)
  * @method void setShareToken(string $shareToken)
  * @method void setSelectionMethod(string $selectionMethod)
- * @method void setEntryLifetime(string $entryLifetime)
+ * @method void setRotationUnit(string $rotationUnit)
+ * @method void setRotationsPerUnit(int $rotationsPerUnit)
  * @method void setStartDayAt(string $startDayAt)
  * @method void setEndDayAt(string $endDayAt)
  * @method void setShowPhotoTimestamp(bool $show)
@@ -42,7 +44,9 @@ class Frame extends Entity
   /** @var string */
   protected $selectionMethod;
   /** @var string */
-  protected $entryLifetime;
+  protected $rotationUnit;
+  /** @var int */
+  protected $rotationsPerUnit;
   /** @var string */
   protected $startDayAt;
   /** @var string */
@@ -97,7 +101,8 @@ class Frame extends Entity
     $this->addType('albumId', 'integer');
     $this->addType('shareToken', 'string');
     $this->addType('selectionMethod', 'string');
-    $this->addType('entryLifetime', 'string');
+    $this->addType('rotationUnit', 'string');
+    $this->addType('rotationsPerUnit', 'int');
     $this->addType('startDayAt', 'string');
     $this->addType('endDayAt', 'string');
     $this->addType('showPhotoTimestamp', 'bool');

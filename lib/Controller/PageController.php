@@ -212,7 +212,8 @@ class PageController extends Controller
       $this->currentUser->getUID(),
       $this->frameMapper->validAlbumForUser($this->currentUser->getUID(), (int) $params['album_id']),
       $params['selection_method'],
-      $params['entry_lifetime'],
+      $params['rotation_unit'],
+      (int) $params['rotations_per_unit'],
       $params['start_day_at'],
       $params['end_day_at'],
       (bool) $params['show_photo_timestamp'],
@@ -257,6 +258,7 @@ class PageController extends Controller
         'shareToken' => $shareToken,
         'frameFile' => $frameFile,
         'showPhotoTimestamp' => $frame->getShowPhotoTimestamp(),
+        'rotationUnit' => $frame->getRotationUnit(),
         'urlGenerator' => $this->urlGenerator,
       ],
       renderAs: TemplateResponse::RENDER_AS_BLANK
@@ -281,7 +283,13 @@ class PageController extends Controller
 
     $preview = $this->preview->getPreview($node, 1000, 1000);
 
-    return new FileDisplayResponse($preview, 200, ['X-Photo-Timestamp' => $frameFile->getCapturedAtTimestamp(), 'Expires' => $frameFile->getExpiresHeader(), 'Content-Type' => $frameFile->getMimeType()]);
+    $headers = [
+      'X-Photo-Timestamp' => $frameFile->getCapturedAtTimestamp(),
+      'X-Frame-Rotation-Unit' => $frame->getRotationUnit(),
+      'Expires' => $frameFile->getExpiresHeader(),
+      'Content-Type' => $frameFile->getMimeType(),
+    ];
+    return new FileDisplayResponse($preview, 200, $headers);
   }
 
   private function photosIsInstalled()

@@ -15,13 +15,14 @@ use PHPUnit\Framework\TestCase;
 
 class PhotoFrameServiceTest extends TestCase
 {
-  public function testGetEntryExpiryForEntryLifeTimeOneHour()
+  public function testGetEntryExpiry1PerHour()
   {
     $entryMapper = $this->createMock(EntryMapper::class);
     $rootFolder = $this->createMock(IRootFolder::class);
 
     $frame = new Frame();
-    $frame->setEntryLifetime(FrameMapper::ENTRY_LIFETIME_ONE_HOUR);
+    $frame->setRotationUnit(FrameMapper::ROTATION_UNIT_HOUR);
+    $frame->setRotationsPerUnit(1);
     $frame->setStartDayAt('06:30');
     $frame->setEndDayAt('20:00');
     $frame->setTimezone(new \DateTimeZone('UTC'));
@@ -38,17 +39,77 @@ class PhotoFrameServiceTest extends TestCase
 
     foreach ($testTimes as $testTime) {
       $entry->setCreatedAt((new \DateTime)->modify($testTime[0]));
-      $this->assertEquals($service->getEntryExpiry($entry), (new \DateTime)->modify($testTime[1]));
+      $this->assertEquals((new \DateTime)->modify($testTime[1]), $service->getEntryExpiry($entry));
     }
   }
 
-  public function testGetEntryExpiryForEntryLifeTimeOneDay()
+  public function testGetEntryExpiry2PerHour()
   {
     $entryMapper = $this->createMock(EntryMapper::class);
     $rootFolder = $this->createMock(IRootFolder::class);
 
     $frame = new Frame();
-    $frame->setEntryLifetime(FrameMapper::ENTRY_LIFETIME_ONE_DAY);
+    $frame->setRotationUnit(FrameMapper::ROTATION_UNIT_HOUR);
+    $frame->setRotationsPerUnit(2);
+    $frame->setStartDayAt('06:30');
+    $frame->setEndDayAt('20:00');
+    $frame->setTimezone(new \DateTimeZone('UTC'));
+
+    $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
+
+    $entry = new Entry();
+
+    $testTimes = [
+      ['01:02', '07:00'],
+      ['07:02', '07:30'],
+      ['12:45', '13:00'],
+      ['19:31', '24:00'],
+    ];
+
+    foreach ($testTimes as $testTime) {
+      $entry->setCreatedAt((new \DateTime)->modify($testTime[0]));
+      $this->assertEquals((new \DateTime)->modify($testTime[1]), $service->getEntryExpiry($entry));
+    }
+  }
+
+  public function testGetEntryExpiry6PerHour()
+  {
+    $entryMapper = $this->createMock(EntryMapper::class);
+    $rootFolder = $this->createMock(IRootFolder::class);
+
+    $frame = new Frame();
+    $frame->setRotationUnit(FrameMapper::ROTATION_UNIT_HOUR);
+    $frame->setRotationsPerUnit(6);
+    $frame->setStartDayAt('06:55');
+    $frame->setEndDayAt('20:00');
+    $frame->setTimezone(new \DateTimeZone('UTC'));
+
+    $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
+
+    $entry = new Entry();
+
+    $testTimes = [
+      ['06:50', '07:05'],
+      ['07:09', '07:15'],
+      ['12:45', '12:55'],
+      ['19:54', '19:55'],
+      ['19:55', '24:00'],
+    ];
+
+    foreach ($testTimes as $testTime) {
+      $entry->setCreatedAt((new \DateTime)->modify($testTime[0]));
+      $this->assertEquals((new \DateTime)->modify($testTime[1]), $service->getEntryExpiry($entry));
+    }
+  }
+
+  public function testGetEntryExpiry1PerDay()
+  {
+    $entryMapper = $this->createMock(EntryMapper::class);
+    $rootFolder = $this->createMock(IRootFolder::class);
+
+    $frame = new Frame();
+    $frame->setRotationUnit(FrameMapper::ROTATION_UNIT_DAY);
+    $frame->setRotationsPerUnit(1);
     $frame->setStartDayAt('06:30');
     $frame->setEndDayAt('20:00');
     $frame->setTimezone(new \DateTimeZone('UTC'));
@@ -65,17 +126,18 @@ class PhotoFrameServiceTest extends TestCase
 
     foreach ($testTimes as $testTime) {
       $entry->setCreatedAt((new \DateTime)->modify($testTime[0]));
-      $this->assertEquals($service->getEntryExpiry($entry), (new \DateTime)->modify($testTime[1]));
+      $this->assertEquals((new \DateTime)->modify($testTime[1]), $service->getEntryExpiry($entry));
     }
   }
 
-  public function testGetEntryExpiryForEntryLifeTimeHalfDay()
+  public function testGetEntryExpiry2PerDay()
   {
     $entryMapper = $this->createMock(EntryMapper::class);
     $rootFolder = $this->createMock(IRootFolder::class);
 
     $frame = new Frame();
-    $frame->setEntryLifetime(FrameMapper::ENTRY_LIFETIME_1_2_DAY);
+    $frame->setRotationUnit(FrameMapper::ROTATION_UNIT_DAY);
+    $frame->setRotationsPerUnit(2);
     $frame->setStartDayAt('06:00');
     $frame->setEndDayAt('20:00');
     $frame->setTimezone(new \DateTimeZone('UTC'));
@@ -93,17 +155,18 @@ class PhotoFrameServiceTest extends TestCase
 
     foreach ($testTimes as $testTime) {
       $entry->setCreatedAt((new \DateTime)->modify($testTime[0]));
-      $this->assertEquals($service->getEntryExpiry($entry), (new \DateTime)->modify($testTime[1]));
+      $this->assertEquals((new \DateTime)->modify($testTime[1]), $service->getEntryExpiry($entry));
     }
   }
 
-  public function testGetEntryExpiryForEntryLifeTimeThirdDay()
+  public function testGetEntryExpiry3PerDay()
   {
     $entryMapper = $this->createMock(EntryMapper::class);
     $rootFolder = $this->createMock(IRootFolder::class);
 
     $frame = new Frame();
-    $frame->setEntryLifetime(FrameMapper::ENTRY_LIFETIME_1_3_DAY);
+    $frame->setRotationUnit(FrameMapper::ROTATION_UNIT_DAY);
+    $frame->setRotationsPerUnit(3);
     $frame->setStartDayAt('07:00');
     $frame->setEndDayAt('22:00');
     $frame->setTimezone(new \DateTimeZone('UTC'));
@@ -123,17 +186,18 @@ class PhotoFrameServiceTest extends TestCase
 
     foreach ($testTimes as $testTime) {
       $entry->setCreatedAt((new \DateTime)->modify($testTime[0]));
-      $this->assertEquals($service->getEntryExpiry($entry), (new \DateTime)->modify($testTime[1]));
+      $this->assertEquals((new \DateTime)->modify($testTime[1]), $service->getEntryExpiry($entry));
     }
   }
 
-  public function testGetEntryExpiryForEntryLifeTimeQuarterDay()
+  public function testGetEntryExpiry4PerDay()
   {
     $entryMapper = $this->createMock(EntryMapper::class);
     $rootFolder = $this->createMock(IRootFolder::class);
 
     $frame = new Frame();
-    $frame->setEntryLifetime(FrameMapper::ENTRY_LIFETIME_1_4_DAY);
+    $frame->setRotationUnit(FrameMapper::ROTATION_UNIT_DAY);
+    $frame->setRotationsPerUnit(4);
     $frame->setStartDayAt('00:00');
     $frame->setEndDayAt('24:00');
     $frame->setTimezone(new \DateTimeZone('UTC'));
@@ -155,7 +219,35 @@ class PhotoFrameServiceTest extends TestCase
 
     foreach ($testTimes as $testTime) {
       $entry->setCreatedAt((new \DateTime)->modify($testTime[0]));
-      $this->assertEquals($service->getEntryExpiry($entry), (new \DateTime)->modify($testTime[1]));
+      $this->assertEquals((new \DateTime)->modify($testTime[1]), $service->getEntryExpiry($entry));
+    }
+  }
+
+  public function testGetEntryExpiry3PerMinute()
+  {
+    $entryMapper = $this->createMock(EntryMapper::class);
+    $rootFolder = $this->createMock(IRootFolder::class);
+
+    $frame = new Frame();
+    $frame->setRotationUnit(FrameMapper::ROTATION_UNIT_MINUTE);
+    $frame->setRotationsPerUnit(3);
+    $frame->setStartDayAt('06:31');
+    $frame->setEndDayAt('08:00');
+    $frame->setTimezone(new \DateTimeZone('UTC'));
+
+    $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
+
+    $entry = new Entry();
+
+    $testTimes = [
+      ['01:02:00', '06:31:20'],
+      ['06:31:20', '06:31:40'],
+      ['07:59:45', '24:00'],
+    ];
+
+    foreach ($testTimes as $testTime) {
+      $entry->setCreatedAt((new \DateTime)->modify($testTime[0]));
+      $this->assertEquals((new \DateTime)->modify($testTime[1]), $service->getEntryExpiry($entry));
     }
   }
 

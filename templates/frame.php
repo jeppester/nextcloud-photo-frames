@@ -60,50 +60,58 @@ declare(strict_types=1);
   </style>
 
   <script type="text/javascript" defer nonce="<?php echo $_['cspNonce']; ?>">
-    let expiry = new Date("<?php echo $frameFile->getExpiresHeader(); ?>")
+    let expiry = new Date("<?= $frameFile->getExpiresHeader(); ?>")
+
+    // Set refreshInterval based on the rotation unit
+    const rotationUnitRefreshInterval = {
+      day: 1000 * 60, // One minute
+      hour: 1000 * 60, // One minute
+      minute: 1000, // One second
+    }
+    let refreshInterval = rotationUnitRefreshInterval["<?= $rotationUnit ?>"]
 
     const imageUrl = `${location.href}/image`
-    const refreshInterval = 1000 * 60 // Check if expired every minute
 
     async function updateImage() {
       const now = new Date();
 
       // Always set new timeout so that the frame is resilient to network errors from here and down
       setTimeout(updateImage, refreshInterval)
+      if (now < expiry) return
 
-      if (now > expiry) {
-        const headResponse = await fetch(imageUrl, { method: "HEAD", cache: "reload" })
-        const nextExpiresAt = new Date(headResponse.headers.get('expires'))
+      const headResponse = await fetch(imageUrl, { method: "HEAD", cache: "reload" })
+      const nextExpiresAt = new Date(headResponse.headers.get('expires'))
 
-        const isNewImage = nextExpiresAt > expiry
-        if (!isNewImage) return;
+      const isNewImage = nextExpiresAt > expiry
+      if (!isNewImage) return;
 
-        const imageResponse = await fetch(imageUrl)
-        const blob = await imageResponse.blob()
-        // Read the Blob as DataURL using the FileReader API
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const frame = document.querySelector('.photoFrame')
-          const newFrame = document.createElement('div')
-          newFrame.classList.add('photoFrame')
-          newFrame.style.backgroundImage = `url('${reader.result}')`;
-          document.body.appendChild(newFrame)
+      const imageResponse = await fetch(imageUrl)
+      const blob = await imageResponse.blob()
+      // Read the Blob as DataURL using the FileReader API
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const frame = document.querySelector('.photoFrame')
+        const newFrame = document.createElement('div')
+        newFrame.classList.add('photoFrame')
+        newFrame.style.backgroundImage = `url('${reader.result}')`;
+        document.body.appendChild(newFrame)
 
-          // Now that the new image is loaded, update the expiry
-          expiry = new Date(imageResponse.headers.get('expires'))
-          const timestampElement = document.createElement('h1')
-          const timestamp = new Date(imageResponse.headers.get('X-Photo-Timestamp') * 1000)
-          const formattedTimestamp = Intl.DateTimeFormat(navigator.locale, { month: 'long', year: "numeric" }).format(timestamp)
-          timestampElement.innerHTML = formattedTimestamp
-          newFrame.append(timestampElement)
+        // Now that the new image is loaded, update expiry and refresh interval
+        expiry = new Date(imageResponse.headers.get('expires'))
+        const rotationUnit = imageResponse.headers.get('X-Frame-Rotation-Unit')
+        refreshInterval = rotationUnitRefreshInterval[rotationUnit]
+        const timestampElement = document.createElement('h1')
+        const timestamp = new Date(imageResponse.headers.get('X-Photo-Timestamp') * 1000)
+        const formattedTimestamp = Intl.DateTimeFormat(navigator.locale, { month: 'long', year: "numeric" }).format(timestamp)
+        timestampElement.innerHTML = formattedTimestamp
+        newFrame.append(timestampElement)
 
-          // We cannot rely on the animation as it might not happen when the window is not focused
-          setTimeout(() => {
-            frame.remove()
-          }, 2000);
-        };
-        reader.readAsDataURL(blob);
-      }
+        // We cannot rely on the animation as it might not happen when the window is not focused
+        setTimeout(() => {
+          frame.remove()
+        }, 2000);
+      };
+      reader.readAsDataURL(blob);
     }
 
     setTimeout(updateImage, refreshInterval)
