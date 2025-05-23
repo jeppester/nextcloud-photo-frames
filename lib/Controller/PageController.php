@@ -21,6 +21,7 @@ use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\Common\Exception\NotFoundException;
+use OCP\DB\ISchemaWrapper;
 use OCP\Files\IRootFolder;
 use OCP\IConfig;
 use OCP\IDBConnection;
@@ -119,13 +120,30 @@ class PageController extends Controller
         ? "Something went wrong. Please try disabling and reenabling the Photos and Photo Frames apps."
         : "You are using an unsupported version of the Photos app ($photosVersion), supported versions are: $testedVersionsString";
 
+
+      $debugInfo = [
+        ["**Nextcloud version**", implode('.', Util::getVersion())],
+        ["**Photo Frames version**", $this->appManager->getAppVersion("photo_frames")],
+        ["**Photos version**", $this->appManager->getAppVersion("photos")],
+        ["**Database**", $this->db->getDatabaseProvider()],
+        ["**Error Message**", $error->getMessage()],
+        ["**File:line**", '`' . $error->getFile() . ":" . $error->getLine() . '`'],
+        ["**Stack trace**", "```txt\n" . $error->getTraceAsString() . "\n```"],
+      ];
+      $debugInfoString = implode("\n\n", array_map(function ($value) {
+        return implode("\n", $value);
+      }, $debugInfo));
+
+      $issueBody = "## What happened\n\n[Describe what you did to trigger the error]\n\n## Debug information\n\n" . $debugInfoString;
+
       return new TemplateResponse(
         appName: Application::APP_ID,
         templateName: 'error',
         renderAs: TemplateResponse::RENDER_AS_USER,
         params: [
-          'isTestedPhotosVersion' => $this->isTestedPhotosVersion(),
-          "message" => $message
+          "message" => $message,
+          "issueTitle" => $error->getMessage(),
+          "issueBody" => $issueBody,
         ]
       );
     }
