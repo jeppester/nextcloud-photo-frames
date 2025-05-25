@@ -7,7 +7,7 @@ declare(strict_types=1);
 <head>
   <style>
     :root {
-      background-color: #222;
+      background-color: <?= $styleBackgroundColor ?>;
     }
 
     :root,
@@ -28,18 +28,18 @@ declare(strict_types=1);
 
     .photoFrame {
       animation: fade-in 2s ease-in-out;
-      background-color: #222;
+      background-color: <?= $styleBackgroundColor ?>;
       position: absolute;
       width: 100vw;
       height: 100vh;
       background-position: center center;
       background-repeat: no-repeat;
-      background-size: contain;
+      background-size: <?= $styleFill ? 'cover' : 'contain' ?>;
     }
 
     .photoFrame h1 {
       display:
-        <?= $_['showPhotoTimestamp'] ? "block" : "none" ?>
+        <?= $showPhotoTimestamp ? "block" : "none" ?>
       ;
       text-transform: uppercase;
       font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
@@ -48,7 +48,7 @@ declare(strict_types=1);
       bottom: 0;
       left: 0;
       padding: .5rem 1rem .3rem;
-      background-color: #333;
+      background-color: <?= $styleBackgroundColor ?>;
       font-size: 1.5rem;
       font-weight: normal;
       color: #bba;

@@ -188,6 +188,8 @@ class PageController extends Controller
       $params['start_day_at'],
       $params['end_day_at'],
       (bool) $params['show_photo_timestamp'],
+      (bool) ($params['style_fill'] ?? false),
+      $params['style_background_color'] ?? '#222',
     );
 
     return new RedirectResponse($this->urlGenerator->linkToRoute('photo_frames.page.index'));
@@ -236,6 +238,8 @@ class PageController extends Controller
       $params['start_day_at'],
       $params['end_day_at'],
       (bool) $params['show_photo_timestamp'],
+      (bool) ($params['style_fill'] ?? false),
+      $params['style_background_color'] ?? '#222',
     );
 
     return new RedirectResponse($this->urlGenerator->linkToRoute('photo_frames.page.index'));
@@ -279,6 +283,8 @@ class PageController extends Controller
         'showPhotoTimestamp' => $frame->getShowPhotoTimestamp(),
         'rotationUnit' => $frame->getRotationUnit(),
         'urlGenerator' => $this->urlGenerator,
+        'styleFill' => $frame->getStyleFill(),
+        'styleBackgroundColor' => $frame->getStyleBackgroundColor(),
       ],
       renderAs: TemplateResponse::RENDER_AS_BLANK
     );

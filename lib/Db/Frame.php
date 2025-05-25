@@ -18,6 +18,8 @@ use OCP\AppFramework\Db\Entity;
  * @method string getEndDayAt()
  * @method bool getShowPhotoTimestamp()
  * @method DateTime getCreatedAt()
+ * @method bool getStyleFill()
+ * @method string getStyleBackgroundColor()
  *
  * @method void setName(string $name)
  * @method void setUserUid(string $userUid)
@@ -30,6 +32,8 @@ use OCP\AppFramework\Db\Entity;
  * @method void setEndDayAt(string $endDayAt)
  * @method void setShowPhotoTimestamp(bool $show)
  * @method void setCreatedAt(\DateTime $createdAt)
+ * @method void setStyleFill(bool $styleFill)
+ * @method void setStyleBackgroundColor(string $styleBackgroundColor)
  */
 class Frame extends Entity
 {
@@ -55,6 +59,11 @@ class Frame extends Entity
   protected $createdAt;
   /** @var bool */
   protected $showPhotoTimestamp;
+
+  /** @var bool */
+  protected $styleFill;
+  /** @var string */
+  protected $styleBackgroundColor;
 
 
   /** @var string */
@@ -107,5 +116,7 @@ class Frame extends Entity
     $this->addType('endDayAt', 'string');
     $this->addType('showPhotoTimestamp', 'bool');
     $this->addType('createdAt', 'datetime');
+    $this->addType('styleFill', 'bool');
+    $this->addType('styleBackgroundColor', 'string');
   }
 }

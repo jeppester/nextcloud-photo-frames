@@ -185,7 +185,7 @@ class FrameMapper extends QBMapper
     return $frame;
   }
 
-  public function createFrame(string $name, string $userUid, int $albumId, string $selectionMethod, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp): Frame
+  public function createFrame(string $name, string $userUid, int $albumId, string $selectionMethod, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp, bool $styleFill = false, string $styleBackgroundColor = '#222'): Frame
   {
     $frame = new Frame();
     $frame->setName($name);
@@ -197,6 +197,8 @@ class FrameMapper extends QBMapper
     $frame->setStartDayAt($startDayAt);
     $frame->setEndDayAt($endDayAt);
     $frame->setShowPhotoTimestamp($showPhotoTimestamp);
+    $frame->setStyleFill($styleFill);
+    $frame->setStyleBackgroundColor($styleBackgroundColor);
     $frame->setShareToken($this->random->generate(64, ISecureRandom::CHAR_ALPHANUMERIC));
 
     $timestamp = new DateTime();
@@ -205,7 +207,7 @@ class FrameMapper extends QBMapper
     return $this->insert($frame);
   }
 
-  public function updateFrame(Frame $frame, string $name, string $userUid, int $albumId, string $selectionMethod, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp): Frame
+  public function updateFrame(Frame $frame, string $name, string $userUid, int $albumId, string $selectionMethod, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp, bool $styleFill = false, string $styleBackgroundColor = '#222'): Frame
   {
     $frame->setName($name);
     $frame->setUserUid($userUid);
@@ -216,6 +218,8 @@ class FrameMapper extends QBMapper
     $frame->setStartDayAt($startDayAt);
     $frame->setEndDayAt($endDayAt);
     $frame->setShowPhotoTimestamp($showPhotoTimestamp);
+    $frame->setStyleFill($styleFill);
+    $frame->setStyleBackgroundColor($styleBackgroundColor);
 
     return $this->update($frame);
   }
