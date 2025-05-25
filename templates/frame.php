@@ -52,10 +52,59 @@ declare(strict_types=1);
       font-size: 1.5rem;
       font-weight: normal;
       color: #bba;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      outline: 1px solid #333;
       text-shadow: 0px 1px 0px black;
       box-shadow: 0px 5px 40px rgba(0, 0, 0, .2)
+    }
+
+    .digital-clock {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-10rem, -50%);
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      font-size: 8rem;
+      font-weight: 200;
+      color: white;
+      text-align: center;
+      mix-blend-mode: difference;
+      z-index: 1000;
+    }
+
+    .digital-clock .time {
+      display: block;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      margin: 0 auto;
+    }
+
+    .digital-clock .date {
+      display: none;
+    }
+
+    .digital-clock .seconds {
+      font-size: 4rem;
+      color: rgba(255, 255, 255, 0.4);
+      font-weight: 100;
+    }
+
+    @media (max-width: 768px) {
+      .digital-clock {
+        font-size: 4rem;
+      }
+      
+      .digital-clock .seconds {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .digital-clock {
+        font-size: 2.5rem;
+      }
+      
+      .digital-clock .seconds {
+        font-size: 1.5rem;
+      }
     }
   </style>
 
@@ -71,6 +120,26 @@ declare(strict_types=1);
     let refreshInterval = rotationUnitRefreshInterval["<?= $rotationUnit ?>"]
 
     const imageUrl = `${location.href}/image`
+
+    // Digital clock functionality
+    function updateClock() {
+      const now = new Date();
+      const timeElement = document.querySelector('.digital-clock .time');
+      
+      if (timeElement) {
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+        
+        timeElement.innerHTML = `${hours}:${minutes}<span class="seconds">:${seconds}</span>`;
+      }
+    }
+
+    // Update clock every second
+    setInterval(updateClock, 1000);
+    
+    // Initialize clock immediately
+    document.addEventListener('DOMContentLoaded', updateClock);
 
     async function updateImage() {
       const now = new Date();
@@ -128,6 +197,12 @@ declare(strict_types=1);
       }
     </script>
   </h1>
+</div>
+
+<!-- Beautiful Digital Clock -->
+<div class="digital-clock">
+  <span class="time">00:00<span class="seconds">:00</span></span>
+  <div class="date">Loading...</div>
 </div>
 
 </html>
