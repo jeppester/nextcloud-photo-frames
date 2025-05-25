@@ -63,14 +63,29 @@ declare(strict_types=1);
       transform: translate(-10rem, -50%);
       font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
       font-size: 8rem;
-      font-weight: 200;
+      font-weight: 400;
       color: white;
       text-align: center;
       mix-blend-mode: difference;
       z-index: 1000;
     }
 
-    .digital-clock .time {
+    .digital-clock-border {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-10rem, -50%);
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      font-size: 8rem;
+      font-weight: 400;
+      color: transparent;
+      text-align: center;
+      -webkit-text-stroke: 3px white;
+      z-index: 1001;
+      pointer-events: none;
+    }
+
+    .digital-clock .time, .digital-clock-border .time {
       display: block;
       line-height: 1;
       letter-spacing: -0.02em;
@@ -81,9 +96,18 @@ declare(strict_types=1);
       display: none;
     }
 
-    .digital-clock .seconds {
+    .digital-clock .seconds{
       font-size: 4rem;
-      color: rgba(255, 255, 255, 0.4);
+      color: white;
+      font-weight: 100;
+    }
+
+    .digital-clock-border .seconds {
+      font-size: 4rem;
+      font-weight: 100;
+      -webkit-text-stroke: 0px white;
+      font-size: 4rem;
+      color: white;
       font-weight: 100;
     }
 
@@ -125,13 +149,16 @@ declare(strict_types=1);
     function updateClock() {
       const now = new Date();
       const timeElement = document.querySelector('.digital-clock .time');
+      const borderTimeElement = document.querySelector('.digital-clock-border .time');
       
-      if (timeElement) {
+      if (timeElement && borderTimeElement) {
         const hours = now.getHours().toString().padStart(2, '0');
         const minutes = now.getMinutes().toString().padStart(2, '0');
         const seconds = now.getSeconds().toString().padStart(2, '0');
+        const timeHTML = `${hours}:${minutes}<span class="seconds">:${seconds}</span>`;
         
-        timeElement.innerHTML = `${hours}:${minutes}<span class="seconds">:${seconds}</span>`;
+        timeElement.innerHTML = timeHTML;
+        borderTimeElement.innerHTML = timeHTML;
       }
     }
 
@@ -200,9 +227,13 @@ declare(strict_types=1);
 </div>
 
 <!-- Beautiful Digital Clock -->
+
 <div class="digital-clock">
   <span class="time">00:00<span class="seconds">:00</span></span>
   <div class="date">Loading...</div>
+</div>
+<div class="digital-clock-border">
+  <span class="time">00:00<span class="seconds">:00</span></span>
 </div>
 
 </html>
