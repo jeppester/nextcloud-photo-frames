@@ -20,6 +20,7 @@ use OCP\AppFramework\Db\Entity;
  * @method DateTime getCreatedAt()
  * @method bool getStyleFill()
  * @method string getStyleBackgroundColor()
+ * @method bool getShowClock()
  *
  * @method void setName(string $name)
  * @method void setUserUid(string $userUid)
@@ -34,6 +35,7 @@ use OCP\AppFramework\Db\Entity;
  * @method void setCreatedAt(\DateTime $createdAt)
  * @method void setStyleFill(bool $styleFill)
  * @method void setStyleBackgroundColor(string $styleBackgroundColor)
+ * @method void setShowClock(bool $showClock)
  */
 class Frame extends Entity
 {
@@ -64,7 +66,8 @@ class Frame extends Entity
   protected $styleFill;
   /** @var string */
   protected $styleBackgroundColor;
-
+  /** @var bool */
+  protected $showClock;
 
   /** @var string */
   protected $albumName;
@@ -118,5 +121,6 @@ class Frame extends Entity
     $this->addType('createdAt', 'datetime');
     $this->addType('styleFill', 'bool');
     $this->addType('styleBackgroundColor', 'string');
+    $this->addType('showClock', 'bool');
   }
 }

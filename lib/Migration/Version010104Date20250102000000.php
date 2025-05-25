@@ -18,7 +18,7 @@ use OCP\Migration\SimpleMigrationStep;
 /**
  * Add style_fill and style_background_color columns to photo_frames_frames table
  */
-class Version010102Date20250102000000 extends SimpleMigrationStep
+class Version010104Date20250102000000 extends SimpleMigrationStep
 {
 
   /**

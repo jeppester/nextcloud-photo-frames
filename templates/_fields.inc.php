@@ -89,6 +89,17 @@
       <br />
 
       <label>
+        <input type="checkbox" name="show_clock" value="1" <?= $_[
+        "frame"
+        ]->getShowClock()
+          ? " checked"
+          : "" ?> />
+        <span>Show digital clock</span>
+      </label>
+
+      <br />
+
+      <label>
         <span>Background color</span>
         <input type="color" name="style_background_color" value="<?= $_["frame"]->getStyleBackgroundColor() ?: '#222222' ?>" />
       </label>

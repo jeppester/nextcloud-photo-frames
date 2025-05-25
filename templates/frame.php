@@ -56,7 +56,9 @@ declare(strict_types=1);
       box-shadow: 0px 5px 40px rgba(0, 0, 0, .2)
     }
 
-    .digital-clock {
+    .digital-clock,
+    .digital-clock-border {
+      display: <?= $showClock ? 'block' : 'none' ?>;
       position: fixed;
       top: 50%;
       left: 50%;
@@ -64,22 +66,17 @@ declare(strict_types=1);
       font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
       font-size: 8rem;
       font-weight: 400;
-      color: white;
       text-align: center;
-      mix-blend-mode: difference;
       z-index: 1000;
     }
 
+    .digital-clock {
+      color: white;
+      mix-blend-mode: difference;
+    }
+
     .digital-clock-border {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-10rem, -50%);
-      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-      font-size: 8rem;
-      font-weight: 400;
       color: transparent;
-      text-align: center;
       -webkit-text-stroke: 3px white;
       z-index: 1001;
       pointer-events: none;
