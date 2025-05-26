@@ -74,6 +74,35 @@
           : "" ?> />
         <span>Show photo date</span>
       </label>
+
+      <br />
+
+      <label>
+        <input type="checkbox" name="style_fill" value="1" <?= $_[
+        "frame"
+        ]->getStyleFill()
+          ? " checked"
+          : "" ?> />
+        <span>Crop photo to fill the frame</span>
+      </label>
+
+      <br />
+
+      <label>
+        <input type="checkbox" name="show_clock" value="1" <?= $_[
+        "frame"
+        ]->getShowClock()
+          ? " checked"
+          : "" ?> />
+        <span>Show digital clock</span>
+      </label>
+
+      <br />
+
+      <label>
+        <span>Background color</span>
+        <input type="color" name="style_background_color" value="<?= $_["frame"]->getStyleBackgroundColor() ?: '#222222' ?>" />
+      </label>
     </div>
   </div>
 
