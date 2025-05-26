@@ -158,9 +158,10 @@ declare(strict_types=1);
         borderTimeElement.innerHTML = timeHTML;
       }
     }
-
-    // Update clock every second
-    setInterval(updateClock, 1000);
+    // Update clock every second (if we show a clock that is)
+    if (<?= $showClock ?>) {
+      setInterval(updateClock, 1000);
+    }
     
     // Initialize clock immediately
     document.addEventListener('DOMContentLoaded', updateClock);

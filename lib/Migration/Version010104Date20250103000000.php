@@ -44,7 +44,7 @@ class Version010104Date20250103000000 extends SimpleMigrationStep
     $table = $schema->getTable('photo_frames_frames');
 
     if (!$table->hasColumn('show_clock')) {
-      $table->addColumn('show_clock', Types::BOOLEAN, ['notnull' => false, 'default' => true]);
+      $table->addColumn('show_clock', Types::BOOLEAN, ['notnull' => false, 'default' => false]);
     }
 
     return $schema;
