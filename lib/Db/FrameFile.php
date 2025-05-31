@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace OCA\PhotoFrames\Db;
 
-use OCP\AppFramework\Db\Entity;
+use PHPUnit\Metadata\Uses;
 
-class FrameFile
+class FrameFile implements \JsonSerializable
 {
-  protected int $fileId;
-  protected string $userUid;
-  protected string $mimeType;
-  protected int $addedAtTimestamp;
-  protected int $capturedAtTimestamp;
-  protected \DateTime $expiresAt;
+  public int $fileId;
+  public string $userUid;
+  public string $mimeType;
+  public int $addedAtTimestamp;
+  public int $capturedAtTimestamp;
+  public \DateTime $expiresAt;
 
   public function __construct(int $fileId, string $userUid, string $mimeType, int $addedAtTimestamp, int $capturedAtTimestamp)
   {
@@ -65,5 +65,13 @@ class FrameFile
     $gmt = new \DateTimeZone('GMT');
     $expiresGMT = (clone $this->expiresAt)->setTimezone($gmt);
     return $expiresGMT->format(\DateTimeInterface::RFC7231);
+  }
+
+  public function jsonSerialize()
+  {
+    return [
+      "expiresAt" => $this->expiresAt?->format(format: \DateTimeInterface::ISO8601),
+      "capturedAtTimestamp" => $this->capturedAtTimestamp,
+    ];
   }
 }

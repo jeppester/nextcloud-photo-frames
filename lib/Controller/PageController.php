@@ -237,20 +237,13 @@ class PageController extends Controller
       throw new NotFoundException('Unable to find album');
     }
 
-    $service = new PhotoFrameService($this->entryMapper, $this->rootFolder, $frame);
-    $frameFile = $service->getCurrentFrameFile();
-
-    return new TemplateResponse(
-      appName: Application::APP_ID,
-      templateName: 'frame',
-      params: [
+    return $this->renderPage(
+      'FramePage',
+      [
         'shareToken' => $shareToken,
-        'frameFile' => $frameFile,
         'showPhotoTimestamp' => $frame->getShowPhotoTimestamp(),
-        'rotationUnit' => $frame->getRotationUnit(),
-        'urlGenerator' => $this->urlGenerator,
       ],
-      renderAs: TemplateResponse::RENDER_AS_BLANK
+      true
     );
   }
 
@@ -281,16 +274,17 @@ class PageController extends Controller
     return new FileDisplayResponse($preview, 200, $headers);
   }
 
-  private function renderPage($name, $props): TemplateResponse
+  private function renderPage($name, $props, $blank = false): TemplateResponse
   {
     return new TemplateResponse(
       appName: Application::APP_ID,
-      templateName: 'page',
+      templateName: $blank ? "blank" : 'page',
       params: [
         'pageName' => $name,
         'pageProps' => $props,
         "appPath" => $this->appManager->getAppWebPath('photo_frames'),
       ],
+      renderAs: $blank ? TemplateResponse::RENDER_AS_BLANK : TemplateResponse::RENDER_AS_USER,
     );
   }
 
