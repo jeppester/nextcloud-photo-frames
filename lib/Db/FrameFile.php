@@ -8,12 +8,12 @@ use OCP\AppFramework\Db\Entity;
 
 class FrameFile
 {
-  protected int $fileId;
-  protected string $userUid;
-  protected string $mimeType;
-  protected int $addedAtTimestamp;
-  protected int $capturedAtTimestamp;
-  protected \DateTime $expiresAt;
+  public int $fileId;
+  public string $userUid;
+  public string $mimeType;
+  public int $addedAtTimestamp;
+  public int $capturedAtTimestamp;
+  public \DateTime $expiresAt;
 
   public function __construct(int $fileId, string $userUid, string $mimeType, int $addedAtTimestamp, int $capturedAtTimestamp)
   {
