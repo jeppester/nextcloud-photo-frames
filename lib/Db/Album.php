@@ -6,8 +6,8 @@ namespace OCA\PhotoFrames\Db;
 
 class Album
 {
-  private int $id;
-  private string $title;
+  public int $id;
+  public string $title;
 
   public function __construct(
     int $id,
