@@ -34,35 +34,35 @@ use OCP\AppFramework\Db\Entity;
 class Frame extends Entity
 {
   /** @var string */
-  protected $name;
+  public $name;
   /** @var int */
-  protected $userUid;
+  public $userUid;
   /** @var int */
-  protected $albumId;
+  public $albumId;
   /** @var string */
-  protected $shareToken;
+  public $shareToken;
   /** @var string */
-  protected $selectionMethod;
+  public $selectionMethod;
   /** @var string */
-  protected $rotationUnit;
+  public $rotationUnit;
   /** @var int */
-  protected $rotationsPerUnit;
+  public $rotationsPerUnit;
   /** @var string */
-  protected $startDayAt;
+  public $startDayAt;
   /** @var string */
-  protected $endDayAt;
+  public $endDayAt;
   /** @var \DateTime */
-  protected $createdAt;
+  public $createdAt;
   /** @var bool */
-  protected $showPhotoTimestamp;
+  public $showPhotoTimestamp;
 
 
   /** @var string */
-  protected $albumName;
+  public $albumName;
   /** @var array */
-  protected $frameFiles;
+  public $frameFiles;
   /** @var \DateTimeZone */
-  protected $timezone;
+  public $timezone;
 
   public function setAlbumName(string $albumName)
   {

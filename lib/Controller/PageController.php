@@ -21,7 +21,6 @@ use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\Common\Exception\NotFoundException;
-use OCP\DB\ISchemaWrapper;
 use OCP\Files\IRootFolder;
 use OCP\IConfig;
 use OCP\IDBConnection;
@@ -89,30 +88,18 @@ class PageController extends Controller
     Util::addStyle(Application::APP_ID, 'main');
 
     if (!$this->photosIsInstalled()) {
-      return new TemplateResponse(
-        appName: Application::APP_ID,
-        templateName: 'error',
-        renderAs: TemplateResponse::RENDER_AS_USER,
-        params: [
-          "message" => "Photo Frames cannot function without the Photos app.<br />Please activate the Photos app and try again."
-        ]
-      );
+      return $this->renderPage('ErrorPage', [
+        "message" => "Photo Frames cannot function without the Photos app.\nPlease activate the Photos app and try again."
+      ]);
     }
 
-    Util::addScript(Application::APP_ID, 'qrcode.min');
+    Util::addScript(Application::APP_ID, 'vendor/qrcode.min');
 
     try {
       $uid = $this->currentUser->getUID();
-      $params = [
-        'frames' => $this->frameMapper->getAllByUser($uid),
-        'urlGenerator' => $this->urlGenerator,
-      ];
-
-      return new TemplateResponse(
-        appName: Application::APP_ID,
-        templateName: 'index',
-        params: $params,
-      );
+      return $this->renderPage('IndexPage', [
+        'frames' => $this->frameMapper->getAllByUser($uid)
+      ]);
     } catch (Exception $error) {
       $testedVersionsString = join(', ', $this->testedPhotosVersions);
       $photosVersion = $this->getPhotosVersion();
@@ -135,17 +122,13 @@ class PageController extends Controller
       }, $debugInfo));
 
       $issueBody = "## What happened\n\n[Describe what you did to trigger the error]\n\n## Debug information\n\n" . $debugInfoString;
+      $issueTitle = $error->getMessage();
+      $reportLink = "https://github.com/jeppester/nextcloud-photo-frames/issues/new?title=" . urlencode($issueTitle) . "&body=" . urlencode($issueBody);
 
-      return new TemplateResponse(
-        appName: Application::APP_ID,
-        templateName: 'error',
-        renderAs: TemplateResponse::RENDER_AS_USER,
-        params: [
-          "message" => $message,
-          "issueTitle" => $error->getMessage(),
-          "issueBody" => $issueBody,
-        ]
-      );
+      return $this->renderPage('ErrorPage', [
+        'message' => $message,
+        'reportLink' => $reportLink,
+      ]);
     }
   }
 
@@ -156,20 +139,13 @@ class PageController extends Controller
   public function new(): TemplateResponse
   {
     $uid = $this->currentUser->getUID();
-
-    $params = [
-      'frame' => new Frame(),
-      'albums' => $this->frameMapper->getAvailableAlbums($uid),
-      'urlGenerator' => $this->urlGenerator,
-    ];
-
     Util::addStyle(Application::APP_ID, 'main');
 
-    return new TemplateResponse(
-      appName: Application::APP_ID,
-      templateName: 'new',
-      params: $params,
-    );
+    return $this->renderPage('NewPage', [
+      'frame' => new Frame(),
+      'albums' => $this->frameMapper->getAvailableAlbums($uid),
+      'requestToken' => Util::callRegister()
+    ]);
   }
 
   #[NoAdminRequired]
@@ -181,13 +157,13 @@ class PageController extends Controller
     $this->frameMapper->createFrame(
       $params['name'],
       $this->currentUser->getUID(),
-      $this->frameMapper->validAlbumForUser($this->currentUser->getUID(), (int) $params['album_id']),
-      $params['selection_method'],
-      $params['rotation_unit'],
-      (int) $params['rotations_per_unit'],
-      $params['start_day_at'],
-      $params['end_day_at'],
-      (bool) $params['show_photo_timestamp'],
+      $this->frameMapper->validAlbumForUser($this->currentUser->getUID(), (int) $params['albumId']),
+      $params['selectionMethod'],
+      $params['rotationUnit'],
+      (int) $params['rotationsPerUnit'],
+      $params['startDayAt'],
+      $params['endDayAt'],
+      (bool) $params['showPhotoTimestamp'],
     );
 
     return new RedirectResponse($this->urlGenerator->linkToRoute('photo_frames.page.index'));
@@ -201,19 +177,13 @@ class PageController extends Controller
   {
     $uid = $this->currentUser->getUID();
 
-    $params = [
-      'frame' => $this->frameMapper->getByUserIdAndFrameId($uid, (int) $id),
-      'albums' => $this->frameMapper->getAvailableAlbums($uid),
-      'urlGenerator' => $this->urlGenerator,
-    ];
-
     Util::addStyle(Application::APP_ID, 'main');
 
-    return new TemplateResponse(
-      appName: Application::APP_ID,
-      templateName: 'edit',
-      params: $params,
-    );
+    return $this->renderPage('EditPage', [
+      'frame' => $this->frameMapper->getByUserIdAndFrameId($uid, (int) $id),
+      'albums' => $this->frameMapper->getAvailableAlbums($uid),
+      'requestToken' => Util::callRegister()
+    ]);
   }
 
   #[NoAdminRequired]
@@ -229,13 +199,13 @@ class PageController extends Controller
       $frame,
       $params['name'],
       $this->currentUser->getUID(),
-      $this->frameMapper->validAlbumForUser($this->currentUser->getUID(), (int) $params['album_id']),
-      $params['selection_method'],
-      $params['rotation_unit'],
-      (int) $params['rotations_per_unit'],
-      $params['start_day_at'],
-      $params['end_day_at'],
-      (bool) $params['show_photo_timestamp'],
+      $this->frameMapper->validAlbumForUser($this->currentUser->getUID(), (int) $params['albumId']),
+      $params['selectionMethod'],
+      $params['rotationUnit'],
+      (int) $params['rotationsPerUnit'],
+      $params['startDayAt'],
+      $params['endDayAt'],
+      (bool) $params['showPhotoTimestamp'],
     );
 
     return new RedirectResponse($this->urlGenerator->linkToRoute('photo_frames.page.index'));
@@ -309,6 +279,19 @@ class PageController extends Controller
       'Content-Type' => $frameFile->getMimeType(),
     ];
     return new FileDisplayResponse($preview, 200, $headers);
+  }
+
+  private function renderPage($name, $props): TemplateResponse
+  {
+    return new TemplateResponse(
+      appName: Application::APP_ID,
+      templateName: 'page',
+      params: [
+        'pageName' => $name,
+        'pageProps' => $props,
+        "appPath" => $this->appManager->getAppWebPath('photo_frames'),
+      ],
+    );
   }
 
   private function photosIsInstalled()
