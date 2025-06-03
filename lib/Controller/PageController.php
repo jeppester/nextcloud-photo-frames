@@ -240,7 +240,6 @@ class PageController extends Controller
     return $this->renderPage(
       'FramePage',
       [
-        'shareToken' => $shareToken,
         'showPhotoTimestamp' => $frame->getShowPhotoTimestamp(),
       ],
       true

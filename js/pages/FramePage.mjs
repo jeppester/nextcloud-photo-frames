@@ -4,7 +4,6 @@ import {
   useState,
 } from "../vendor/htm-preact-standalone.min.mjs";
 import { css, keyframes, injectGlobal } from "../vendor/emotion-css.min.mjs";
-import { generateUrl } from "../vendor/nextcloud-router.min.mjs";
 
 const rotationUnitRefreshInterval = {
   day: 1000 * 60, // One minute
@@ -107,10 +106,8 @@ const styles = {
 };
 
 export default function FramePage(props) {
-  const { shareToken, showPhotoTimestamp } = props;
-  const imageUrl = generateUrl("apps/photo_frames/{shareToken}/image", {
-    shareToken: shareToken,
-  });
+  const { showPhotoTimestamp } = props;
+  const imageUrl = location.href + "/image";
   const [images, setImages] = useState([]);
 
   const currentImage = images.at(-1);
