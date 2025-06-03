@@ -108,8 +108,8 @@ export default function FramePage(props) {
         };
         setImages([currentImage, nextImage].filter(Boolean));
 
-        // We cannot use animationEnd as it only reliably triggers when the window has focus
-        setTimeout(() => setImages([nextImage]), 2000);
+        // Remove previous image when the new image has faded in
+        if (currentImage) setTimeout(() => setImages([nextImage]), 2000);
       };
       reader.readAsDataURL(blob);
     };
