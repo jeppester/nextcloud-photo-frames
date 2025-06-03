@@ -20,18 +20,19 @@ const animations = {
 };
 
 injectGlobal`
-  :root { background-color: #222; }
-  :root,
+  :root {
+    background-color: #1c1c1c;
+    font-size: 16px;
+  }
   body {
     margin: 0;
-    font-size: 16px;
   }
 `;
 
 const styles = {
   photoFrame: css`
     animation: ${animations.fadeIn} 2s ease-in-out;
-    background-color: #222;
+    background-color: #1c1c1c;
     position: absolute;
     width: 100vw;
     height: 100vh;
@@ -39,21 +40,27 @@ const styles = {
     background-repeat: no-repeat;
     background-size: contain;
   `,
-  date: css`
-    text-transform: uppercase;
-    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
-      sans-serif;
-    position: fixed;
-    margin: 0;
+  dateContainer: css`
+    position: absolute;
     bottom: 0;
     left: 0;
-    padding: 0.5rem 1rem 0.3rem;
-    background-color: #333;
-    font-size: 1.5rem;
-    font-weight: normal;
-    color: #bba;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    outline: 1px solid #333;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    padding: 0.3rem;
+  `,
+  date: css`
+    text-transform: capitalize;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-weight: 400;
+    border-radius: 0.2rem;
+    margin: 0;
+    padding: 0.2rem 0.65rem 0.2rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    font-size: 1rem;
+    color: rgb(200, 194, 189);
+    border: 1px solid rgba(213, 204, 195, 0.3);
+    outline: 1px solid rgba(0, 0, 0, 0.6);
     text-shadow: 0px 1px 0px black;
     box-shadow: 0px 5px 40px rgba(0, 0, 0, 0.2);
   `,
@@ -128,12 +135,14 @@ export default function FramePage(props) {
         >
           ${showPhotoTimestamp &&
           html`
-            <h1 className=${styles.date}>
-              ${Intl.DateTimeFormat(navigator.locale, {
-                month: "long",
-                year: "numeric",
-              }).format(image.timestamp)}
-            </h1>
+            <div className=${styles.dateContainer}>
+              <h1 className=${styles.date}>
+                ${Intl.DateTimeFormat(navigator.locale, {
+                  month: "long",
+                  year: "numeric",
+                }).format(image.timestamp)}
+              </h1>
+            </div>
           `}
         </div>
       `
