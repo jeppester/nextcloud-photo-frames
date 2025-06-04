@@ -3,6 +3,9 @@
 <div class="app-content">
 </div>
 
+<script nonce="<?= $_['cspNonce']; ?>">
+  window.appPath = "<?= $appPath ?>"
+</script>
 <script type="module" nonce="<?= $_['cspNonce']; ?>">
   import { html, render } from "<?= $appPath ?>/js/vendor/htm-preact-standalone.min.mjs";
 

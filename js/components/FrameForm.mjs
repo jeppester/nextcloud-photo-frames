@@ -3,6 +3,7 @@ import {
   useState,
   useEffect,
 } from "../vendor/htm-preact-standalone.min.mjs";
+import Frame from "./Frame.mjs";
 import { css } from "../vendor/emotion-css.min.mjs";
 
 const rotationsOptionsForUnit = {
@@ -30,6 +31,33 @@ const styles = {
       margin-top: 0 !important;
     }
   `,
+  preview: css`
+    margin-top: 1rem;
+  `,
+  screen: css`
+    font-size: 30%;
+    width: 100%;
+    max-width: 20rem;
+    padding: 1.5rem;
+    background-color: #222;
+    border: 2px solid #888;
+    border-radius: 1rem;
+
+    @media (prefers-color-scheme: dark) {
+      background-color: #000;
+      border: 2px solid #444;
+    }
+  `,
+  screenInner: css`
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.1rem;
+  `,
+};
+
+const testImage = {
+  url: `${window.appPath}/img/1000x750.svg`,
+  timestamp: new Date(),
 };
 
 export default function FrameForm(props) {
@@ -147,22 +175,6 @@ export default function FrameForm(props) {
           </div>
 
           <div>
-            <h3 className=${styles.fieldTitle}>Display options</h3>
-            <label>
-              <input
-                type="checkbox"
-                name="showPhotoTimestamp"
-                value="1"
-                checked=${data.showPhotoTimestamp}
-                onChange=${handleInput}
-              />
-              <span>Show photo date</span>
-            </label>
-          </div>
-        </div>
-
-        <div className="col">
-          <div>
             <h3 className=${styles.fieldTitle}>Photo rotation</h3>
             <p>Decide how often the photo should change.</p>
             <p>
@@ -231,6 +243,35 @@ export default function FrameForm(props) {
                   required
                   onChange=${handleInput}
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col">
+          <div>
+            <h3 className=${styles.fieldTitle}>Display options</h3>
+            <label>
+              <input
+                type="checkbox"
+                name="showPhotoTimestamp"
+                value="1"
+                checked=${data.showPhotoTimestamp}
+                onChange=${handleInput}
+              />
+              <span>Show photo date</span>
+            </label>
+
+            <div className=${styles.preview}>
+              <div className=${styles.screen}>
+                <div className=${styles.screenInner}>
+                  <div style=${{ aspectRatio: "16/10" }}>
+                    <${Frame}
+                      showPhotoTimestamp=${data.showPhotoTimestamp}
+                      image=${testImage}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

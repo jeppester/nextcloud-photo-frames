@@ -4,6 +4,7 @@ import {
   useState,
 } from "../vendor/htm-preact-standalone.min.mjs";
 import { css, keyframes, injectGlobal } from "../vendor/emotion-css.min.mjs";
+import Frame from "../components/Frame.mjs";
 
 const rotationUnitRefreshInterval = {
   day: 1000 * 60, // One minute
@@ -164,36 +165,12 @@ export default function FramePage(props) {
 
   return html`
     ${images.map(
-      (image) => html`
-        <div className=${styles.frame} key=${image.expiresAt}>
-          <div
-            className=${styles.photoBackground}
-            style=${{ backgroundImage: `url("${image.url}")` }}
-          />
-          <div
-            className=${styles.photo}
-            style=${{ backgroundImage: `url("${image.url}")` }}
-          />
-
-          ${showPhotoTimestamp &&
-          html`
-            <div className=${styles.dateContainer}>
-              <div className=${styles.dateBackground}>
-                <h1 className=${`${styles.date} ${styles.month}`}>
-                  ${Intl.DateTimeFormat(navigator.locale, {
-                    month: "short",
-                  }).format(image.timestamp)}
-                </h1>
-                <h1 className=${`${styles.date} ${styles.year}`}>
-                  ${Intl.DateTimeFormat(navigator.locale, {
-                    year: "numeric",
-                  }).format(image.timestamp)}
-                </h1>
-              </div>
-            </div>
-          `}
-        </div>
-      `
+      (image) =>
+        html`<${Frame}
+          key=${image.expiresAt}
+          showPhotoTimestamp=${showPhotoTimestamp}
+          image=${image}
+        />`
     )}
   `;
 }
