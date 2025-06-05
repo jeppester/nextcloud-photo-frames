@@ -15,6 +15,15 @@ const rotationsOptionsForUnit = {
 const getClosestOption = (options, current) =>
   options.find((option) => option >= current) || options.at(-1);
 
+const nPhotos = (n, showNumber = true) => {
+  return [
+    showNumber ? n.toString() : false,
+    parseInt(n) === 1 ? `photo` : `photos`,
+  ]
+    .filter(Boolean)
+    .join(" ");
+};
+
 const styles = {
   radioButtons: css`
     margin-top: 1rem;
@@ -31,15 +40,18 @@ const styles = {
       margin-top: 0 !important;
     }
   `,
+  time: css`
+    font-family: monospace;
+  `,
   preview: css`
     margin-top: 1rem;
   `,
   screen: css`
-    font-size: 30%;
-    width: 100%;
-    max-width: 20rem;
+    font-size: 35%;
+    width: 350px;
+    max-width: 100%;
     padding: 1.5rem;
-    background-color: #222;
+    background-color: #111;
     border: 2px solid #888;
     border-radius: 1rem;
 
@@ -56,7 +68,7 @@ const styles = {
 };
 
 const testImage = {
-  url: `${window.appPath}/img/1000x750.svg`,
+  url: `${window.appPath}/img/landscape.jpg`,
   timestamp: new Date(),
 };
 
@@ -69,7 +81,7 @@ export default function FrameForm(props) {
     albumId: frame.albumId || "",
     selectionMethod: frame.selectionMethod || "latest",
     showPhotoTimestamp: !!frame.showPhotoTimestamp,
-    rotationUnit: frame.rotationUnit || "day",
+    rotationUnit: frame.rotationUnit || "hour",
     rotationsPerUnit: frame.rotationsPerUnit || 1,
     startDayAt: frame.startDayAt || "07:00",
     endDayAt: frame.endDayAt || "22:00",
@@ -93,6 +105,17 @@ export default function FrameForm(props) {
     );
     setData((prev) => ({ ...prev, rotationsPerUnit }));
   }, [data.rotationUnit]);
+
+  let rotationDescription;
+  if (data.rotationUnit === "day") {
+    rotationDescription = `Split time between ${nPhotos(
+      data.rotationsPerUnit
+    )}`;
+  } else {
+    rotationDescription = `Show ${nPhotos(data.rotationsPerUnit)} per ${
+      data.rotationUnit
+    }`;
+  }
 
   return html`
     <form ...${rest}>
@@ -168,15 +191,13 @@ export default function FrameForm(props) {
               </label>
             </div>
             <p>
-              Each frame keeps a record of previously shown photos. When a photo
-              expires the next photo is chosen, from the remaining photos, using
-              the specified selection method.
+              Shown photos get discarded from the selection pool. When the pool
+              runs dry, all discarded photos are readded to the pool.
             </p>
           </div>
 
           <div>
             <h3 className=${styles.fieldTitle}>Photo rotation</h3>
-            <p>Decide how often the photo should change.</p>
             <p>
               Per${" "}
               <select
@@ -189,7 +210,7 @@ export default function FrameForm(props) {
                 <option value="hour">hour</option>
                 <option value="minute">minute</option>
               </select>
-              ${" "}I would like to see${" "}
+              ${" "} show${" "}
               <select
                 name="rotationsPerUnit"
                 value="${data.rotationsPerUnit}"
@@ -201,54 +222,76 @@ export default function FrameForm(props) {
                   `
                 )}
               </select>
-              ${" "}photo(s)
+              ${" "}${nPhotos(data.rotationsPerUnit, false)}
             </p>
-          </div>
-
-          <div>
-            <h3 className=${styles.fieldTitle}>Day start / end</h3>
-            <p>
-              Narrow down the time frame at which the photo will rotate. E.g.:
-            </p>
-            <ul>
-              <li>Day start: 06:00</li>
-              <li>Day end: 18:00</li>
-              <li>Rotation: 3 photos/day</li>
-            </ul>
-            <p>Causes the frame to change at:</p>
-            <ul>
-              <li><strong>00:00</strong>: Photo 1 (before interval)</li>
-              <li><strong>06:00</strong>: Photo 1</li>
-              <li><strong>10:00</strong>: Photo 2</li>
-              <li><strong>14:00</strong>: Photo 3</li>
-              <li><strong>18:00</strong>: Photo 3 (after interval)</li>
-            </ul>
-            <div className="flex">
-              <div>
-                <p><strong>Day starts at</strong></p>
-                <input
-                  type="time"
-                  name="startDayAt"
-                  value="${data.startDayAt}"
-                  required
-                  onChange=${handleInput}
-                />
-              </div>
-              <div>
-                <p><strong>Day ends at</strong></p>
-                <input
-                  type="time"
-                  name="endDayAt"
-                  value="${data.endDayAt}"
-                  required
-                  onChange=${handleInput}
-                />
-              </div>
-            </div>
           </div>
         </div>
 
         <div className="col">
+          <div>
+            <h3 className=${styles.fieldTitle}>Day start / end</h3>
+            <p>
+              Use this to avoid "wasting" photos during the night and/or to
+              better control each photo's interval when rotating per day.
+            </p>
+            ${data.rotationUnit === "day" &&
+            parseInt(data.rotationsPerUnit) === 1
+              ? html`<p>
+                  <strong>
+                    This option doesn't matter when the frame shows a single
+                    photo per day
+                  </strong>
+                  <input type="hidden" name="startDayAt" value="07:00" />
+                  <input type="hidden" name="endDayAt" value="22:00" />
+                </p>`
+              : html`
+                  <p>
+                    Rotate photos from${" "}
+                    <input
+                      type="time"
+                      name="startDayAt"
+                      value="${data.startDayAt}"
+                      required
+                      onChange=${handleInput}
+                    />
+                    ${" "}until${" "}
+                    <input
+                      type="time"
+                      name="endDayAt"
+                      value="${data.endDayAt}"
+                      required
+                      onChange=${handleInput}
+                    />
+                  </p>
+
+                  <p>
+                    <strong>Schedule:</strong><br />
+                    ${data.startDayAt == "00:00" && data.endDayAt == "00:00"
+                      ? html`All day: ${rotationDescription}`
+                      : html`
+                          ${data.startDayAt !== "00:00" &&
+                          html`
+                            <span className=${styles.time}>
+                              00:00-${data.startDayAt}:
+                            </span>
+                            ${" "}"Pre-show" first photo<br />
+                          `}
+                          <span className=${styles.time}>
+                            ${data.startDayAt}-${data.endDayAt}:
+                          </span>
+                          ${" "}${rotationDescription}<br />
+                          ${data.endDayAt !== "00:00" &&
+                          html`
+                            <span className=${styles.time}>
+                              ${data.endDayAt}-00:00:
+                            </span>
+                            ${" "}Keep showing the last photo
+                          `}
+                        `}
+                  </p>
+                `}
+          </div>
+
           <div>
             <h3 className=${styles.fieldTitle}>Display options</h3>
             <label>
