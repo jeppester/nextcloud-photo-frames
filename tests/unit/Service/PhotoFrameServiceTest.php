@@ -251,6 +251,33 @@ class PhotoFrameServiceTest extends TestCase
     }
   }
 
+  public function testMidnightEndDayAt()
+  {
+    $entryMapper = $this->createMock(EntryMapper::class);
+    $rootFolder = $this->createMock(IRootFolder::class);
+
+    $frame = new Frame();
+    $frame->setRotationUnit(FrameMapper::ROTATION_UNIT_DAY);
+    $frame->setRotationsPerUnit(2);
+    $frame->setStartDayAt('00:00');
+    $frame->setEndDayAt('00:00');
+    $frame->setTimezone(new \DateTimeZone('UTC'));
+
+    $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
+
+    $entry = new Entry();
+
+    $testTimes = [
+      ['00:00:20', '12:00'],
+      ['15:00:23', '24:00'],
+    ];
+
+    foreach ($testTimes as $testTime) {
+      $entry->setCreatedAt((new \DateTime)->modify($testTime[0]));
+      $this->assertEquals((new \DateTime)->modify($testTime[1]), $service->getEntryExpiry($entry));
+    }
+  }
+
   public function testSortFrameFilesBySelectionMethodLatest()
   {
     $entryMapper = $this->createMock(EntryMapper::class);
