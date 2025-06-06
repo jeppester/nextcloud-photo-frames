@@ -82,6 +82,11 @@ class PhotoFrameService
     $startTime = (clone $createdAt)->modify($this->frame->getStartDayAt());
     $endTime = (clone $startTime)->modify($this->frame->getEndDayAt());
 
+    // For "getEndDayAt" 00:00 means in the evening instead of the morning
+    if ($this->frame->getEndDayAt() === "00:00") {
+      $endTime->modify("+1 day");
+    }
+
     $unit = $this->frame->getRotationUnit();
     $rotations = $this->frame->getRotationsPerUnit();
 
