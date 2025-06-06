@@ -119,9 +119,6 @@ class PhotoFrameService
         break;
     }
 
-    $startTime = (clone $createdAt)->modify($this->frame->getStartDayAt());
-    $endTime = (clone $startTime)->modify($this->frame->getEndDayAt());
-
     // Starting from the first rotation time, move forward until we are past the entry's creation time
     $rotationTime = (clone $unitStart)->modify("+$photoTTL seconds");
     while ($rotationTime <= $createdAt) {
