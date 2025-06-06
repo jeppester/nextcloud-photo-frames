@@ -77,7 +77,6 @@ class PhotoFrameService
   public function getEntryExpiry(Entry $entry)
   {
     $createdAt = (clone $entry->getCreatedAt())->setTimezone($this->frame->getTimezone());
-    // return (clone $createdAt)->modify('+1 seconds');
 
     $startTime = (clone $createdAt)->modify($this->frame->getStartDayAt());
     $endTime = (clone $startTime)->modify($this->frame->getEndDayAt());
