@@ -2,6 +2,7 @@ import {
   html,
   useState,
   useEffect,
+  useRef,
 } from "../vendor/htm-preact-standalone.min.mjs";
 import Frame from "./Frame.mjs";
 import { css } from "../vendor/emotion-css.min.mjs";
@@ -65,6 +66,9 @@ const styles = {
     overflow: hidden;
     border-radius: 0.1rem;
   `,
+  error: css`
+    color: var(--color-error);
+  `,
 };
 
 const testImage = {
@@ -74,6 +78,7 @@ const testImage = {
 
 export default function FrameForm(props) {
   const { children, frame, albums, requestToken, ...rest } = props;
+  const startDayAtRef = useRef();
 
   // Fields
   const [data, setData] = useState({
@@ -116,6 +121,14 @@ export default function FrameForm(props) {
       data.rotationUnit
     }`;
   }
+
+  const startEndIsInvalid =
+    data.endDayAt !== "00:00" && data.endDayAt <= data.startDayAt;
+  useEffect(() => {
+    startDayAtRef.current.setCustomValidity(
+      startEndIsInvalid ? "Start time must be before end time" : ""
+    );
+  }, [startEndIsInvalid]);
 
   return html`
     <form ...${rest}>
@@ -252,6 +265,7 @@ export default function FrameForm(props) {
                       name="startDayAt"
                       value="${data.startDayAt}"
                       required
+                      ref=${startDayAtRef}
                       onChange=${handleInput}
                     />
                     ${" "}until${" "}
@@ -264,31 +278,40 @@ export default function FrameForm(props) {
                     />
                   </p>
 
-                  <p>
-                    <strong>Schedule:</strong><br />
-                    ${data.startDayAt == "00:00" && data.endDayAt == "00:00"
-                      ? html`All day: ${rotationDescription}`
-                      : html`
-                          ${data.startDayAt !== "00:00" &&
-                          html`
-                            <span className=${styles.time}>
-                              00:00-${data.startDayAt}:
-                            </span>
-                            ${" "}"Pre-show" first photo<br />
-                          `}
-                          <span className=${styles.time}>
-                            ${data.startDayAt}-${data.endDayAt}:
-                          </span>
-                          ${" "}${rotationDescription}<br />
-                          ${data.endDayAt !== "00:00" &&
-                          html`
-                            <span className=${styles.time}>
-                              ${data.endDayAt}-00:00:
-                            </span>
-                            ${" "}Keep showing the last photo
-                          `}
-                        `}
-                  </p>
+                  ${startEndIsInvalid
+                    ? html`
+                        <p className=${styles.error}>
+                          Start time must be before end time
+                        </p>
+                      `
+                    : html`
+                        <p>
+                          <strong>Schedule:</strong><br />
+                          ${data.startDayAt == "00:00" &&
+                          data.endDayAt == "00:00"
+                            ? html`All day: ${rotationDescription}`
+                            : html`
+                                ${data.startDayAt !== "00:00" &&
+                                html`
+                                  <span className=${styles.time}>
+                                    00:00-${data.startDayAt}:
+                                  </span>
+                                  ${" "}"Pre-show" first photo<br />
+                                `}
+                                <span className=${styles.time}>
+                                  ${data.startDayAt}-${data.endDayAt}:
+                                </span>
+                                ${" "}${rotationDescription}<br />
+                                ${data.endDayAt !== "00:00" &&
+                                html`
+                                  <span className=${styles.time}>
+                                    ${data.endDayAt}-00:00:
+                                  </span>
+                                  ${" "}Keep showing the last photo
+                                `}
+                              `}
+                        </p>
+                      `}
                 `}
           </div>
 
