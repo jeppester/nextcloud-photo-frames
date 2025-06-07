@@ -4,6 +4,7 @@ import { generateUrl } from "../vendor/nextcloud-router.min.mjs";
 
 import CopyButton from "../components/CopyButton.mjs";
 import Actions from "../components/Actions.mjs";
+import Schedule from "./Schedule.mjs";
 
 const urlForFrame = ({ shareToken }) =>
   location.origin +
@@ -81,24 +82,7 @@ export default function FrameItem(props) {
             random: "Random",
           }[frame.selectionMethod]}
         </p>
-        <p>
-          <strong>Rotation: </strong>
-          ${frame.rotationsPerUnit}
-          ${frame.rotationsPerUnit === 1 ? " photo " : " photos "} per ${" "}
-          ${{
-            day: "day",
-            hour: "hour",
-            minute: "minute",
-          }[frame.rotationUnit]}
-        </p>
-        <p>
-          <strong>Start day at:</strong>
-          ${" "}${frame.startDayAt}
-        </p>
-        <p>
-          <strong>End day at:</strong>
-          ${" "}${frame.endDayAt}
-        </p>
+        <${Schedule} ...${frame} />
         <p>
           <strong>Show date:</strong>
           ${" "}${frame.showPhotoTimestamp ? "Enabled" : "Disabled"}
