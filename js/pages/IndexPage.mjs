@@ -140,7 +140,12 @@ export default function IndexPage(props) {
   };
 
   return html`
-    <h2>Photo Frames</h2>
+    <div className="flex">
+      <h2>Photo Frames</h2>
+      <a href=${generateUrl("apps/photo_frames/new")}>
+        <button className="primary">New frame</button>
+      </a>
+    </div>
 
     <div className=${styles.list}>
       ${frames.map((frame) => {
@@ -223,13 +228,6 @@ export default function IndexPage(props) {
         `;
       })}
     </div>
-
-    <${Actions}>
-      <div className="grow"></div>
-      <a href=${generateUrl("apps/photo_frames/new")}>
-        <button className="primary">New frame</button>
-      </a>
-    <//>
 
     <div
       ref=${modalRef}
