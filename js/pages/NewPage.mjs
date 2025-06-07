@@ -6,20 +6,20 @@ import FrameFields from "../components/FrameFields.mjs";
 export default function EditPage({ frame, requestToken, albums }) {
   const breadcrumbItems = [
     { title: "Photo frames", url: generateUrl("apps/photo_frames") },
-    { title: "New photo frame" }
-  ]
+    { title: "New frame" },
+  ];
 
   return html`
     <>
-      <form action=${generateUrl("apps/photo_frames")} method="post">
-        <${Breadcrumbs} items=${breadcrumbItems}>
-          <button type="submit" class="primary">Save frame</button>
-        <//>
-        <${FrameFields}
-          albums=${albums}
-          frame=${frame}
-          requestToken=${requestToken}
-        >
+    <form action=${generateUrl("apps/photo_frames")} method="post">
+      <${Breadcrumbs} items=${breadcrumbItems}>
+        <button type="submit" class="primary">Save frame</button>
+      <//>
+      <${FrameFields}
+        albums=${albums}
+        frame=${frame}
+        requestToken=${requestToken}
+      >
       <//>
     <//>
   `;

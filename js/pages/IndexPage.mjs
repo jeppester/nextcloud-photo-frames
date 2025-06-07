@@ -12,7 +12,7 @@ const styles = {
   list: css`
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(550px, 1fr));
     gap: 1.5rem;
     margin-top: 1rem;
     margin-bottom: 1rem;

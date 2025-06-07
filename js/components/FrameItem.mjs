@@ -41,6 +41,24 @@ const styles = {
       margin: 0;
     }
   `,
+  info: css`
+    flex-grow: 1;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+  `,
+  infoHeading: css`
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  `,
+  preview: css`
+    max-width: 50%;
+
+    @media (max-width: calc(550px + 3rem)) {
+      max-width: none;
+    }
+  `,
 };
 
 export default function FrameItem(props) {
@@ -48,7 +66,7 @@ export default function FrameItem(props) {
 
   return html`
     <div className=${styles.frame}>
-      <${Screen}>
+      <${Screen} className=${styles.preview}>
         <${Frame}
           image=${{
             url: generateUrl("apps/photo_frames/{shareToken}/image", {
@@ -57,8 +75,8 @@ export default function FrameItem(props) {
           }}
         />
       <//>
-      <div className="grow">
-        <div className="flex">
+      <div className=${styles.info}>
+        <div className=${styles.infoHeading}>
           <h2 className="grow">${frame.name}</h2>
 
           <button className="error" onClick=${() => onDelete(frame)}>
@@ -77,7 +95,7 @@ export default function FrameItem(props) {
           }[frame.selectionMethod]}
         </p>
         <${Schedule} ...${frame} />
-        <p>
+        <p className="grow">
           <strong>Show date:</strong>
           ${" "}${frame.showPhotoTimestamp ? "Enabled" : "Disabled"}
         </p>

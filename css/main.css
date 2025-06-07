@@ -55,6 +55,10 @@
   gap: 1rem;
 }
 
+.app-photo_frames .self-stretch {
+  align-self: stretch;
+}
+
 @media screen and (max-width: 768px) {
   .app-photo_frames .row {
     flex-direction: column;
