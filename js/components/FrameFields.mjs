@@ -6,6 +6,8 @@ import {
 } from "../vendor/htm-preact-standalone.min.mjs";
 import Frame from "./Frame.mjs";
 import { css } from "../vendor/emotion-css.min.mjs";
+import Schedule from "./Schedule.mjs";
+import nPhotos from "../utils/nPhotos.mjs";
 
 const rotationsOptionsForUnit = {
   day: [1, 2, 3, 4, 6, 8, 12],
@@ -15,15 +17,6 @@ const rotationsOptionsForUnit = {
 
 const getClosestOption = (options, current) =>
   options.find((option) => option >= current) || options.at(-1);
-
-const nPhotos = (n, showNumber = true) => {
-  return [
-    showNumber ? n.toString() : false,
-    parseInt(n) === 1 ? `photo` : `photos`,
-  ]
-    .filter(Boolean)
-    .join(" ");
-};
 
 const styles = {
   radioButtons: css`
@@ -40,9 +33,6 @@ const styles = {
     & + * {
       margin-top: 0 !important;
     }
-  `,
-  time: css`
-    font-family: monospace;
   `,
   preview: css`
     margin-top: 1rem;
@@ -110,17 +100,6 @@ export default function FrameFields(props) {
     );
     setData((prev) => ({ ...prev, rotationsPerUnit }));
   }, [data.rotationUnit]);
-
-  let rotationDescription;
-  if (data.rotationUnit === "day") {
-    rotationDescription = `Split time between ${nPhotos(
-      data.rotationsPerUnit
-    )}`;
-  } else {
-    rotationDescription = `Show ${nPhotos(data.rotationsPerUnit)} per ${
-      data.rotationUnit
-    }`;
-  }
 
   const startEndIsInvalid =
     data.endDayAt !== "00:00" && data.endDayAt <= data.startDayAt;
@@ -246,15 +225,14 @@ export default function FrameFields(props) {
         <div>
           <h3 className=${styles.fieldTitle}>Day start / end</h3>
           <p>
-            Use this to avoid "wasting" photos during the night and/or to
-            better control each photo's interval when rotating per day.
+            Use this to avoid "wasting" photos during the night and/or to better
+            control each photo's interval when rotating per day.
           </p>
-          ${data.rotationUnit === "day" &&
-          parseInt(data.rotationsPerUnit) === 1
+          ${data.rotationUnit === "day" && parseInt(data.rotationsPerUnit) === 1
             ? html`<p>
                 <strong>
-                  This option doesn't matter when the frame shows a single
-                  photo per day
+                  This option doesn't matter when the frame shows a single photo
+                  per day
                 </strong>
                 <input type="hidden" name="startDayAt" value="07:00" />
                 <input type="hidden" name="endDayAt" value="22:00" />
@@ -286,34 +264,7 @@ export default function FrameFields(props) {
                         Start time must be before end time
                       </p>
                     `
-                  : html`
-                      <p>
-                        <strong>Schedule:</strong><br />
-                        ${data.startDayAt == "00:00" &&
-                        data.endDayAt == "00:00"
-                          ? html`All day: ${rotationDescription}`
-                          : html`
-                              ${data.startDayAt !== "00:00" &&
-                              html`
-                                <span className=${styles.time}>
-                                  00:00-${data.startDayAt}:
-                                </span>
-                                ${" "}"Pre-show" first photo<br />
-                              `}
-                              <span className=${styles.time}>
-                                ${data.startDayAt}-${data.endDayAt}:
-                              </span>
-                              ${" "}${rotationDescription}<br />
-                              ${data.endDayAt !== "00:00" &&
-                              html`
-                                <span className=${styles.time}>
-                                  ${data.endDayAt}-00:00:
-                                </span>
-                                ${" "}Keep showing the last photo
-                              `}
-                            `}
-                      </p>
-                    `}
+                  : html`<${Schedule} ...${data} />`}
               `}
         </div>
 
