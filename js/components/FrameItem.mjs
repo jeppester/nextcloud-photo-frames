@@ -5,6 +5,8 @@ import { generateUrl } from "../vendor/nextcloud-router.min.mjs";
 import CopyButton from "../components/CopyButton.mjs";
 import Actions from "../components/Actions.mjs";
 import Schedule from "./Schedule.mjs";
+import Screen from "./Screen.mjs";
+import Frame from "./Frame.mjs";
 
 const urlForFrame = ({ shareToken }) =>
   location.origin +
@@ -20,23 +22,11 @@ const styles = {
     display: flex;
     gap: 2rem;
     overflow: hidden;
+    align-items: flex-start;
 
     @media (max-width: calc(550px + 3rem)) {
       flex-direction: column;
-    }
-
-    img {
-      width: 250px;
-      object-fit: cover;
-      margin: -1.5rem;
-      margin-right: 0;
-
-      @media (max-width: calc(550px + 3rem)) {
-        width: calc(100% + 3rem);
-        margin-right: -1.5rem;
-        margin-bottom: 0;
-        aspect-ratio: 16/9;
-      }
+      align-items: stretch;
     }
 
     h2 {
@@ -58,11 +48,15 @@ export default function FrameItem(props) {
 
   return html`
     <div className=${styles.frame}>
-      <img
-        src=${generateUrl("apps/photo_frames/{shareToken}/image", {
-          shareToken: frame.shareToken,
-        })}
-      />
+      <${Screen}>
+        <${Frame}
+          image=${{
+            url: generateUrl("apps/photo_frames/{shareToken}/image", {
+              shareToken: frame.shareToken,
+            }),
+          }}
+        />
+      <//>
       <div className="grow">
         <div className="flex">
           <h2 className="grow">${frame.name}</h2>
