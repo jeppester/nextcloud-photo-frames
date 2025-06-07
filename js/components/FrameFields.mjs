@@ -8,6 +8,7 @@ import Frame from "./Frame.mjs";
 import { css } from "../vendor/emotion-css.min.mjs";
 import Schedule from "./Schedule.mjs";
 import nPhotos from "../utils/nPhotos.mjs";
+import Screen from "./Screen.mjs";
 
 const rotationsOptionsForUnit = {
   day: [1, 2, 3, 4, 6, 8, 12],
@@ -37,27 +38,12 @@ const styles = {
   preview: css`
     margin-top: 1rem;
   `,
-  screen: css`
-    font-size: 35%;
-    width: 350px;
-    max-width: 100%;
-    padding: 1.5rem;
-    background-color: #111;
-    border: 2px solid #888;
-    border-radius: 1rem;
-
-    @media (prefers-color-scheme: dark) {
-      background-color: #000;
-      border: 2px solid #444;
-    }
-  `,
-  screenInner: css`
-    position: relative;
-    overflow: hidden;
-    border-radius: 0.1rem;
-  `,
   error: css`
     color: var(--color-error);
+  `,
+  screen: css`
+    width: 350px;
+    max-width: 100%;
   `,
 };
 
@@ -282,16 +268,12 @@ export default function FrameFields(props) {
           </label>
 
           <div className=${styles.preview}>
-            <div className=${styles.screen}>
-              <div className=${styles.screenInner}>
-                <div style=${{ aspectRatio: "16/10" }}>
-                  <${Frame}
-                    showPhotoTimestamp=${data.showPhotoTimestamp}
-                    image=${testImage}
-                  />
-                </div>
-              </div>
-            </div>
+            <${Screen} className=${styles.screen}>
+              <${Frame}
+                showPhotoTimestamp=${data.showPhotoTimestamp}
+                image=${testImage}
+              />
+            <//>
           </div>
         </div>
       </div>
