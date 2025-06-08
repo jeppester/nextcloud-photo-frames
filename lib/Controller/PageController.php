@@ -16,6 +16,7 @@ use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\Attribute\OpenAPI;
 use OCP\AppFramework\Http\Attribute\PublicPage;
+use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\FileDisplayResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
@@ -166,7 +167,7 @@ class PageController extends Controller
       (bool) $params['showPhotoTimestamp'],
     );
 
-    return new RedirectResponse($this->urlGenerator->linkToRoute('photo_frames.page.index'));
+    return new RedirectResponse(redirectURL: $this->urlGenerator->linkToRoute('photo_frames.page.index'));
   }
 
   #[NoCSRFRequired]
@@ -275,7 +276,7 @@ class PageController extends Controller
 
   private function renderPage($name, $props, $blank = false): TemplateResponse
   {
-    return new TemplateResponse(
+    $response = new TemplateResponse(
       appName: Application::APP_ID,
       templateName: $blank ? "blank" : 'page',
       params: [
@@ -285,6 +286,12 @@ class PageController extends Controller
       ],
       renderAs: $blank ? TemplateResponse::RENDER_AS_BLANK : TemplateResponse::RENDER_AS_USER,
     );
+
+    $csp = new ContentSecurityPolicy();
+    $csp->addAllowedFrameDomain($this->request->getServerHost());
+    $response->setContentSecurityPolicy($csp);
+
+    return $response;
   }
 
   private function photosIsInstalled()

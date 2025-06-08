@@ -6,7 +6,6 @@ import CopyButton from "../components/CopyButton.mjs";
 import Actions from "../components/Actions.mjs";
 import Schedule from "./Schedule.mjs";
 import Screen from "./Screen.mjs";
-import Frame from "./Frame.mjs";
 
 const urlForFrame = ({ shareToken }) =>
   location.origin +
@@ -59,6 +58,17 @@ const styles = {
       max-width: none;
     }
   `,
+  iframeContainer: css`
+    width: 100%;
+    aspect-ratio: 16/10;
+    overflow: hidden;
+  `,
+  iframe: css`
+    width: 300%;
+    height: 300%;
+    transform: scale(33.3333%);
+    transform-origin: 0% 0%;
+  `,
 };
 
 export default function FrameItem(props) {
@@ -67,13 +77,9 @@ export default function FrameItem(props) {
   return html`
     <div className=${styles.frame}>
       <${Screen} className=${styles.preview}>
-        <${Frame}
-          image=${{
-            url: generateUrl("apps/photo_frames/{shareToken}/image", {
-              shareToken: frame.shareToken,
-            }),
-          }}
-        />
+        <div className=${styles.iframeContainer}>
+          <iframe className=${styles.iframe} src=${urlForFrame(frame)} />
+        </div>
       <//>
       <div className=${styles.info}>
         <div className=${styles.infoHeading}>
@@ -94,11 +100,7 @@ export default function FrameItem(props) {
             random: "Random",
           }[frame.selectionMethod]}
         </p>
-        <${Schedule} ...${frame} />
-        <p className="grow">
-          <strong>Show date:</strong>
-          ${" "}${frame.showPhotoTimestamp ? "Enabled" : "Disabled"}
-        </p>
+        <${Schedule} className="grow" ...${frame} />
         <${Actions}>
           <a
             target="_BLANK"

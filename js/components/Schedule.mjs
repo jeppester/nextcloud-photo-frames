@@ -25,7 +25,7 @@ export default function Schedule(props) {
   }
 
   return html`
-    <p>
+    <p className=${props.className || ""}>
       <strong>Schedule:</strong><br />
       ${props.startDayAt == "00:00" && props.endDayAt == "00:00"
         ? html`All day: ${rotationDescription}`

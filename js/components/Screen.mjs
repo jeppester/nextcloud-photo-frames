@@ -3,7 +3,7 @@ import { html } from "../vendor/htm-preact-standalone.min.mjs";
 
 const styles = {
   screen: css`
-    font-size: 35%;
+    font-size: 33.3333%;
     width: 100%;
     padding: 1.5rem;
     background-color: #111;
