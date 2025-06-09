@@ -10,7 +10,9 @@ const styles = {
 
 export default function Schedule(props) {
   if (props.rotationUnit === "day" && parseInt(props.rotationsPerUnit) === 1) {
-    return html`<p><strong>Schedule:</strong> Show one photo per day</p> `;
+    return html`<p className=${props.className || ""}>
+      <strong>Schedule:</strong><br />Show one photo per day
+    </p> `;
   }
 
   let rotationDescription;

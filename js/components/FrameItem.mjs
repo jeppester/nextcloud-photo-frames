@@ -3,7 +3,6 @@ import { css } from "../vendor/emotion-css.min.mjs";
 import { generateUrl } from "../vendor/nextcloud-router.min.mjs";
 
 import CopyButton from "../components/CopyButton.mjs";
-import Actions from "../components/Actions.mjs";
 import Schedule from "./Schedule.mjs";
 import Screen from "./Screen.mjs";
 
@@ -13,50 +12,34 @@ const urlForFrame = ({ shareToken }) =>
 
 const styles = {
   frame: css`
-    border: 2px solid #00679e88;
-    background-color: #00679e09;
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
-    border-radius: 1rem;
-    padding: 1.5rem;
     display: flex;
-    gap: 2rem;
-    overflow: hidden;
-    align-items: flex-start;
-
-    @media (max-width: calc(550px + 3rem)) {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    h2 {
-      font-size: 1.5rem;
-      font-weight: 500;
-      margin: 0 0 0.5rem;
-    }
+    flex-direction: column;
 
     p {
       font-size: 16px;
       font-weight: 500;
       margin: 0;
     }
+
+    h2 {
+      font-size: 1.4rem;
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 0.06rem;
+      margin-top: 0.7rem;
+      margin-bottom: 1rem;
+    }
   `,
   info: css`
-    flex-grow: 1;
-    align-self: stretch;
+    padding: 0 0.9rem;
     display: flex;
     flex-direction: column;
   `,
-  infoHeading: css`
+  actions: css`
     display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-  `,
-  preview: css`
-    max-width: 50%;
-
-    @media (max-width: calc(550px + 3rem)) {
-      max-width: none;
-    }
+    gap: 0.2rem 0.2rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
   `,
   iframeContainer: css`
     width: 100%;
@@ -82,13 +65,36 @@ export default function FrameItem(props) {
         </div>
       <//>
       <div className=${styles.info}>
-        <div className=${styles.infoHeading}>
-          <h2 className="grow">${frame.name}</h2>
+        <h2>${frame.name}</h2>
+
+        <div className=${styles.actions}>
+          <a
+            target="_BLANK"
+            href=${generateUrl("apps/photo_frames/{shareToken}", {
+              shareToken: frame.shareToken,
+            })}
+          >
+            <button className="primary">Show</button>
+          </a>
+          <a
+            href=${generateUrl("apps/photo_frames/{id}/edit", {
+              id: frame.id,
+            })}
+          >
+            <button>Edit</button>
+          </a>
+          <button onClick=${() => onShowQRCode(urlForFrame(frame))}>QR</button>
+          <${CopyButton} data=${urlForFrame(frame)} copiedText="Copied">
+            Copy link
+          <//>
+
+          <div className="grow" />
 
           <button className="error" onClick=${() => onDelete(frame)}>
             Delete
           </button>
         </div>
+
         <p><strong>Album:</strong> ${frame.albumName}</p>
 
         <p>
@@ -100,34 +106,7 @@ export default function FrameItem(props) {
             random: "Random",
           }[frame.selectionMethod]}
         </p>
-        <${Schedule} className="grow" ...${frame} />
-        <${Actions}>
-          <a
-            target="_BLANK"
-            href=${generateUrl("apps/photo_frames/{shareToken}", {
-              shareToken: frame.shareToken,
-            })}
-          >
-            <button>Show</button>
-          </a>
-          <a
-            href=${generateUrl("apps/photo_frames/{id}/edit", {
-              id: frame.id,
-            })}
-          >
-            <button>Edit</button>
-          </a>
-          <button onClick=${() => onShowQRCode(urlForFrame(frame))}>
-            Show QR
-          </button>
-          <${CopyButton}
-            className="primary"
-            data=${urlForFrame(frame)}
-            copiedText="Copied"
-          >
-            Copy link
-          <//>
-        <//>
+        <${Schedule} ...${frame} />
       </div>
     </div>
   `;

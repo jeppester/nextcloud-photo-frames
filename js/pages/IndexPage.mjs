@@ -12,8 +12,8 @@ const styles = {
   list: css`
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(550px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 4rem 3rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
 
@@ -21,9 +21,6 @@ const styles = {
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
-      margin-top: 1rem;
-      margin-bottom: 1rem;
     }
   `,
   modal: css`
