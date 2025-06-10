@@ -33,7 +33,8 @@ class EntryMapper extends QBMapper
       ->orderBy('created_at', 'desc')
       ->setMaxResults(1);
 
-    return $this->findEntities($qb)[0];
+    $entities = $this->findEntities($qb);
+    return count($entities) > 0 ? $entities[0] : null;
   }
 
   /**
