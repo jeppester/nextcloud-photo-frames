@@ -102,34 +102,7 @@ class PageController extends Controller
         'frames' => $this->frameMapper->getAllByUser($uid)
       ]);
     } catch (Exception $error) {
-      $testedVersionsString = join(', ', $this->testedPhotosVersions);
-      $photosVersion = $this->getPhotosVersion();
-      $message = $this->isTestedPhotosVersion()
-        ? "Something went wrong. Please try disabling and reenabling the Photos and Photo Frames apps."
-        : "You are using an unsupported version of the Photos app ($photosVersion), supported versions are: $testedVersionsString";
-
-
-      $debugInfo = [
-        ["**Nextcloud version**", implode('.', Util::getVersion())],
-        ["**Photo Frames version**", $this->appManager->getAppVersion("photo_frames")],
-        ["**Photos version**", $this->appManager->getAppVersion("photos")],
-        ["**Database**", $this->db->getDatabaseProvider()],
-        ["**Error Message**", $error->getMessage()],
-        ["**File:line**", '`' . $error->getFile() . ":" . $error->getLine() . '`'],
-        ["**Stack trace**", "```txt\n" . $error->getTraceAsString() . "\n```"],
-      ];
-      $debugInfoString = implode("\n\n", array_map(function ($value) {
-        return implode("\n", $value);
-      }, $debugInfo));
-
-      $issueBody = "## What happened\n\n[Describe what you did to trigger the error]\n\n## Debug information\n\n" . $debugInfoString;
-      $issueTitle = $error->getMessage();
-      $reportLink = "https://github.com/jeppester/nextcloud-photo-frames/issues/new?title=" . urlencode($issueTitle) . "&body=" . urlencode($issueBody);
-
-      return $this->renderPage('ErrorPage', [
-        'message' => $message,
-        'reportLink' => $reportLink,
-      ]);
+      return $this->errorPage($error);
     }
   }
 
@@ -139,14 +112,18 @@ class PageController extends Controller
   #[FrontpageRoute(verb: 'GET', url: '/new')]
   public function new(): TemplateResponse
   {
-    $uid = $this->currentUser->getUID();
-    Util::addStyle(Application::APP_ID, 'main');
+    try {
+      $uid = $this->currentUser->getUID();
+      Util::addStyle(Application::APP_ID, 'main');
 
-    return $this->renderPage('NewPage', [
-      'frame' => new Frame(),
-      'albums' => $this->frameMapper->getAvailableAlbums($uid),
-      'requestToken' => Util::callRegister()
-    ]);
+      return $this->renderPage('NewPage', [
+        'frame' => new Frame(),
+        'albums' => $this->frameMapper->getAvailableAlbums($uid),
+        'requestToken' => Util::callRegister()
+      ]);
+    } catch (Exception $error) {
+      return $this->errorPage($error);
+    }
   }
 
   #[NoAdminRequired]
@@ -154,20 +131,24 @@ class PageController extends Controller
   #[FrontpageRoute(verb: 'POST', url: '/')]
   public function create(): RedirectResponse
   {
-    $params = $this->request->getParams();
-    $this->frameMapper->createFrame(
-      $params['name'],
-      $this->currentUser->getUID(),
-      $this->frameMapper->validAlbumForUser($this->currentUser->getUID(), (int) $params['albumId']),
-      $params['selectionMethod'],
-      $params['rotationUnit'],
-      (int) $params['rotationsPerUnit'],
-      $params['startDayAt'],
-      $params['endDayAt'],
-      (bool) $params['showPhotoTimestamp'],
-    );
+    try {
+      $params = $this->request->getParams();
+      $this->frameMapper->createFrame(
+        $params['name'],
+        $this->currentUser->getUID(),
+        $this->frameMapper->validAlbumForUser($this->currentUser->getUID(), (int) $params['albumId']),
+        $params['selectionMethod'],
+        $params['rotationUnit'],
+        (int) $params['rotationsPerUnit'],
+        $params['startDayAt'],
+        $params['endDayAt'],
+        (bool) $params['showPhotoTimestamp'],
+      );
 
-    return new RedirectResponse(redirectURL: $this->urlGenerator->linkToRoute('photo_frames.page.index'));
+      return new RedirectResponse(redirectURL: $this->urlGenerator->linkToRoute('photo_frames.page.index'));
+    } catch (Exception $error) {
+      return $this->errorPage($error);
+    }
   }
 
   #[NoCSRFRequired]
@@ -176,15 +157,19 @@ class PageController extends Controller
   #[FrontpageRoute(verb: 'GET', url: '/{id}/edit', requirements: ['id' => '[0-9]+'])]
   public function edit($id): TemplateResponse
   {
-    $uid = $this->currentUser->getUID();
+    try {
+      $uid = $this->currentUser->getUID();
 
-    Util::addStyle(Application::APP_ID, 'main');
+      Util::addStyle(Application::APP_ID, 'main');
 
-    return $this->renderPage('EditPage', [
-      'frame' => $this->frameMapper->getByUserIdAndFrameId($uid, (int) $id),
-      'albums' => $this->frameMapper->getAvailableAlbums($uid),
-      'requestToken' => Util::callRegister()
-    ]);
+      return $this->renderPage('EditPage', [
+        'frame' => $this->frameMapper->getByUserIdAndFrameId($uid, (int) $id),
+        'albums' => $this->frameMapper->getAvailableAlbums($uid),
+        'requestToken' => Util::callRegister()
+      ]);
+    } catch (Exception $error) {
+      return $this->errorPage($error);
+    }
   }
 
   #[NoAdminRequired]
@@ -192,24 +177,28 @@ class PageController extends Controller
   #[FrontpageRoute(verb: 'POST', url: '/{id}', requirements: ['id' => '[0-9]+'])]
   public function update($id): Response
   {
-    $uid = $this->currentUser->getUID();
-    $frame = $this->frameMapper->getByUserIdAndFrameId($uid, (int) $id);
-    $params = $this->request->getParams();
+    try {
+      $uid = $this->currentUser->getUID();
+      $frame = $this->frameMapper->getByUserIdAndFrameId($uid, (int) $id);
+      $params = $this->request->getParams();
 
-    $this->frameMapper->updateFrame(
-      $frame,
-      $params['name'],
-      $this->currentUser->getUID(),
-      $this->frameMapper->validAlbumForUser($this->currentUser->getUID(), (int) $params['albumId']),
-      $params['selectionMethod'],
-      $params['rotationUnit'],
-      (int) $params['rotationsPerUnit'],
-      $params['startDayAt'],
-      $params['endDayAt'],
-      (bool) $params['showPhotoTimestamp'],
-    );
+      $this->frameMapper->updateFrame(
+        $frame,
+        $params['name'],
+        $this->currentUser->getUID(),
+        $this->frameMapper->validAlbumForUser($this->currentUser->getUID(), (int) $params['albumId']),
+        $params['selectionMethod'],
+        $params['rotationUnit'],
+        (int) $params['rotationsPerUnit'],
+        $params['startDayAt'],
+        $params['endDayAt'],
+        (bool) $params['showPhotoTimestamp'],
+      );
 
-    return new RedirectResponse($this->urlGenerator->linkToRoute('photo_frames.page.index'));
+      return new RedirectResponse($this->urlGenerator->linkToRoute('photo_frames.page.index'));
+    } catch (Exception $error) {
+      return $this->errorPage($error);
+    }
   }
 
   #[NoCSRFRequired]
@@ -218,12 +207,16 @@ class PageController extends Controller
   #[FrontpageRoute(verb: 'DELETE', url: '/{id}', requirements: ['id' => '[0-9]+'])]
   public function destroy($id): Response
   {
-    $uid = $this->currentUser->getUID();
-    $frame = $this->frameMapper->getByUserIdAndFrameId($uid, (int) $id);
+    try {
+      $uid = $this->currentUser->getUID();
+      $frame = $this->frameMapper->getByUserIdAndFrameId($uid, (int) $id);
 
-    $this->frameMapper->destroyFrame($frame);
+      $this->frameMapper->destroyFrame($frame);
 
-    return new Response(204);
+      return new Response(204);
+    } catch (Exception $error) {
+      return $this->errorPage($error);
+    }
   }
 
   #[NoCSRFRequired]
@@ -238,20 +231,24 @@ class PageController extends Controller
       throw new NotFoundException('Unable to find album');
     }
 
-    return $this->renderPage(
-      'FramePage',
-      [
-        'showPhotoTimestamp' => $frame->getShowPhotoTimestamp(),
-      ],
-      true
-    );
+    try {
+      return $this->renderPage(
+        'FramePage',
+        [
+          'showPhotoTimestamp' => $frame->getShowPhotoTimestamp(),
+        ],
+        true
+      );
+    } catch (Exception $error) {
+      return $this->errorPage($error);
+    }
   }
 
   #[NoCSRFRequired]
   #[PublicPage]
   #[OpenAPI(OpenAPI::SCOPE_IGNORE)]
   #[FrontpageRoute(verb: 'GET', url: '/{shareToken}/image', requirements: ['shareToken' => '[a-zA-Z0-9]+'])]
-  public function photoframeImage($shareToken): FileDisplayResponse
+  public function photoframeImage($shareToken): FileDisplayResponse|TemplateResponse
   {
     $frame = $this->frameMapper->getByShareTokenWithFiles($shareToken);
     if (!$frame) {
@@ -259,19 +256,23 @@ class PageController extends Controller
       throw new NotFoundException('Unable to find album');
     }
 
-    $service = new PhotoFrameService($this->entryMapper, $this->rootFolder, $frame);
-    $frameFile = $service->getCurrentFrameFile();
-    $node = $service->getFrameFileNode($frameFile);
+    try {
+      $service = new PhotoFrameService($this->entryMapper, $this->rootFolder, $frame);
+      $frameFile = $service->getCurrentFrameFile();
+      $node = $service->getFrameFileNode($frameFile);
 
-    $preview = $this->preview->getPreview($node, 1000, 1000);
+      $preview = $this->preview->getPreview($node, 1000, 1000);
 
-    $headers = [
-      'X-Photo-Timestamp' => $frameFile->getCapturedAtTimestamp(),
-      'X-Frame-Rotation-Unit' => $frame->getRotationUnit(),
-      'Expires' => $frameFile->getExpiresHeader(),
-      'Content-Type' => $frameFile->getMimeType(),
-    ];
-    return new FileDisplayResponse($preview, 200, $headers);
+      $headers = [
+        'X-Photo-Timestamp' => $frameFile->getCapturedAtTimestamp(),
+        'X-Frame-Rotation-Unit' => $frame->getRotationUnit(),
+        'Expires' => $frameFile->getExpiresHeader(),
+        'Content-Type' => $frameFile->getMimeType(),
+      ];
+      return new FileDisplayResponse($preview, 200, $headers);
+    } catch (Exception $error) {
+      return $this->errorPage($error);
+    }
   }
 
   private function renderPage($name, $props, $blank = false): TemplateResponse
@@ -291,6 +292,42 @@ class PageController extends Controller
     $csp->addAllowedFrameDomain($this->request->getServerHost());
     $response->setContentSecurityPolicy($csp);
 
+    return $response;
+  }
+
+  private function errorPage($error)
+  {
+    Util::addStyle(Application::APP_ID, 'main');
+
+    $testedVersionsString = join(', ', $this->testedPhotosVersions);
+    $photosVersion = $this->getPhotosVersion();
+    $message = $this->isTestedPhotosVersion()
+      ? "Something went wrong. Please try disabling and reenabling the Photo Frames app."
+      : "You are using an unsupported version of the Photos app ($photosVersion), supported versions are: $testedVersionsString";
+
+
+    $debugInfo = [
+      ["**Nextcloud version**", implode('.', Util::getVersion())],
+      ["**Photo Frames version**", $this->appManager->getAppVersion("photo_frames")],
+      ["**Photos version**", $this->appManager->getAppVersion("photos")],
+      ["**Database**", $this->db->getDatabaseProvider()],
+      ["**Error Message**", $error->getMessage()],
+      ["**File:line**", '`' . $error->getFile() . ":" . $error->getLine() . '`'],
+      ["**Stack trace**", "```txt\n" . $error->getTraceAsString() . "\n```"],
+    ];
+    $debugInfoString = implode("\n\n", array_map(function ($value) {
+      return implode("\n", $value);
+    }, $debugInfo));
+
+    $issueBody = "## What happened\n\n[Describe what you did to trigger the error]\n\n## Debug information\n\n" . $debugInfoString;
+    $issueTitle = $error->getMessage();
+    $reportLink = "https://github.com/jeppester/nextcloud-photo-frames/issues/new?title=" . urlencode($issueTitle) . "&body=" . urlencode($issueBody);
+
+    $response = $this->renderPage('ErrorPage', [
+      'message' => $message,
+      'reportLink' => $reportLink,
+    ]);
+    $response->setStatus(500);
     return $response;
   }
 
