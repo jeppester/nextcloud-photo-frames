@@ -87,6 +87,5 @@ class EntryMapper extends QBMapper
         $qb->expr()->eq('frame_id', $qb->createNamedParameter($frameId, IQueryBuilder::PARAM_INT))
       );
     $qb->executeStatement();
-    $qb->resetQueryParts();
   }
 }
