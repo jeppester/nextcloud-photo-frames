@@ -60,7 +60,6 @@ class Frame extends Entity
   /** @var string */
   public $albumName;
   /** @var array */
-  public $frameFiles;
   /** @var \DateTimeZone */
   public $timezone;
 
@@ -72,16 +71,6 @@ class Frame extends Entity
   public function getAlbumName()
   {
     return $this->albumName;
-  }
-
-  public function setFrameFiles(array $frameFiles)
-  {
-    $this->frameFiles = $frameFiles;
-  }
-
-  public function getFrameFiles()
-  {
-    return $this->frameFiles;
   }
 
   public function setTimezone(\DateTimeZone $timezone)

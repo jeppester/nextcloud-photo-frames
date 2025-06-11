@@ -18,16 +18,19 @@ use OCP\Files\Node;
 class PhotoFrameService
 {
   private EntryMapper $entryMapper;
+  private FrameMapper $frameMapper;
   private IRootFolder $rootFolder;
   private Frame $frame;
   private string $timezone;
 
   public function __construct(
     EntryMapper $entryMapper,
+    FrameMapper $frameMapper,
     IRootFolder $rootFolder,
     Frame $frame,
   ) {
     $this->entryMapper = $entryMapper;
+    $this->frameMapper = $frameMapper;
     $this->rootFolder = $rootFolder;
     $this->frame = $frame;
   }
@@ -36,7 +39,7 @@ class PhotoFrameService
   {
     $latestEntry = $this->entryMapper->getLatestEntry($this->frame->getId());
     if ($latestEntry) {
-      return $this->getFrameFileById($latestEntry->getFileId());
+      return $this->getFrameFileById($this->frame, $latestEntry->getFileId());
     }
 
     $frameFile = $this->pickNewFrameFile();
@@ -50,8 +53,9 @@ class PhotoFrameService
     $latestFrameFile = null;
     $latestEntry = $this->entryMapper->getLatestEntry($this->frame->getId());
 
+
     if ($latestEntry && !$this->entryExpired($latestEntry)) {
-      $latestFrameFile = $this->getFrameFileById($latestEntry->getFileId());
+      $latestFrameFile = $this->getFrameFileById($this->frame, $latestEntry->getFileId());
     }
 
     if ($latestFrameFile) {
@@ -136,13 +140,14 @@ class PhotoFrameService
   private function pickNewFrameFile(): ?FrameFile
   {
     $usedFileIds = $this->entryMapper->getUsedFileIds($this->frame->getId());
-    $availableFrameFiles = array_filter($this->frame->getFrameFiles(), function ($frameFile) use ($usedFileIds) {
+    $frameFiles = $this->frameMapper->getFrameFiles($this->frame);
+    $availableFrameFiles = array_filter($frameFiles, function ($frameFile) use ($usedFileIds) {
       return !in_array($frameFile->getFileId(), $usedFileIds);
     });
 
     if (count($availableFrameFiles) === 0) {
       $this->entryMapper->deleteFrameEntries($this->frame->getId());
-      $availableFrameFiles = $this->frame->getFrameFiles();
+      $availableFrameFiles = $frameFiles;
     }
 
     $sortedFrameFiles = $this->sortFrameFilesBySelectionMethod($availableFrameFiles);
@@ -174,14 +179,9 @@ class PhotoFrameService
     }
   }
 
-  private function getFrameFileById(int $fileId): ?FrameFile
+  private function getFrameFileById(Frame $frame, int $fileId): ?FrameFile
   {
-    foreach ($this->frame->getFrameFiles() as $frameFile) {
-      if ($frameFile->getFileId() === $fileId) {
-        return $frameFile;
-      }
-    }
-    return null;
+    return $this->frameMapper->getFrameFileById($frame, $fileId);
   }
 
   public function getFrameFileNode(FrameFile $frameFile): Node

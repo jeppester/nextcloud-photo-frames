@@ -225,7 +225,7 @@ class PageController extends Controller
   #[FrontpageRoute(verb: 'GET', url: '/{shareToken}', requirements: ['shareToken' => '[a-zA-Z0-9]{64}'])]
   public function photoframe($shareToken): TemplateResponse
   {
-    $frame = $this->frameMapper->getByShareTokenWithFiles($shareToken);
+    $frame = $this->frameMapper->getByShareToken($shareToken);
     if (!$frame) {
       $this->throttler->registerAttempt(self::BRUTEFORCE_ACTION, $this->request->getRemoteAddress());
       throw new NotFoundException('Unable to find album');
@@ -250,14 +250,14 @@ class PageController extends Controller
   #[FrontpageRoute(verb: 'GET', url: '/{shareToken}/image', requirements: ['shareToken' => '[a-zA-Z0-9]+'])]
   public function photoframeImage($shareToken): FileDisplayResponse|TemplateResponse
   {
-    $frame = $this->frameMapper->getByShareTokenWithFiles($shareToken);
+    $frame = $this->frameMapper->getByShareToken($shareToken);
     if (!$frame) {
       $this->throttler->registerAttempt(self::BRUTEFORCE_ACTION, $this->request->getRemoteAddress());
       throw new NotFoundException('Unable to find album');
     }
 
     try {
-      $service = new PhotoFrameService($this->entryMapper, $this->rootFolder, $frame);
+      $service = new PhotoFrameService($this->entryMapper, $this->frameMapper, $this->rootFolder, $frame);
       $frameFile = $service->getCurrentFrameFile();
       $node = $service->getFrameFileNode($frameFile);
 
