@@ -6,8 +6,11 @@ namespace OCA\PhotoFrames\Db;
 
 use DateTime;
 use OCP\AppFramework\Db\QBMapper;
+use OCP\Calendar\IMetadataProvider;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\IMimeTypeLoader;
+use OCP\FilesMetadata\IFilesMetadataManager;
+use OCP\FilesMetadata\Model\IFilesMetadata;
 use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\Security\ISecureRandom;
@@ -34,8 +37,9 @@ class FrameMapper extends QBMapper
   private IMimeTypeLoader $mimeTypeLoader;
   private IRootFolder $rootFolder;
   private IConfig $config;
+  private IFilesMetadataManager $metadataManager;
 
-  public function __construct(IDBConnection $db, ISecureRandom $random, IDBConnection $connection, IMimeTypeLoader $mimeTypeLoader, IConfig $config, IRootFolder $rootFolder)
+  public function __construct(IDBConnection $db, ISecureRandom $random, IDBConnection $connection, IMimeTypeLoader $mimeTypeLoader, IConfig $config, IRootFolder $rootFolder, IFilesMetadataManager $metadataManager)
   {
     parent::__construct($db, 'photo_frames_frames', Frame::class);
     $this->random = $random;
@@ -43,6 +47,7 @@ class FrameMapper extends QBMapper
     $this->mimeTypeLoader = $mimeTypeLoader;
     $this->config = $config;
     $this->rootFolder = $rootFolder;
+    $this->metadataManager = $metadataManager;
   }
 
   public function getAllByUser(string $userId)
@@ -168,13 +173,20 @@ class FrameMapper extends QBMapper
     $frameFiles = [];
 
     $query = $this->connection->getQueryBuilder();
-    $query->select("album_files.file_id", "added", "owner")
+    $query->select("album_files.file_id", "added", "owner", "mtime", "mimetype")
       ->from("photos_albums_files", "album_files")
+      ->leftJoin('album_files', 'filecache', "file", $query->expr()->eq('album_files.file_id', 'file.fileid'))
       ->where($query->expr()->eq('album_files.album_id', $query->createNamedParameter($frame->getAlbumId(), IQueryBuilder::PARAM_INT)));
     $rows = $query->executeQuery()->fetchAll();
 
+    $fileIds = array_map(function ($row) {
+      return $row['file_id'];
+    }, $rows);
+    $metadataResults = $this->metadataManager->getMetadataForFiles($fileIds);
+
     foreach ($rows as $row) {
-      $frameFiles[] = $this->mapRowToFrameFile($row);
+      $metadata = $metadataResults[$row['file_id']];
+      $frameFiles[] = $this->mapRowToFrameFile($row, $metadata);
     }
 
     return $frameFiles;
@@ -183,8 +195,9 @@ class FrameMapper extends QBMapper
   public function getFrameFileById($frame, $fileId)
   {
     $query = $this->connection->getQueryBuilder();
-    $query->select("album_files.file_id", "added", "owner")
+    $query->select("album_files.file_id", "added", "owner", "mtime", "mimetype")
       ->from("photos_albums_files", "album_files")
+      ->leftJoin('album_files', 'filecache', "file", $query->expr()->eq('album_files.file_id', 'file.fileid'))
       ->where($query->expr()->eq('album_files.album_id', $query->createNamedParameter($frame->getAlbumId(), IQueryBuilder::PARAM_INT)))
       ->andWhere($query->expr()->eq('album_files.file_id', $query->createNamedParameter($fileId, IQueryBuilder::PARAM_INT)));
     $row = $query->executeQuery()->fetch();
@@ -193,7 +206,8 @@ class FrameMapper extends QBMapper
       return null;
     }
 
-    return $this->mapRowToFrameFile($row);
+    $metadata = $this->metadataManager->getMetadata($row['file_id']);
+    return $this->mapRowToFrameFile($row, $metadata);
   }
 
   public function createFrame(string $name, string $userUid, int $albumId, string $selectionMethod, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp): Frame
@@ -249,18 +263,20 @@ class FrameMapper extends QBMapper
     $this->connection->commit();
   }
 
-  private function mapRowToFrameFile(array $row): FrameFile
+  private function mapRowToFrameFile(array $row, IFilesMetadata|null $metadata): FrameFile
   {
-    $nodes = $this->rootFolder->getUserFolder($row['owner'])->getById($row['file_id']);
-    $node = current($nodes);
-    $metadata = $node->getMetadata();
+
+    $capturedAt = null;
+    if ($metadata) {
+      $capturedAt = $metadata->getInt("photos-original_date_time");
+    }
 
     return new FrameFile(
       $row['file_id'],
       $row['owner'],
-      $node->getMimetype(),
+      $this->mimeTypeLoader->getMimetypeById((int) $row['mimetype']),
       $row['added'],
-      $metadata['photos-original_date_time'] ?? $node->getMTime(),
+      $capturedAt ?? 0,
     );
   }
 }
