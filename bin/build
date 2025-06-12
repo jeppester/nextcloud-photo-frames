@@ -1,0 +1,21 @@
+#!/bin/env bash
+
+# Exit immediately on errors
+set -e
+
+# Get the directory of this script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$SCRIPT_DIR" && cd .. && pwd)"
+
+rm -rf "$ROOT/build"
+mkdir -p "$ROOT/build/photo_frames"
+
+cp -r "$ROOT/appinfo" "$ROOT/build/photo_frames"
+cp -r "$ROOT/css" "$ROOT/build/photo_frames"
+cp -r "$ROOT/img" "$ROOT/build/photo_frames"
+cp -r "$ROOT/js" "$ROOT/build/photo_frames"
+cp -r "$ROOT/lib" "$ROOT/build/photo_frames"
+cp -r "$ROOT/templates" "$ROOT/build/photo_frames"
+
+tar -czvf "$ROOT/build/photo_frames.tar.gz" -C "$ROOT/build" photo_frames
+openssl dgst -sha512 -sign "$ROOT/photo_frames.key" "$ROOT/build/photo_frames.tar.gz" | openssl base64 > "$ROOT/build/photo_frames.tar.gz.sha512"
