@@ -210,7 +210,7 @@ class FrameMapper extends QBMapper
     return $this->mapRowToFrameFile($row, $metadata);
   }
 
-  public function createFrame(string $name, string $userUid, int $albumId, string $selectionMethod, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp): Frame
+  public function createFrame(string $name, string $userUid, int $albumId, string $selectionMethod, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp, string $photoSize): Frame
   {
     $frame = new Frame();
     $frame->setName($name);
@@ -222,6 +222,7 @@ class FrameMapper extends QBMapper
     $frame->setStartDayAt($startDayAt);
     $frame->setEndDayAt($endDayAt);
     $frame->setShowPhotoTimestamp($showPhotoTimestamp);
+    $frame->setPhotoSize($photoSize);
     $frame->setShareToken($this->random->generate(64, ISecureRandom::CHAR_ALPHANUMERIC));
 
     $timestamp = new DateTime();
@@ -230,7 +231,7 @@ class FrameMapper extends QBMapper
     return $this->insert($frame);
   }
 
-  public function updateFrame(Frame $frame, string $name, string $userUid, int $albumId, string $selectionMethod, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp): Frame
+  public function updateFrame(Frame $frame, string $name, string $userUid, int $albumId, string $selectionMethod, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp, string $photoSize): Frame
   {
     $frame->setName($name);
     $frame->setUserUid($userUid);
@@ -241,6 +242,7 @@ class FrameMapper extends QBMapper
     $frame->setStartDayAt($startDayAt);
     $frame->setEndDayAt($endDayAt);
     $frame->setShowPhotoTimestamp($showPhotoTimestamp);
+    $frame->setPhotoSize($photoSize);
 
     return $this->update($frame);
   }

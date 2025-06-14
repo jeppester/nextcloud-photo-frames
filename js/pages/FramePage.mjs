@@ -107,7 +107,7 @@ const styles = {
 };
 
 export default function FramePage(props) {
-  const { showPhotoTimestamp } = props;
+  const { showPhotoTimestamp, photoSize } = props;
   const imageUrl = location.href + "/image";
   const [images, setImages] = useState([]);
 
@@ -169,6 +169,7 @@ export default function FramePage(props) {
         html`<${Frame}
           key=${image.expiresAt}
           showPhotoTimestamp=${showPhotoTimestamp}
+          photoSize=${photoSize}
           image=${image}
         />`
     )}

@@ -37,8 +37,19 @@ const styles = {
     width: 100%;
     height: 100%;
     background-position: center;
-    background-size: contain;
     background-repeat: no-repeat;
+
+    &.stretch {
+      background-size: 100% 100%;
+    }
+
+    &.contain {
+      background-size: contain;
+    }
+
+    &.cover {
+      background-size: cover;
+    }
   `,
   dateContainer: css`
     position: absolute;
@@ -89,7 +100,7 @@ const styles = {
 };
 
 export default function Frame(props) {
-  const { showPhotoTimestamp, image } = props;
+  const { showPhotoTimestamp, photoSize, image } = props;
 
   return html`
     <div className=${styles.frame}>
@@ -98,7 +109,7 @@ export default function Frame(props) {
         style=${{ backgroundImage: `url("${image.url}")` }}
       />
       <div
-        className=${styles.photo}
+        className=${[styles.photo, photoSize].join(" ")}
         style=${{ backgroundImage: `url("${image.url}")` }}
       />
 

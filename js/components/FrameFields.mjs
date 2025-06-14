@@ -62,6 +62,7 @@ export default function FrameFields(props) {
     albumId: frame.albumId || "",
     selectionMethod: frame.selectionMethod || "latest",
     showPhotoTimestamp: !!frame.showPhotoTimestamp,
+    photoSize: frame.photoSize || "contain",
     rotationUnit: frame.rotationUnit || "hour",
     rotationsPerUnit: frame.rotationsPerUnit || 1,
     startDayAt: frame.startDayAt || "07:00",
@@ -205,9 +206,7 @@ export default function FrameFields(props) {
             ${" "}${nPhotos(data.rotationsPerUnit, false)}
           </p>
         </div>
-      </div>
 
-      <div className="col">
         <div>
           <h3 className=${styles.fieldTitle}>Day start / end</h3>
           <p>
@@ -253,7 +252,9 @@ export default function FrameFields(props) {
                   : html`<${Schedule} ...${data} />`}
               `}
         </div>
+      </div>
 
+      <div className="col">
         <div>
           <h3 className=${styles.fieldTitle}>Display options</h3>
           <label>
@@ -267,10 +268,52 @@ export default function FrameFields(props) {
             <span>Show photo date</span>
           </label>
 
+          <div className=${styles.radioButtons}>
+            <label>
+              <input
+                type="radio"
+                name="photoSize"
+                value="contain"
+                required
+                checked=${data.photoSize === "contain"}
+                onChange=${handleInput}
+              />
+              <span>
+                <strong>Contain</strong> the full photo within the frame
+              </span>
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="photoSize"
+                value="cover"
+                required
+                checked=${data.photoSize === "cover"}
+                onChange=${handleInput}
+              />
+              <span><strong>Cover</strong> the full frame (cut edges)</span>
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="photoSize"
+                value="stretch"
+                required
+                checked=${data.photoSize === "stretch"}
+                onChange=${handleInput}
+              />
+              <span>
+                <strong>Stretch</strong> image to fill the frame (proportions
+                are not kept)
+              </span>
+            </label>
+          </div>
+
           <div className=${styles.preview}>
             <${Screen} className=${styles.screen}>
               <${Frame}
                 showPhotoTimestamp=${data.showPhotoTimestamp}
+                photoSize=${data.photoSize}
                 image=${testImage}
               />
             <//>

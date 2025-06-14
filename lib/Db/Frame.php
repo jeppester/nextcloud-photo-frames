@@ -17,6 +17,7 @@ use OCP\AppFramework\Db\Entity;
  * @method string getStartDayAt()
  * @method string getEndDayAt()
  * @method bool getShowPhotoTimestamp()
+ * @method string getPhotoSize()
  * @method DateTime getCreatedAt()
  *
  * @method void setName(string $name)
@@ -29,6 +30,7 @@ use OCP\AppFramework\Db\Entity;
  * @method void setStartDayAt(string $startDayAt)
  * @method void setEndDayAt(string $endDayAt)
  * @method void setShowPhotoTimestamp(bool $show)
+ * @method void setPhotoSize(string $show)
  * @method void setCreatedAt(\DateTime $createdAt)
  */
 class Frame extends Entity
@@ -55,6 +57,8 @@ class Frame extends Entity
   public $createdAt;
   /** @var bool */
   public $showPhotoTimestamp;
+  /** @var string */
+  public $photoSize;
 
 
   /** @var string */
@@ -95,6 +99,7 @@ class Frame extends Entity
     $this->addType('startDayAt', 'string');
     $this->addType('endDayAt', 'string');
     $this->addType('showPhotoTimestamp', 'bool');
+    $this->addType('photoSize', 'string');
     $this->addType('createdAt', 'datetime');
   }
 }

@@ -84,7 +84,7 @@ class PageController extends Controller
   #[NoAdminRequired]
   #[OpenAPI(OpenAPI::SCOPE_IGNORE)]
   #[FrontpageRoute(verb: 'GET', url: '/')]
-  public function index(): TemplateResponse
+  public function index(): Response
   {
     Util::addStyle(Application::APP_ID, 'main');
 
@@ -110,7 +110,7 @@ class PageController extends Controller
   #[NoAdminRequired]
   #[OpenAPI(OpenAPI::SCOPE_IGNORE)]
   #[FrontpageRoute(verb: 'GET', url: '/new')]
-  public function new(): TemplateResponse
+  public function new(): Response
   {
     try {
       $uid = $this->currentUser->getUID();
@@ -129,7 +129,7 @@ class PageController extends Controller
   #[NoAdminRequired]
   #[OpenAPI(OpenAPI::SCOPE_IGNORE)]
   #[FrontpageRoute(verb: 'POST', url: '/')]
-  public function create(): RedirectResponse
+  public function create(): Response
   {
     try {
       $params = $this->request->getParams();
@@ -143,6 +143,7 @@ class PageController extends Controller
         $params['startDayAt'],
         $params['endDayAt'],
         (bool) $params['showPhotoTimestamp'],
+        $params['photoSize'],
       );
 
       return new RedirectResponse(redirectURL: $this->urlGenerator->linkToRoute('photo_frames.page.index'));
@@ -155,7 +156,7 @@ class PageController extends Controller
   #[NoAdminRequired]
   #[OpenAPI(OpenAPI::SCOPE_IGNORE)]
   #[FrontpageRoute(verb: 'GET', url: '/{id}/edit', requirements: ['id' => '[0-9]+'])]
-  public function edit($id): TemplateResponse
+  public function edit($id): Response
   {
     try {
       $uid = $this->currentUser->getUID();
@@ -193,6 +194,7 @@ class PageController extends Controller
         $params['startDayAt'],
         $params['endDayAt'],
         (bool) $params['showPhotoTimestamp'],
+        $params['photoSize'],
       );
 
       return new RedirectResponse($this->urlGenerator->linkToRoute('photo_frames.page.index'));
@@ -223,7 +225,7 @@ class PageController extends Controller
   #[PublicPage]
   #[OpenAPI(OpenAPI::SCOPE_IGNORE)]
   #[FrontpageRoute(verb: 'GET', url: '/{shareToken}', requirements: ['shareToken' => '[a-zA-Z0-9]{64}'])]
-  public function photoframe($shareToken): TemplateResponse
+  public function photoframe($shareToken): Response
   {
     $frame = $this->frameMapper->getByShareToken($shareToken);
     if (!$frame) {
@@ -236,6 +238,7 @@ class PageController extends Controller
         'FramePage',
         [
           'showPhotoTimestamp' => $frame->getShowPhotoTimestamp(),
+          'photoSize' => $frame->getPhotoSize(),
         ],
         true
       );
@@ -248,7 +251,7 @@ class PageController extends Controller
   #[PublicPage]
   #[OpenAPI(OpenAPI::SCOPE_IGNORE)]
   #[FrontpageRoute(verb: 'GET', url: '/{shareToken}/image', requirements: ['shareToken' => '[a-zA-Z0-9]+'])]
-  public function photoframeImage($shareToken): FileDisplayResponse|TemplateResponse
+  public function photoframeImage($shareToken): Response
   {
     $frame = $this->frameMapper->getByShareToken($shareToken);
     if (!$frame) {
@@ -275,7 +278,7 @@ class PageController extends Controller
     }
   }
 
-  private function renderPage($name, $props, $blank = false): TemplateResponse
+  private function renderPage($name, $props, $blank = false): Response
   {
     $response = new TemplateResponse(
       appName: Application::APP_ID,
@@ -295,7 +298,7 @@ class PageController extends Controller
     return $response;
   }
 
-  private function errorPage($error)
+  private function errorPage($error): Response
   {
     Util::addStyle(Application::APP_ID, 'main');
 
