@@ -143,6 +143,7 @@ class PageController extends Controller
         $params['startDayAt'],
         $params['endDayAt'],
         (bool) $params['showPhotoTimestamp'],
+        (bool) $params['showClock'],
         $params['photoSize'],
       );
 
@@ -194,6 +195,7 @@ class PageController extends Controller
         $params['startDayAt'],
         $params['endDayAt'],
         (bool) $params['showPhotoTimestamp'],
+        (bool) $params['showClock'],
         $params['photoSize'],
       );
 
@@ -238,6 +240,7 @@ class PageController extends Controller
         'FramePage',
         [
           'showPhotoTimestamp' => $frame->getShowPhotoTimestamp(),
+          'showClock' => $frame->getShowClock(),
           'photoSize' => $frame->getPhotoSize(),
         ],
         true

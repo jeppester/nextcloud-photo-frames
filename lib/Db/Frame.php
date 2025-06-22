@@ -57,6 +57,8 @@ class Frame extends Entity
   public $createdAt;
   /** @var bool */
   public $showPhotoTimestamp;
+  /** @var bool */
+  public $showClock;
   /** @var string */
   public $photoSize;
 
@@ -99,6 +101,7 @@ class Frame extends Entity
     $this->addType('startDayAt', 'string');
     $this->addType('endDayAt', 'string');
     $this->addType('showPhotoTimestamp', 'bool');
+    $this->addType('showClock', 'bool');
     $this->addType('photoSize', 'string');
     $this->addType('createdAt', 'datetime');
   }

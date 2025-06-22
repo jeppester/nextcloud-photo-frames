@@ -123,6 +123,7 @@ export default function FrameFields(props) {
     selectionMethod: frame.selectionMethod || "latest",
     showPhotoTimestamp:
       frame.showPhotoTimestamp !== null ? frame.showPhotoTimestamp : true,
+    showClock: frame.showClock !== null ? frame.showClock : false,
     photoSize: frame.photoSize || "smart-crop",
     rotationUnit: frame.rotationUnit || "hour",
     rotationsPerUnit: frame.rotationsPerUnit || 1,
@@ -323,6 +324,7 @@ export default function FrameFields(props) {
           <${Screen} className=${styles.screen}>
             <${Frame}
               showPhotoTimestamp=${data.showPhotoTimestamp}
+              showClock=${data.showClock}
               photoSize=${data.photoSize}
               image=${testImageLandscape}
             />
@@ -330,6 +332,7 @@ export default function FrameFields(props) {
           <${Screen} className=${styles.screen}>
             <${Frame}
               showPhotoTimestamp=${data.showPhotoTimestamp}
+              showClock=${data.showClock}
               photoSize=${data.photoSize}
               image=${testImagePortrait}
             />
@@ -337,16 +340,31 @@ export default function FrameFields(props) {
         </div>
         <div>
           <h3 className=${styles.fieldTitle}>Display options</h3>
-          <label>
-            <input
-              type="checkbox"
-              name="showPhotoTimestamp"
-              value="1"
-              checked=${data.showPhotoTimestamp}
-              onChange=${handleInput}
-            />
-            <span>Show photo date</span>
-          </label>
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                name="showPhotoTimestamp"
+                value="1"
+                checked=${data.showPhotoTimestamp}
+                onChange=${handleInput}
+              />
+              <span>Show photo date</span>
+            </label>
+          </div>
+
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                name="showClock"
+                value="1"
+                checked=${data.showClock}
+                onChange=${handleInput}
+              />
+              <span>Show clock</span>
+            </label>
+          </div>
 
           <div className=${styles.radioButtons}>
             <label>

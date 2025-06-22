@@ -7,6 +7,8 @@ import {
 import { css, keyframes } from "../vendor/emotion-css.min.mjs";
 import getLoadedImage from "../utils/getLoadedImage.mjs";
 import renderSmartCroppedImage from "../utils/renderSmartCroppedImage.mjs";
+import ImageDate from "./ImageDate.mjs";
+import Clock from "./Clock.mjs";
 
 const animations = {
   fadeIn: keyframes`
@@ -59,6 +61,15 @@ const styles = {
       background-size: cover;
     }
   `,
+  clockContainer: css`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: end;
+    padding: 1.5em;
+  `,
   dateContainer: css`
     position: absolute;
     bottom: 0;
@@ -66,49 +77,12 @@ const styles = {
     right: 0;
     display: flex;
     justify-content: start;
-    padding: 1em;
-  `,
-  dateBackground: css`
-    border-radius: 1em;
-    border-top-left-radius: 0;
-    border-bottom-right-radius: 0;
-    padding: 1em 1em;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    background-color: rgba(255, 250, 250, 0.4);
-    border: 0.0625em solid rgba(213, 204, 195, 0.3);
-    box-shadow: 0px 0.3125em 2, 5em rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(0.3125em);
-  `,
-  date: css`
-    text-align: left;
-    text-transform: capitalize;
-    font-family: sans-serif;
-    margin: 0;
-    color: rgb(35, 18, 5);
-    text-shadow: 0px 0px 0.0625em rgba(255, 255, 255, 0.4);
-  `,
-  dateSpacer: css`
-    height: 0.09375em;
-    margin: 0.25em 1em 0 0.1em;
-    background-color: rgb(35, 18, 5);
-  `,
-  year: css`
-    font-size: 2em;
-    font-weight: 600;
-  `,
-  month: css`
-    font-size: 1.2em;
-    font-weight: 500;
-    margin-left: 0.05em;
-    padding-bottom: 0.2em;
-    border-bottom: 0.09375em solid rgb(35, 18, 5);
+    padding: 1.2em;
   `,
 };
 
 export default function Frame(props) {
-  const { showPhotoTimestamp, photoSize, image } = props;
+  const { showPhotoTimestamp, showClock, photoSize, image } = props;
   const canvasRef = useRef();
   const loadedImageRef = useRef();
   const showBackground = ["contain", "smart-crop"].includes(photoSize);
@@ -149,21 +123,16 @@ export default function Frame(props) {
               style=${{ backgroundImage: `url("${image.url}")` }}
             />
           `}
+      ${showClock &&
+      html`
+        <div className=${styles.clockContainer}>
+          <${Clock} image=${image} />
+        </div>
+      `}
       ${showPhotoTimestamp &&
       html`
         <div className=${styles.dateContainer}>
-          <div className=${styles.dateBackground}>
-            <h1 className=${`${styles.date} ${styles.month}`}>
-              ${Intl.DateTimeFormat(navigator.locale, {
-                month: "short",
-              }).format(image.timestamp)}
-            </h1>
-            <h1 className=${`${styles.date} ${styles.year}`}>
-              ${Intl.DateTimeFormat(navigator.locale, {
-                year: "numeric",
-              }).format(image.timestamp)}
-            </h1>
-          </div>
+          <${ImageDate} image=${image} />
         </div>
       `}
     </div>
