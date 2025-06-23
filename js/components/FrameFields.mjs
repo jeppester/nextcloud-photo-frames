@@ -90,14 +90,11 @@ const styles = {
     padding: 1rem;
     width: 100%;
     max-width: 400px;
-    font-size: 20%;
 
     @media screen and (min-width: 600px) {
-      font-size: 33.33%;
       max-width: 600px;
     }
     @media screen and (min-width: 1400px) {
-      font-size: 50%;
       max-width: 600px;
     }
   `,

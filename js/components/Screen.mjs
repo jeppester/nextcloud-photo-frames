@@ -20,13 +20,24 @@ const styles = {
     overflow: hidden;
     border-radius: 0.1rem;
   `,
+  screenContents: css`
+    aspect-ratio: 16/10;
+    width: 100%;
+    container-type: size;
+  `,
+  textScaler: css`
+    // 16px on a 1280px wide display, e.g. 16 / 1280 * 100 = 1.25
+    font-size: 1.25cqw;
+  `,
 };
 
 export default function Screen(props) {
   return html`
     <div className=${`${styles.screen} ${props.className || ""}`}>
       <div className=${styles.screenInner}>
-        <div style=${{ aspectRatio: "16/10" }}>${props.children}</div>
+        <div className=${styles.screenContents}>
+          <div className=${styles.textScaler}>${props.children}</div>
+        </div>
       </div>
     </div>
   `;

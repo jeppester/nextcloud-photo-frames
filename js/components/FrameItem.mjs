@@ -1,4 +1,8 @@
-import { html } from "../vendor/htm-preact-standalone.min.mjs";
+import {
+  html,
+  useEffect,
+  useRef,
+} from "../vendor/htm-preact-standalone.min.mjs";
 import { css } from "../vendor/emotion-css.min.mjs";
 import { generateUrl } from "../vendor/nextcloud-router.min.mjs";
 
@@ -42,25 +46,38 @@ const styles = {
     margin-bottom: 0.5rem;
   `,
   iframeContainer: css`
+    --iframe-scale: 0.1;
     width: 100%;
     aspect-ratio: 16/10;
     overflow: hidden;
   `,
   iframe: css`
-    width: 300%;
-    height: 300%;
-    transform: scale(33.3333%);
+    width: 1280px;
+    height: 800px;
+    transform: scale(var(--iframe-scale));
     transform-origin: 0% 0%;
   `,
 };
 
 export default function FrameItem(props) {
   const { frame, onShowQRCode, onDelete } = props;
+  const iframeContainerRef = useRef();
+
+  useEffect(() => {
+    const updateIframeScale = () => {
+      const elm = iframeContainerRef.current;
+      elm.style.setProperty("--iframe-scale", elm.offsetWidth / 1280);
+    };
+    window.addEventListener("resize", updateIframeScale);
+    updateIframeScale();
+
+    return () => window.removeEventListener("resize", updateIframeScale);
+  }, []);
 
   return html`
     <div className=${styles.frame}>
       <${Screen} className=${styles.preview}>
-        <div className=${styles.iframeContainer}>
+        <div ref=${iframeContainerRef} className=${styles.iframeContainer}>
           <iframe className=${styles.iframe} src=${urlForFrame(frame)} />
         </div>
       <//>
