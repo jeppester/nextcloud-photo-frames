@@ -13,6 +13,7 @@ const styles = {
     gap: 0.5rem;
     background-color: var(--color-main-background);
     box-shadow: 0px 5px 10px var(--color-main-background);
+    z-index: 1;
   `,
   items: css`
     flex: 1 1 auto;
