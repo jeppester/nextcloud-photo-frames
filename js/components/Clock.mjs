@@ -12,8 +12,6 @@ const animations = {
   `,
 };
 
-console.log(animations.blink);
-
 const styles = {
   container: css`
     display: flex;
