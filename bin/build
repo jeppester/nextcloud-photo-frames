@@ -17,5 +17,9 @@ cp -r "$ROOT/js" "$ROOT/build/photo_frames"
 cp -r "$ROOT/lib" "$ROOT/build/photo_frames"
 cp -r "$ROOT/templates" "$ROOT/build/photo_frames"
 
+# Add timestamp to all imports
+TIMESTAMP=`date +%s`
+find "$ROOT/build" -type f -wholename "*/templates/*.php" -o -name "*.mjs" | xargs sed -i -E "/from \"[^\"]*vendor[^\"]*\"/! s/(from \"[^\"]*)/\1?v=${TIMESTAMP}/g"
+
 tar -czvf "$ROOT/build/photo_frames.tar.gz" -C "$ROOT/build" photo_frames
 openssl dgst -sha512 -sign "$ROOT/photo_frames.key" "$ROOT/build/photo_frames.tar.gz" | openssl base64 > "$ROOT/build/photo_frames.tar.gz.sha512"
