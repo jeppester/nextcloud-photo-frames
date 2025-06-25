@@ -27,7 +27,7 @@ const styles = {
     max-width: 1600px;
     gap: 3rem;
 
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 800px) {
       flex-direction: column;
       gap: 0;
     }
@@ -86,9 +86,20 @@ const styles = {
   error: css`
     color: var(--color-error);
   `,
+  // Keeping this for now
+  // screensBottom: css`
+  //   width: 100%;
+  //   display: flex;
+  //   gap: 0.5rem;
+  // `,
+  // screensLeft: css`
+  //   display: flex;
+  //   flex-direction: column;
+  //   gap: 0.5rem;
+  //   width: calc((100% - 4rem - 0.5rem - 8px) / 26 * 16 + 2rem);
+  // `,
   screen: css`
     padding: 1rem;
-    width: 100%;
     max-width: 400px;
 
     @media screen and (min-width: 600px) {
@@ -97,6 +108,20 @@ const styles = {
     @media screen and (min-width: 1400px) {
       max-width: 600px;
     }
+
+    /* Keeping this around so I don't have to calculate again */
+    /* &.screen1 {
+      width: 100%;
+    }
+    &.screen2 {
+      width: calc((100% - 4rem - 0.5rem - 8px) / 26 * 10 + 2rem);
+    }
+    &.screen3 {
+      width: calc((100% - 4rem - 0.5rem - 8px) / 22.25 * 6.25 + 2rem);
+    }
+    &.screen4 {
+      width: calc((100% - 4rem - 0.5rem - 8px) / 22.25 * 16 + 2rem);
+    } */
   `,
 };
 

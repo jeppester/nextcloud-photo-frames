@@ -24,10 +24,19 @@ const styles = {
     aspect-ratio: 16/10;
     width: 100%;
     container-type: size;
+
+    &.portrait {
+      aspect-ratio: 10/16;
+    }
   `,
   textScaler: css`
     // 16px on a 1280px wide display, e.g. 16 / 1280 * 100 = 1.25
     font-size: 1.25cqw;
+
+    &.portrait {
+      // Same as above, but for 800px (because the display is on the side)
+      font-size: 2cqw;
+    }
   `,
 };
 
@@ -35,8 +44,18 @@ export default function Screen(props) {
   return html`
     <div className=${`${styles.screen} ${props.className || ""}`}>
       <div className=${styles.screenInner}>
-        <div className=${styles.screenContents}>
-          <div className=${styles.textScaler}>${props.children}</div>
+        <div
+          className=${`${styles.screenContents} ${
+            props.portrait ? "portrait" : ""
+          }`}
+        >
+          <div
+            className=${`${styles.textScaler} ${
+              props.portrait ? "portrait" : ""
+            } `}
+          >
+            ${props.children}
+          </div>
         </div>
       </div>
     </div>
