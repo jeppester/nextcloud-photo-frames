@@ -54,6 +54,10 @@ const styles = {
     select {
       width: 100%;
     }
+
+    h3 {
+      margin-top: 0.9rem;
+    }
   `,
   radioButtons: css`
     margin-top: 1rem;
@@ -61,13 +65,38 @@ const styles = {
     flex-direction: column;
   `,
   fieldTitle: css`
-    margin-top: 1rem;
+    margin-top: 1.5rem;
     margin-bottom: 0.3rem;
     font-size: 1.2rem;
     font-weight: 600;
 
     & + * {
       margin-top: 0 !important;
+    }
+  `,
+  tip: css`
+    font-style: italic;
+    font-size: 0.9em;
+    margin-top: 0.5rem !important;
+    padding-left: 1.4em;
+    position: relative;
+
+    ::before {
+      content: "";
+      top: 0.23em;
+      left: 0;
+      display: block;
+      position: absolute;
+      width: 1em;
+      height: 1em;
+      background-size: 100% auto;
+      background-repeat: no-repeat;
+      background-position: 0% center;
+      background-image: url("${window.appPath}/img/info.svg");
+
+      @media (prefers-color-scheme: dark) {
+        background-image: url("${window.appPath}/img/info-white.svg");
+      }
     }
   `,
   previewColumn: css`
@@ -258,7 +287,7 @@ export default function FrameFields(props) {
               <span> Pick a <strong>random</strong> photo </span>
             </label>
           </div>
-          <p>
+          <p className=${styles.tip}>
             Shown photos get discarded from the selection pool. When the pool
             runs dry, all discarded photos are readded to the pool.
           </p>
@@ -296,10 +325,6 @@ export default function FrameFields(props) {
 
         <div>
           <h3 className=${styles.fieldTitle}>Day start / end</h3>
-          <p>
-            Use this to avoid "wasting" photos during the night and/or to better
-            control each photo's interval when rotating per day.
-          </p>
           ${data.rotationUnit === "day" && parseInt(data.rotationsPerUnit) === 1
             ? html`<p>
                 <strong>
@@ -330,6 +355,12 @@ export default function FrameFields(props) {
                   />
                 </p>
 
+                <p className=${styles.tip}>
+                  Use this setting to avoid "wasting" photos during the night
+                  and/or to better control each photo's interval when rotating
+                  per day.
+                </p>
+
                 ${startEndIsInvalid
                   ? html`
                       <p className=${styles.error}>
@@ -342,24 +373,31 @@ export default function FrameFields(props) {
       </div>
 
       <div className=${styles.previewColumn}>
-        <div className=${styles.preview}>
-          <${Screen} className=${styles.screen}>
-            <${Frame}
-              showPhotoTimestamp=${data.showPhotoTimestamp}
-              showClock=${data.showClock}
-              photoSize=${data.photoSize}
-              image=${testImageLandscape}
-            />
-          <//>
-          <${Screen} className=${styles.screen}>
-            <${Frame}
-              showPhotoTimestamp=${data.showPhotoTimestamp}
-              showClock=${data.showClock}
-              photoSize=${data.photoSize}
-              image=${testImagePortrait}
-            />
-          <//>
+        <div>
+          <div className=${styles.preview}>
+            <${Screen} className=${styles.screen}>
+              <${Frame}
+                showPhotoTimestamp=${data.showPhotoTimestamp}
+                showClock=${data.showClock}
+                photoSize=${data.photoSize}
+                image=${testImageLandscape}
+              />
+            <//>
+            <${Screen} className=${styles.screen}>
+              <${Frame}
+                showPhotoTimestamp=${data.showPhotoTimestamp}
+                showClock=${data.showClock}
+                photoSize=${data.photoSize}
+                image=${testImagePortrait}
+              />
+            <//>
+          </div>
+          <p className=${styles.tip}>
+            Previews are accurate to a 1280 x 800 resolution, typical for
+            tablets
+          </p>
         </div>
+
         <div>
           <h3 className=${styles.fieldTitle}>Display options</h3>
           <div>
