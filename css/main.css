@@ -41,3 +41,7 @@
 .app-photo_frames .grow {
   flex-grow: 1;
 }
+
+.app-photo_frames .text-center {
+  text-align: center;
+}

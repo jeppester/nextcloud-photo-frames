@@ -78,26 +78,7 @@ const styles = {
     font-style: italic;
     font-size: 0.9em;
     margin-top: 0.5rem !important;
-    padding-left: 1.4em;
     position: relative;
-
-    ::before {
-      content: "";
-      top: 0.23em;
-      left: 0;
-      display: block;
-      position: absolute;
-      width: 1em;
-      height: 1em;
-      background-size: 100% auto;
-      background-repeat: no-repeat;
-      background-position: 0% center;
-      background-image: url("${window.appPath}/img/info.svg");
-
-      @media (prefers-color-scheme: dark) {
-        background-image: url("${window.appPath}/img/info-white.svg");
-      }
-    }
   `,
   previewColumn: css`
     display: flex;
@@ -115,18 +96,6 @@ const styles = {
   error: css`
     color: var(--color-error);
   `,
-  // Keeping this for now
-  // screensBottom: css`
-  //   width: 100%;
-  //   display: flex;
-  //   gap: 0.5rem;
-  // `,
-  // screensLeft: css`
-  //   display: flex;
-  //   flex-direction: column;
-  //   gap: 0.5rem;
-  //   width: calc((100% - 4rem - 0.5rem - 8px) / 26 * 16 + 2rem);
-  // `,
   screen: css`
     padding: 1rem;
     max-width: 400px;
@@ -137,20 +106,6 @@ const styles = {
     @media screen and (min-width: 1400px) {
       max-width: 600px;
     }
-
-    /* Keeping this around so I don't have to calculate again */
-    /* &.screen1 {
-      width: 100%;
-    }
-    &.screen2 {
-      width: calc((100% - 4rem - 0.5rem - 8px) / 26 * 10 + 2rem);
-    }
-    &.screen3 {
-      width: calc((100% - 4rem - 0.5rem - 8px) / 22.25 * 6.25 + 2rem);
-    }
-    &.screen4 {
-      width: calc((100% - 4rem - 0.5rem - 8px) / 22.25 * 16 + 2rem);
-    } */
   `,
 };
 
@@ -189,6 +144,11 @@ export default function FrameFields(props) {
     }));
   };
 
+  const showStartEndOptions =
+    data.rotationUnit !== "day" || parseInt(data.rotationsPerUnit) !== 1;
+  const startEndIsInvalid =
+    data.endDayAt !== "00:00" && data.endDayAt <= data.startDayAt;
+
   // Rotation options
   const rotationsOptions = rotationsOptionsForUnit[data.rotationUnit];
 
@@ -201,8 +161,11 @@ export default function FrameFields(props) {
     setData((prev) => ({ ...prev, rotationsPerUnit }));
   }, [data.rotationUnit]);
 
-  const startEndIsInvalid =
-    data.endDayAt !== "00:00" && data.endDayAt <= data.startDayAt;
+  useEffect(() => {
+    if (!showStartEndOptions) {
+      setData((prev) => ({ ...prev, startDayAt: "07:00", endDayAt: "22:00" }));
+    }
+  }, [showStartEndOptions]);
 
   useEffect(() => {
     if (!startDayAtRef.current) return;
@@ -320,55 +283,49 @@ export default function FrameFields(props) {
               )}
             </select>
             ${" "}${nPhotos(data.rotationsPerUnit, false)}
+
+            <br />
+
+            ${!showStartEndOptions &&
+            html`
+              <input type="hidden" name="startDayAt" value=${data.startDayAt} />
+              <input type="hidden" name="endDayAt" value=${data.endDayAt} />
+            `}
+            ${showStartEndOptions &&
+            html`
+              Rotate photos from${" "}
+              <input
+                type="time"
+                name="startDayAt"
+                value="${data.startDayAt}"
+                required
+                ref=${startDayAtRef}
+                onChange=${handleInput}
+              />
+              ${" "}until${" "}
+              <input
+                type="time"
+                name="endDayAt"
+                value="${data.endDayAt}"
+                required
+                onChange=${handleInput}
+              />
+            `}
           </p>
-        </div>
 
-        <div>
-          <h3 className=${styles.fieldTitle}>Day start / end</h3>
-          ${data.rotationUnit === "day" && parseInt(data.rotationsPerUnit) === 1
-            ? html`<p>
-                <strong>
-                  This option doesn't matter when the frame shows a single photo
-                  per day
-                </strong>
-                <input type="hidden" name="startDayAt" value="07:00" />
-                <input type="hidden" name="endDayAt" value="22:00" />
-              </p>`
-            : html`
-                <p>
-                  Rotate photos from${" "}
-                  <input
-                    type="time"
-                    name="startDayAt"
-                    value="${data.startDayAt}"
-                    required
-                    ref=${startDayAtRef}
-                    onChange=${handleInput}
-                  />
-                  ${" "}until${" "}
-                  <input
-                    type="time"
-                    name="endDayAt"
-                    value="${data.endDayAt}"
-                    required
-                    onChange=${handleInput}
-                  />
+          ${showStartEndOptions &&
+          html` <p className=${styles.tip}>
+            Tip: Use the from/until settings to avoid "wasting" photos during
+            the night and/or to better control each photo's interval when
+            rotating per day.
+          </p>`}
+          ${startEndIsInvalid
+            ? html`
+                <p className=${styles.error}>
+                  Start time must be before end time
                 </p>
-
-                <p className=${styles.tip}>
-                  Use this setting to avoid "wasting" photos during the night
-                  and/or to better control each photo's interval when rotating
-                  per day.
-                </p>
-
-                ${startEndIsInvalid
-                  ? html`
-                      <p className=${styles.error}>
-                        Start time must be before end time
-                      </p>
-                    `
-                  : html`<${Schedule} ...${data} />`}
-              `}
+              `
+            : html`<${Schedule} ...${data} />`}
         </div>
       </div>
 
@@ -392,7 +349,7 @@ export default function FrameFields(props) {
               />
             <//>
           </div>
-          <p className=${styles.tip}>
+          <p className=${`${styles.tip} text-center`}>
             Previews are accurate to a 1280 x 800 resolution, typical for
             tablets
           </p>
