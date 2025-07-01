@@ -1,4 +1,4 @@
-export default function renderSmartCroppedImage(image, canvas) {
+export default function renderSmartFittedImage(image, canvas) {
   // 25% is exactly what is needed to fit a 4/3 image into a 16/9 frame
   const cropMax = 0.25;
   const [wW, wH] = [canvas.offsetWidth, canvas.offsetHeight];
