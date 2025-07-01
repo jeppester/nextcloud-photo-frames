@@ -9,6 +9,7 @@ import { css } from "../vendor/emotion-css.min.mjs";
 import Schedule from "./Schedule.mjs";
 import nPhotos from "../utils/nPhotos.mjs";
 import Screen from "./Screen.mjs";
+import RadioButtons from "./RadioButtons.mjs";
 
 const rotationsOptionsForUnit = {
   day: [1, 2, 3, 4, 6, 8, 12],
@@ -240,39 +241,26 @@ export default function FrameFields(props) {
         <div>
           <h3 className=${styles.fieldTitle}>Selection method</h3>
           <div className=${styles.radioButtons}>
-            <label>
-              <input
-                type="radio"
-                name="selectionMethod"
-                value="latest"
-                required
-                checked=${data.selectionMethod === "latest"}
-                onChange=${handleInput}
-              />
-              <span> Pick the <strong>latest</strong> photo</span>
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="selectionMethod"
-                value="oldest"
-                required
-                checked=${data.selectionMethod === "oldest"}
-                onChange=${handleInput}
-              />
-              <span> Pick the <strong>oldest</strong> photo </span>
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="selectionMethod"
-                value="random"
-                required
-                checked=${data.selectionMethod === "random"}
-                onChange=${handleInput}
-              />
-              <span> Pick a <strong>random</strong> photo </span>
-            </label>
+            <${RadioButtons}
+              name="selectionMethod"
+              required
+              onChange=${handleInput}
+              value=${data.selectionMethod}
+              options=${[
+                {
+                  value: "latest",
+                  label: html`Pick the <strong>latest</strong> photo`,
+                },
+                {
+                  value: "oldest",
+                  label: html`Pick the <strong> oldest </strong> photo`,
+                },
+                {
+                  value: "random",
+                  label: html`Pick a <strong> random </strong> photo`,
+                },
+              ]}
+            />
           </div>
           <p className=${styles.tip}>
             Shown photos get discarded from the selection pool. When the pool
@@ -413,60 +401,34 @@ export default function FrameFields(props) {
             </div>
           </div>
           <div className=${styles.radioButtons}>
-            <label>
-              <input
-                type="radio"
-                name="photoSize"
-                value="smart-fit"
-                required
-                checked=${data.photoSize === "smart-fit"}
-                onChange=${handleInput}
-              />
-              <span>
-                <strong>Smart fit</strong>: Attempt to fit frame, but keep at
-                least 75% of the photo visible</span
-              >
-            </label>
-
-            <label>
-              <input
-                type="radio"
-                name="photoSize"
-                value="contain"
-                required
-                checked=${data.photoSize === "contain"}
-                onChange=${handleInput}
-              />
-              <span>
-                <strong>Contain</strong> the full photo within the frame
-              </span>
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="photoSize"
-                value="cover"
-                required
-                checked=${data.photoSize === "cover"}
-                onChange=${handleInput}
-              />
-              <span>
-                <strong>Cover</strong> the full frame, scaling proportionally
-              </span>
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="photoSize"
-                value="stretch"
-                required
-                checked=${data.photoSize === "stretch"}
-                onChange=${handleInput}
-              />
-              <span>
-                <strong>Stretch</strong> photo to the edges of the frame
-              </span>
-            </label>
+            <${RadioButtons}
+              name="photoSize"
+              required
+              value=${data.photoSize}
+              onChange=${handleInput}
+              options=${[
+                {
+                  value: "smart-fit",
+                  label: html`<strong>Smart fit</strong>: Attempt to fit frame,
+                    but keep at least 75% of the photo visible`,
+                },
+                {
+                  value: "contain",
+                  label: html`<strong>Contain</strong> the full photo within the
+                    frame`,
+                },
+                {
+                  value: "cover",
+                  label: html`<strong>Cover</strong> the full frame, scaling
+                    proportionally`,
+                },
+                {
+                  value: "stretch",
+                  label: html`<strong>Stretch</strong> photo to the edges of the
+                    frame`,
+                },
+              ]}
+            />
           </div>
 
           ${["smart-fit", "contain"].includes(data.photoSize)
