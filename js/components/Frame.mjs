@@ -6,7 +6,7 @@ import {
 } from "../vendor/htm-preact-standalone.min.mjs";
 import { css, keyframes } from "../vendor/emotion-css.min.mjs";
 import getLoadedImage from "../utils/getLoadedImage.mjs";
-import renderSmartCroppedImage from "../utils/renderSmartCroppedImage.mjs";
+import renderSmartFittedImage from "../utils/renderSmartFittedImage.mjs";
 import ImageDate from "./ImageDate.mjs";
 import Clock from "./Clock.mjs";
 
@@ -60,7 +60,7 @@ const styles = {
     }
 
     &.contain,
-    &.smart-crop {
+    &.smart-fit {
       background-size: contain;
     }
 
@@ -99,11 +99,11 @@ export default function Frame(props) {
   } = props;
   const canvasRef = useRef();
   const loadedImageRef = useRef();
-  const showBackground = ["contain", "smart-crop"].includes(photoSize);
-  const renderOnCanvas = ["smart-crop"].includes(photoSize);
+  const showBackground = ["contain", "smart-fit"].includes(photoSize);
+  const renderOnCanvas = ["smart-fit"].includes(photoSize);
 
   const renderImage = useCallback(async () => {
-    renderSmartCroppedImage(loadedImageRef.current, canvasRef.current);
+    renderSmartFittedImage(loadedImageRef.current, canvasRef.current);
   }, []);
 
   useEffect(() => {

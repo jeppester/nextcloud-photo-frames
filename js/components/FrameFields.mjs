@@ -114,12 +114,20 @@ const styles = {
       max-width: 600px;
     }
   `,
+  backgroundInputs: css`
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+
+    > * {
+      margin: 0 !important;
+    }
+  `,
   colorInput: css`
     display: inline-block !important;
-    height: 2rem !important;
-    width: 2rem !important;
-    padding: 0 !important;
-    vertical-align: middle;
+    align-self: stretch;
+    width: 2.2rem !important;
+    padding: 0.2rem !important;
   `,
 };
 
@@ -144,9 +152,9 @@ export default function FrameFields(props) {
     showPhotoTimestamp:
       frame.showPhotoTimestamp !== null ? frame.showPhotoTimestamp : true,
     showClock: frame.showClock !== null ? frame.showClock : false,
-    photoSize: frame.photoSize || "smart-crop",
+    photoSize: frame.photoSize || "smart-fit",
     backgroundType: frame.backgroundType || "aura",
-    backgroundColor: frame.backgroundType || "#000000",
+    backgroundColor: frame.backgroundColor || "#000000",
     rotationUnit: frame.rotationUnit || "hour",
     rotationsPerUnit: frame.rotationsPerUnit || 1,
     startDayAt: frame.startDayAt || "07:00",
@@ -409,13 +417,13 @@ export default function FrameFields(props) {
               <input
                 type="radio"
                 name="photoSize"
-                value="smart-crop"
+                value="smart-fit"
                 required
-                checked=${data.photoSize === "smart-crop"}
+                checked=${data.photoSize === "smart-fit"}
                 onChange=${handleInput}
               />
               <span>
-                <strong>Smart crop</strong>: Attempt to fit frame, but keep at
+                <strong>Smart fit</strong>: Attempt to fit frame, but keep at
                 least 75% of the photo visible</span
               >
             </label>
@@ -461,39 +469,53 @@ export default function FrameFields(props) {
             </label>
           </div>
 
-          ${["smart-crop", "contain"].includes(data.photoSize) &&
-          html`
-            <p>
-              On uncovered areas, show ${` `}
-              <select
-                name="backgroundType"
-                required
-                value="${data.backgroundType}"
-                onChange=${handleInput}
-              >
-                <option value="aura">aura</option>
-                <option value="color">a background color</option>
-              </select>
-              ${data.backgroundType === "color"
-                ? html`
-                    ${`: `}
-                    <input
-                      name="backgroundColor"
-                      value=${data.backgroundColor}
-                      className=${styles.colorInput}
+          ${["smart-fit", "contain"].includes(data.photoSize)
+            ? html`
+                <p>
+                  Fill uncovered areas with${" "}
+                  <span className=${styles.backgroundInputs}>
+                    <select
+                      name="backgroundType"
+                      required
+                      value="${data.backgroundType}"
                       onChange=${handleInput}
-                      type="color"
-                    />
-                  `
-                : html`
-                    <input
-                      type="hidden"
-                      name="backgroundColor"
-                      value=${data.backgroundColor}
-                    />
-                  `}
-            </p>
-          `}
+                    >
+                      <option value="aura">aura</option>
+                      <option value="color">a background color</option>
+                    </select>
+                    ${data.backgroundType === "color"
+                      ? html`
+                          ${`: `}
+                          <input
+                            name="backgroundColor"
+                            value=${data.backgroundColor}
+                            className=${styles.colorInput}
+                            onChange=${handleInput}
+                            type="color"
+                          />
+                        `
+                      : html`
+                          <input
+                            type="hidden"
+                            name="backgroundColor"
+                            value=${data.backgroundColor}
+                          />
+                        `}
+                  </span>
+                </p>
+              `
+            : html`
+                <input
+                  type="hidden"
+                  name="backgroundType"
+                  value=${data.backgroundType}
+                />
+                <input
+                  type="hidden"
+                  name="backgroundColor"
+                  value=${data.backgroundColor}
+                />
+              `}
         </div>
       </div>
     </div>
