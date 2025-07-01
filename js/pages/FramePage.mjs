@@ -14,7 +14,7 @@ const rotationUnitRefreshInterval = {
 
 injectGlobal`
   :root {
-    background-color: #1c1c1c;
+    background-color: #000;
     font-size: 16px;
   }
   body {
@@ -23,7 +23,13 @@ injectGlobal`
 `;
 
 export default function FramePage(props) {
-  const { showPhotoTimestamp, showClock, photoSize } = props;
+  const {
+    showPhotoTimestamp,
+    showClock,
+    photoSize,
+    backgroundType,
+    backgroundColor,
+  } = props;
   const imageUrl = location.href + "/image";
   const [images, setImages] = useState([]);
 
@@ -87,6 +93,8 @@ export default function FramePage(props) {
           showPhotoTimestamp=${showPhotoTimestamp}
           showClock=${showClock}
           photoSize=${photoSize}
+          backgroundType=${backgroundType}
+          backgroundColor=${backgroundColor}
           image=${image}
         />`
     )}

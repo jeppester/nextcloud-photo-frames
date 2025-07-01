@@ -145,6 +145,8 @@ class PageController extends Controller
         (bool) $params['showPhotoTimestamp'],
         (bool) $params['showClock'],
         $params['photoSize'],
+        $params['backgroundType'],
+        $params['backgroundColor']
       );
 
       return new RedirectResponse(redirectURL: $this->urlGenerator->linkToRoute('photo_frames.page.index'));
@@ -197,6 +199,8 @@ class PageController extends Controller
         (bool) $params['showPhotoTimestamp'],
         (bool) $params['showClock'],
         $params['photoSize'],
+        $params['backgroundType'],
+        $params['backgroundColor']
       );
 
       return new RedirectResponse($this->urlGenerator->linkToRoute('photo_frames.page.index'));
@@ -242,6 +246,8 @@ class PageController extends Controller
           'showPhotoTimestamp' => $frame->getShowPhotoTimestamp(),
           'showClock' => $frame->getShowClock(),
           'photoSize' => $frame->getPhotoSize(),
+          'backgroundType' => $frame->getBackgroundType(),
+          'backgroundColor' => $frame->getBackgroundColor(),
         ],
         true
       );

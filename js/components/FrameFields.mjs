@@ -93,6 +93,13 @@ const styles = {
     display: flex;
     gap: 0.5rem;
   `,
+  displayOptionsColumns: css`
+    display: flex;
+
+    > * {
+      flex: 1 1 0%;
+    }
+  `,
   error: css`
     color: var(--color-error);
   `,
@@ -106,6 +113,13 @@ const styles = {
     @media screen and (min-width: 1400px) {
       max-width: 600px;
     }
+  `,
+  colorInput: css`
+    display: inline-block !important;
+    height: 2rem !important;
+    width: 2rem !important;
+    padding: 0 !important;
+    vertical-align: middle;
   `,
 };
 
@@ -131,6 +145,8 @@ export default function FrameFields(props) {
       frame.showPhotoTimestamp !== null ? frame.showPhotoTimestamp : true,
     showClock: frame.showClock !== null ? frame.showClock : false,
     photoSize: frame.photoSize || "smart-crop",
+    backgroundType: frame.backgroundType || "aura",
+    backgroundColor: frame.backgroundType || "#000000",
     rotationUnit: frame.rotationUnit || "hour",
     rotationsPerUnit: frame.rotationsPerUnit || 1,
     startDayAt: frame.startDayAt || "07:00",
@@ -337,6 +353,8 @@ export default function FrameFields(props) {
                 showPhotoTimestamp=${data.showPhotoTimestamp}
                 showClock=${data.showClock}
                 photoSize=${data.photoSize}
+                backgroundType=${data.backgroundType}
+                backgroundColor=${data.backgroundColor}
                 image=${testImageLandscape}
               />
             <//>
@@ -345,6 +363,8 @@ export default function FrameFields(props) {
                 showPhotoTimestamp=${data.showPhotoTimestamp}
                 showClock=${data.showClock}
                 photoSize=${data.photoSize}
+                backgroundType=${data.backgroundType}
+                backgroundColor=${data.backgroundColor}
                 image=${testImagePortrait}
               />
             <//>
@@ -357,32 +377,33 @@ export default function FrameFields(props) {
 
         <div>
           <h3 className=${styles.fieldTitle}>Display options</h3>
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                name="showPhotoTimestamp"
-                value="1"
-                checked=${data.showPhotoTimestamp}
-                onChange=${handleInput}
-              />
-              <span>Show photo date</span>
-            </label>
-          </div>
+          <div className=${styles.displayOptionsColumns}>
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  name="showPhotoTimestamp"
+                  value="1"
+                  checked=${data.showPhotoTimestamp}
+                  onChange=${handleInput}
+                />
+                <span>Show photo date</span>
+              </label>
+            </div>
 
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                name="showClock"
-                value="1"
-                checked=${data.showClock}
-                onChange=${handleInput}
-              />
-              <span>Show clock</span>
-            </label>
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  name="showClock"
+                  value="1"
+                  checked=${data.showClock}
+                  onChange=${handleInput}
+                />
+                <span>Show clock</span>
+              </label>
+            </div>
           </div>
-
           <div className=${styles.radioButtons}>
             <label>
               <input
@@ -439,6 +460,40 @@ export default function FrameFields(props) {
               </span>
             </label>
           </div>
+
+          ${["smart-crop", "contain"].includes(data.photoSize) &&
+          html`
+            <p>
+              On uncovered areas, show ${` `}
+              <select
+                name="backgroundType"
+                required
+                value="${data.backgroundType}"
+                onChange=${handleInput}
+              >
+                <option value="aura">aura</option>
+                <option value="color">a background color</option>
+              </select>
+              ${data.backgroundType === "color"
+                ? html`
+                    ${`: `}
+                    <input
+                      name="backgroundColor"
+                      value=${data.backgroundColor}
+                      className=${styles.colorInput}
+                      onChange=${handleInput}
+                      type="color"
+                    />
+                  `
+                : html`
+                    <input
+                      type="hidden"
+                      name="backgroundColor"
+                      value=${data.backgroundColor}
+                    />
+                  `}
+            </p>
+          `}
         </div>
       </div>
     </div>

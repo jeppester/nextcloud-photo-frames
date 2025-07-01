@@ -39,6 +39,13 @@ const styles = {
     background-size: 100% 100%;
     filter: blur(6.25em) brightness(70%);
   `,
+  colorBackground: css`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  `,
   photo: css`
     position: absolute;
     top: 0;
@@ -82,7 +89,14 @@ const styles = {
 };
 
 export default function Frame(props) {
-  const { showPhotoTimestamp, showClock, photoSize, image } = props;
+  const {
+    showPhotoTimestamp,
+    showClock,
+    photoSize,
+    image,
+    backgroundType,
+    backgroundColor,
+  } = props;
   const canvasRef = useRef();
   const loadedImageRef = useRef();
   const showBackground = ["contain", "smart-crop"].includes(photoSize);
@@ -110,10 +124,19 @@ export default function Frame(props) {
     <div className=${styles.frame}>
       ${showBackground &&
       html`
-        <div
-          className=${styles.photoBackground}
-          style=${{ backgroundImage: `url("${image.url}")` }}
-        />
+        ${backgroundType === "aura"
+          ? html`
+              <div
+                className=${styles.photoBackground}
+                style=${{ backgroundImage: `url("${image.url}")` }}
+              />
+            `
+          : html`
+              <div
+                className=${styles.colorBackground}
+                style=${{ backgroundColor: backgroundColor }}
+              />
+            `}
       `}
       ${renderOnCanvas
         ? html`<canvas ref=${canvasRef} className=${styles.photo} />`
