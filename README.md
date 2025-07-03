@@ -1,4 +1,8 @@
+![Screenshot](appinfo/screenshot.jpg)
+
 # Photo Frames
+
+[![Nextcloud Store](https://img.shields.io/badge/nextcloud_store-blue?style=for-the-badge)](https://apps.nextcloud.com/apps/photo_frames)
 
 Generate easily sharable photo frame URLs for your Nextcloud albums.
 
