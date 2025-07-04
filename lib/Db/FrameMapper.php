@@ -175,7 +175,7 @@ class FrameMapper extends QBMapper
     $query = $this->connection->getQueryBuilder();
     $query->select("album_files.file_id", "added", "owner", "mtime", "mimetype")
       ->from("photos_albums_files", "album_files")
-      ->leftJoin('album_files', 'filecache', "file", $query->expr()->eq('album_files.file_id', 'file.fileid'))
+      ->innerJoin('album_files', 'filecache', "file", $query->expr()->eq('album_files.file_id', 'file.fileid'))
       ->where($query->expr()->eq('album_files.album_id', $query->createNamedParameter($frame->getAlbumId(), IQueryBuilder::PARAM_INT)));
     $rows = $query->executeQuery()->fetchAll();
 
@@ -197,7 +197,7 @@ class FrameMapper extends QBMapper
     $query = $this->connection->getQueryBuilder();
     $query->select("album_files.file_id", "added", "owner", "mtime", "mimetype")
       ->from("photos_albums_files", "album_files")
-      ->leftJoin('album_files', 'filecache', "file", $query->expr()->eq('album_files.file_id', 'file.fileid'))
+      ->innerJoin('album_files', 'filecache', "file", $query->expr()->eq('album_files.file_id', 'file.fileid'))
       ->where($query->expr()->eq('album_files.album_id', $query->createNamedParameter($frame->getAlbumId(), IQueryBuilder::PARAM_INT)))
       ->andWhere($query->expr()->eq('album_files.file_id', $query->createNamedParameter($fileId, IQueryBuilder::PARAM_INT)));
     $row = $query->executeQuery()->fetch();
