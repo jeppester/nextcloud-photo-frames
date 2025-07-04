@@ -275,7 +275,6 @@ class FrameMapper extends QBMapper
 
   private function mapRowToFrameFile(array $row, IFilesMetadata|null $metadata): FrameFile
   {
-
     $capturedAt = null;
     if ($metadata) {
       $capturedAt = $metadata->getInt("photos-original_date_time");
@@ -286,7 +285,7 @@ class FrameMapper extends QBMapper
       $row['owner'],
       $this->mimeTypeLoader->getMimetypeById((int) $row['mimetype']),
       $row['added'],
-      $capturedAt ?? 0,
+      $capturedAt ?? $row['mtime'] ?? 0,
     );
   }
 }
