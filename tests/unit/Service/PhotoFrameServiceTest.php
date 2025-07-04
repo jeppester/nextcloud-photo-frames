@@ -299,12 +299,12 @@ class PhotoFrameServiceTest extends TestCase
     $service = new PhotoFrameService($entryMapper, $frameMapper, $rootFolder, $frame);
 
     $frameFiles = [
-      new FrameFile(1, "admin", 'image/jpg', 1700025000, 1600025000),
-      new FrameFile(1, "admin", 'image/jpg', 1700025000, 1600020000),
-      new FrameFile(1, "admin", 'image/jpg', 1700025000, 1600015000),
-      new FrameFile(1, "admin", 'image/jpg', 1700020000, 1600020000),
-      new FrameFile(1, "admin", 'image/jpg', 1700020000, 1600015000),
-      new FrameFile(1, "admin", 'image/jpg', 1700015000, 1600025000),
+      new FrameFile(1, "admin", 'image/jpg', 1600025000, 1700025000),
+      new FrameFile(1, "admin", 'image/jpg', 1600020000, 1700025000),
+      new FrameFile(1, "admin", 'image/jpg', 1600015000, 1700025000),
+      new FrameFile(1, "admin", 'image/jpg', 1600020000, 1700020000),
+      new FrameFile(1, "admin", 'image/jpg', 1600015000, 1700020000),
+      new FrameFile(1, "admin", 'image/jpg', 1600025000, 1700015000),
     ];
 
     $randomized = $frameFiles;
@@ -324,12 +324,12 @@ class PhotoFrameServiceTest extends TestCase
     $service = new PhotoFrameService($entryMapper, $frameMapper, $rootFolder, $frame);
 
     $frameFiles = [
-      new FrameFile(1, "admin", 'image/jpg', 1700015000, 1600025000),
-      new FrameFile(1, "admin", 'image/jpg', 1700020000, 1600015000),
-      new FrameFile(1, "admin", 'image/jpg', 1700020000, 1600020000),
-      new FrameFile(1, "admin", 'image/jpg', 1700025000, 1600015000),
-      new FrameFile(1, "admin", 'image/jpg', 1700025000, 1600020000),
-      new FrameFile(1, "admin", 'image/jpg', 1700025000, 1600025000),
+      new FrameFile(1, "admin", 'image/jpg', 1600025000, 1700015000),
+      new FrameFile(1, "admin", 'image/jpg', 1600015000, 1700020000),
+      new FrameFile(1, "admin", 'image/jpg', 1600020000, 1700020000),
+      new FrameFile(1, "admin", 'image/jpg', 1600015000, 1700025000),
+      new FrameFile(1, "admin", 'image/jpg', 1600020000, 1700025000),
+      new FrameFile(1, "admin", 'image/jpg', 1600025000, 1700025000),
     ];
 
     $randomized = $frameFiles;

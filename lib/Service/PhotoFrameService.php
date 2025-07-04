@@ -185,9 +185,9 @@ class PhotoFrameService
       case FrameMapper::SELECTION_METHOD_LATEST:
       case FrameMapper::SELECTION_METHOD_OLDEST:
         usort($frameFiles, function ($a, $b) {
-          $res = $b->getAddedAtTimestamp() - $a->getAddedAtTimestamp();
+          $res = $b->getCapturedAtTimestamp() - $a->getCapturedAtTimestamp();
           if ($res === 0) {
-            $res = $b->getCapturedAtTimestamp() - $a->getCapturedAtTimestamp();
+            $res = $b->getAddedAtTimestamp() - $a->getAddedAtTimestamp();
           }
           return $res;
         });
