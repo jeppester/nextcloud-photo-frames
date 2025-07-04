@@ -14,7 +14,6 @@ const rotationUnitRefreshInterval = {
 
 injectGlobal`
   :root {
-    background-color: #000;
     font-size: 16px;
   }
   body {

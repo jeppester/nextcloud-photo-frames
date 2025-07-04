@@ -2,6 +2,11 @@
 <html>
 
 <head>
+  <style>
+    :root {
+      background-color: black;
+    }
+  </style>
   <script nonce="<?= $_['cspNonce']; ?>">
     window.appPath = "<?= $_['appPath'] ?>"
   </script>
