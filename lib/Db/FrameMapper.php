@@ -210,13 +210,14 @@ class FrameMapper extends QBMapper
     return $this->mapRowToFrameFile($row, $metadata);
   }
 
-  public function createFrame(string $name, string $userUid, int $albumId, string $selectionMethod, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp, bool $showClock, string $photoSize, string $backgroundType, string $backgroundColor): Frame
+  public function createFrame(string $name, string $userUid, int $albumId, string $selectionMethod, bool $favorNewAdditions, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp, bool $showClock, string $photoSize, string $backgroundType, string $backgroundColor): Frame
   {
     $frame = new Frame();
     $frame->setName($name);
     $frame->setUserUid($userUid);
     $frame->setAlbumId($albumId);
     $frame->setSelectionMethod($selectionMethod);
+    $frame->setFavorNewAdditions($favorNewAdditions);
     $frame->setRotationUnit($rotationUnit);
     $frame->setRotationsPerUnit($rotationsPerUnit);
     $frame->setStartDayAt($startDayAt);
@@ -234,12 +235,13 @@ class FrameMapper extends QBMapper
     return $this->insert($frame);
   }
 
-  public function updateFrame(Frame $frame, string $name, string $userUid, int $albumId, string $selectionMethod, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp, bool $showClock, string $photoSize, string $backgroundType, string $backgroundColor): Frame
+  public function updateFrame(Frame $frame, string $name, string $userUid, int $albumId, string $selectionMethod, bool $favorNewAdditions, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp, bool $showClock, string $photoSize, string $backgroundType, string $backgroundColor): Frame
   {
     $frame->setName($name);
     $frame->setUserUid($userUid);
     $frame->setAlbumId($albumId);
     $frame->setSelectionMethod($selectionMethod);
+    $frame->setFavorNewAdditions($favorNewAdditions);
     $frame->setRotationUnit($rotationUnit);
     $frame->setRotationsPerUnit($rotationsPerUnit);
     $frame->setStartDayAt($startDayAt);

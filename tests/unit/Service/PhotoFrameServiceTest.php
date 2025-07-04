@@ -18,6 +18,7 @@ class PhotoFrameServiceTest extends TestCase
   public function testGetEntryExpiry1PerHour()
   {
     $entryMapper = $this->createMock(EntryMapper::class);
+    $frameMapper = $this->createMock(FrameMapper::class);
     $rootFolder = $this->createMock(IRootFolder::class);
 
     $frame = new Frame();
@@ -27,7 +28,7 @@ class PhotoFrameServiceTest extends TestCase
     $frame->setEndDayAt('20:00');
     $frame->setTimezone(new \DateTimeZone('UTC'));
 
-    $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
+    $service = new PhotoFrameService($entryMapper, $frameMapper, $rootFolder, $frame);
 
     $entry = new Entry();
 
@@ -46,6 +47,7 @@ class PhotoFrameServiceTest extends TestCase
   public function testGetEntryExpiry2PerHour()
   {
     $entryMapper = $this->createMock(EntryMapper::class);
+    $frameMapper = $this->createMock(FrameMapper::class);
     $rootFolder = $this->createMock(IRootFolder::class);
 
     $frame = new Frame();
@@ -55,7 +57,7 @@ class PhotoFrameServiceTest extends TestCase
     $frame->setEndDayAt('20:00');
     $frame->setTimezone(new \DateTimeZone('UTC'));
 
-    $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
+    $service = new PhotoFrameService($entryMapper, $frameMapper, $rootFolder, $frame);
 
     $entry = new Entry();
 
@@ -75,6 +77,7 @@ class PhotoFrameServiceTest extends TestCase
   public function testGetEntryExpiry6PerHour()
   {
     $entryMapper = $this->createMock(EntryMapper::class);
+    $frameMapper = $this->createMock(FrameMapper::class);
     $rootFolder = $this->createMock(IRootFolder::class);
 
     $frame = new Frame();
@@ -84,7 +87,7 @@ class PhotoFrameServiceTest extends TestCase
     $frame->setEndDayAt('20:00');
     $frame->setTimezone(new \DateTimeZone('UTC'));
 
-    $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
+    $service = new PhotoFrameService($entryMapper, $frameMapper, $rootFolder, $frame);
 
     $entry = new Entry();
 
@@ -105,6 +108,7 @@ class PhotoFrameServiceTest extends TestCase
   public function testGetEntryExpiry1PerDay()
   {
     $entryMapper = $this->createMock(EntryMapper::class);
+    $frameMapper = $this->createMock(FrameMapper::class);
     $rootFolder = $this->createMock(IRootFolder::class);
 
     $frame = new Frame();
@@ -114,7 +118,7 @@ class PhotoFrameServiceTest extends TestCase
     $frame->setEndDayAt('20:00');
     $frame->setTimezone(new \DateTimeZone('UTC'));
 
-    $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
+    $service = new PhotoFrameService($entryMapper, $frameMapper, $rootFolder, $frame);
 
     $entry = new Entry();
 
@@ -133,6 +137,7 @@ class PhotoFrameServiceTest extends TestCase
   public function testGetEntryExpiry2PerDay()
   {
     $entryMapper = $this->createMock(EntryMapper::class);
+    $frameMapper = $this->createMock(FrameMapper::class);
     $rootFolder = $this->createMock(IRootFolder::class);
 
     $frame = new Frame();
@@ -142,7 +147,7 @@ class PhotoFrameServiceTest extends TestCase
     $frame->setEndDayAt('20:00');
     $frame->setTimezone(new \DateTimeZone('UTC'));
 
-    $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
+    $service = new PhotoFrameService($entryMapper, $frameMapper, $rootFolder, $frame);
 
     $entry = new Entry();
 
@@ -162,6 +167,7 @@ class PhotoFrameServiceTest extends TestCase
   public function testGetEntryExpiry3PerDay()
   {
     $entryMapper = $this->createMock(EntryMapper::class);
+    $frameMapper = $this->createMock(FrameMapper::class);
     $rootFolder = $this->createMock(IRootFolder::class);
 
     $frame = new Frame();
@@ -171,7 +177,7 @@ class PhotoFrameServiceTest extends TestCase
     $frame->setEndDayAt('22:00');
     $frame->setTimezone(new \DateTimeZone('UTC'));
 
-    $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
+    $service = new PhotoFrameService($entryMapper, $frameMapper, $rootFolder, $frame);
 
     $entry = new Entry();
 
@@ -193,6 +199,7 @@ class PhotoFrameServiceTest extends TestCase
   public function testGetEntryExpiry4PerDay()
   {
     $entryMapper = $this->createMock(EntryMapper::class);
+    $frameMapper = $this->createMock(FrameMapper::class);
     $rootFolder = $this->createMock(IRootFolder::class);
 
     $frame = new Frame();
@@ -202,7 +209,7 @@ class PhotoFrameServiceTest extends TestCase
     $frame->setEndDayAt('24:00');
     $frame->setTimezone(new \DateTimeZone('UTC'));
 
-    $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
+    $service = new PhotoFrameService($entryMapper, $frameMapper, $rootFolder, $frame);
 
     $entry = new Entry();
 
@@ -226,6 +233,7 @@ class PhotoFrameServiceTest extends TestCase
   public function testGetEntryExpiry3PerMinute()
   {
     $entryMapper = $this->createMock(EntryMapper::class);
+    $frameMapper = $this->createMock(FrameMapper::class);
     $rootFolder = $this->createMock(IRootFolder::class);
 
     $frame = new Frame();
@@ -235,7 +243,7 @@ class PhotoFrameServiceTest extends TestCase
     $frame->setEndDayAt('08:00');
     $frame->setTimezone(new \DateTimeZone('UTC'));
 
-    $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
+    $service = new PhotoFrameService($entryMapper, $frameMapper, $rootFolder, $frame);
 
     $entry = new Entry();
 
@@ -254,6 +262,7 @@ class PhotoFrameServiceTest extends TestCase
   public function testMidnightEndDayAt()
   {
     $entryMapper = $this->createMock(EntryMapper::class);
+    $frameMapper = $this->createMock(FrameMapper::class);
     $rootFolder = $this->createMock(IRootFolder::class);
 
     $frame = new Frame();
@@ -263,7 +272,7 @@ class PhotoFrameServiceTest extends TestCase
     $frame->setEndDayAt('00:00');
     $frame->setTimezone(new \DateTimeZone('UTC'));
 
-    $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
+    $service = new PhotoFrameService($entryMapper, $frameMapper, $rootFolder, $frame);
 
     $entry = new Entry();
 
@@ -281,12 +290,13 @@ class PhotoFrameServiceTest extends TestCase
   public function testSortFrameFilesBySelectionMethodLatest()
   {
     $entryMapper = $this->createMock(EntryMapper::class);
+    $frameMapper = $this->createMock(FrameMapper::class);
     $rootFolder = $this->createMock(IRootFolder::class);
 
     $frame = new Frame();
     $frame->setSelectionMethod(FrameMapper::SELECTION_METHOD_LATEST);
 
-    $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
+    $service = new PhotoFrameService($entryMapper, $frameMapper, $rootFolder, $frame);
 
     $frameFiles = [
       new FrameFile(1, "admin", 'image/jpg', 1700025000, 1600025000),
@@ -305,12 +315,13 @@ class PhotoFrameServiceTest extends TestCase
   public function testSortFrameFilesBySelectionMethodOldest()
   {
     $entryMapper = $this->createMock(EntryMapper::class);
+    $frameMapper = $this->createMock(FrameMapper::class);
     $rootFolder = $this->createMock(IRootFolder::class);
 
     $frame = new Frame();
     $frame->setSelectionMethod(FrameMapper::SELECTION_METHOD_OLDEST);
 
-    $service = new PhotoFrameService($entryMapper, $rootFolder, $frame);
+    $service = new PhotoFrameService($entryMapper, $frameMapper, $rootFolder, $frame);
 
     $frameFiles = [
       new FrameFile(1, "admin", 'image/jpg', 1700015000, 1600025000),
@@ -324,5 +335,56 @@ class PhotoFrameServiceTest extends TestCase
     $randomized = $frameFiles;
     shuffle($randomized);
     $this->assertEquals($frameFiles, $service->sortFrameFilesBySelectionMethod($randomized));
+  }
+
+  public function testFavorNewAdditions()
+  {
+    $entryMapper = $this->createMock(EntryMapper::class);
+    $frameMapper = $this->createMock(FrameMapper::class);
+    $rootFolder = $this->createMock(IRootFolder::class);
+
+    $frame = new Frame();
+    $frame->setSelectionMethod(FrameMapper::SELECTION_METHOD_OLDEST);
+    $frame->setFavorNewAdditions(true);
+
+    $service = new PhotoFrameService($entryMapper, $frameMapper, $rootFolder, $frame);
+
+    $oneWeekAgo = (new \DateTime())->modify('-1 week')->getTimestamp();
+    $oneDaySeconds = 3600 * 24;
+
+    $notNewlyAdded = [
+      new FrameFile(1, "admin", 'image/jpg', $oneWeekAgo - 5 * $oneDaySeconds, 1600015000),
+      new FrameFile(1, "admin", 'image/jpg', $oneWeekAgo - 4 * $oneDaySeconds, 1600020000),
+      new FrameFile(1, "admin", 'image/jpg', $oneWeekAgo - 2 * $oneDaySeconds, 1600015000),
+      new FrameFile(1, "admin", 'image/jpg', $oneWeekAgo - 5 * $oneDaySeconds, 1600025000),
+      new FrameFile(1, "admin", 'image/jpg', $oneWeekAgo - 3 * $oneDaySeconds, 1600020000),
+    ];
+
+    $newlyAdded = [
+      new FrameFile(1, "admin", 'image/jpg', $oneWeekAgo + 2 * $oneDaySeconds, 1600025000),
+      new FrameFile(1, "admin", 'image/jpg', $oneWeekAgo + 1 * $oneDaySeconds, 1600025000),
+    ];
+
+    $toSort = [
+      $notNewlyAdded[0],
+      $notNewlyAdded[1],
+      $newlyAdded[1],
+      $notNewlyAdded[2],
+      $notNewlyAdded[3],
+      $notNewlyAdded[4],
+      $newlyAdded[0],
+    ];
+
+    $expectedResult = [
+      $newlyAdded[1],
+      $newlyAdded[0],
+      $notNewlyAdded[0],
+      $notNewlyAdded[1],
+      $notNewlyAdded[2],
+      $notNewlyAdded[3],
+      $notNewlyAdded[4],
+    ];
+
+    $this->assertEquals($expectedResult, $service->favorNewAdditions($toSort));
   }
 }

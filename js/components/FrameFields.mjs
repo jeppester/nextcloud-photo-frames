@@ -150,6 +150,8 @@ export default function FrameFields(props) {
     name: frame.name || "",
     albumId: frame.albumId || "",
     selectionMethod: frame.selectionMethod || "latest",
+    favorNewAdditions:
+      frame.favorNewAdditions !== null ? frame.favorNewAdditions : false,
     showPhotoTimestamp:
       frame.showPhotoTimestamp !== null ? frame.showPhotoTimestamp : true,
     showClock: frame.showClock !== null ? frame.showClock : false,
@@ -262,9 +264,23 @@ export default function FrameFields(props) {
               ]}
             />
           </div>
+
+          <p>
+            <label>
+              <input
+                type="checkbox"
+                name="favorNewAdditions"
+                value="1"
+                checked=${data.favorNewAdditions}
+                onChange=${handleInput}
+              />
+              <span>Prioritize photos added within the last 7 days</span>
+            </label>
+          </p>
+
           <p className=${styles.tip}>
-            Shown photos get discarded from the selection pool. When the pool
-            runs dry, all discarded photos are readded to the pool.
+            Once photos are shown, they're removed from the selection pool.<br />
+            When the pool runs dry, all previously shown photos are returned.
           </p>
         </div>
 
@@ -327,9 +343,9 @@ export default function FrameFields(props) {
 
           ${showStartEndOptions &&
           html` <p className=${styles.tip}>
-            Tip: Use the from/until settings to avoid "wasting" photos during
-            the night and/or to better control each photo's interval when
-            rotating per day.
+            Tip: Use the from/until settings to avoid "wasting" photos overnight
+            and/or to fine tune each photo's display interval when rotating
+            daily.
           </p>`}
           ${startEndIsInvalid
             ? html`

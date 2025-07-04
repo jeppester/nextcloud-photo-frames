@@ -151,7 +151,30 @@ class PhotoFrameService
     }
 
     $sortedFrameFiles = $this->sortFrameFilesBySelectionMethod($availableFrameFiles);
+
+    if ($this->frame->getFavorNewAdditions()) {
+      $sortedFrameFiles = $this->favorNewAdditions($sortedFrameFiles);
+    }
+
     return $sortedFrameFiles[0];
+  }
+
+  public function favorNewAdditions($frameFiles)
+  {
+    $newAdditions = [];
+    $rest = [];
+
+    $cutAt = (new \DateTime())->modify('-1 week')->getTimestamp();
+
+    foreach ($frameFiles as $frameFile) {
+      if ($frameFile->getAddedAtTimestamp() > $cutAt) {
+        $newAdditions[] = $frameFile;
+      } else {
+        $rest[] = $frameFile;
+      }
+    }
+
+    return array_merge($newAdditions, $rest);
   }
 
   public function sortFrameFilesBySelectionMethod($frameFiles)
