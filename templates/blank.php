@@ -4,7 +4,9 @@
 <head>
   <style>
     :root {
-      background-color: black;
+      background-color:
+        <?= $_['backgroundColor'] ?>
+      ;
     }
   </style>
   <script nonce="<?= $_['cspNonce']; ?>">

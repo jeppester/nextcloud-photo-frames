@@ -5,6 +5,7 @@ import {
 } from "../vendor/htm-preact-standalone.min.mjs";
 import { injectGlobal } from "../vendor/emotion-css.min.mjs";
 import Frame from "../components/Frame.mjs";
+import EmptyAlbum from "../components/EmptyAlbum.mjs";
 
 const rotationUnitRefreshInterval = {
   day: 1000 * 60, // One minute
@@ -31,6 +32,7 @@ export default function FramePage(props) {
   } = props;
   const imageUrl = location.href + "/image";
   const [images, setImages] = useState([]);
+  const [albumIsEmpty, setAlbumIsEmpty] = useState(false);
 
   const currentImage = images.at(-1);
   useEffect(() => {
@@ -57,9 +59,17 @@ export default function FramePage(props) {
         if (currentImage.expiresAt >= nextExpiresAt) return;
       }
 
+      const imageResponse = await fetch(imageUrl);
+
+      // If image returns a 404, it means the albums has no images
+      if (imageResponse.status === 404) {
+        if (timeout) clearTimeout(timeout);
+        setAlbumIsEmpty(true);
+        return;
+      }
+
       // Read the image to a DataURL using the FileReader API
       // This is to prevent the browser from caching the image URL (which is the same for all images)
-      const imageResponse = await fetch(imageUrl);
       const blob = await imageResponse.blob();
       const reader = new FileReader();
       reader.onloadend = async () => {
@@ -83,6 +93,10 @@ export default function FramePage(props) {
     timeout = setTimeout(updateImage, currentImage?.refreshInterval || 0);
     return () => clearTimeout(timeout);
   }, [currentImage]);
+
+  if (albumIsEmpty) {
+    return html` <${EmptyAlbum} /> `;
+  }
 
   return html`
     ${images.map(

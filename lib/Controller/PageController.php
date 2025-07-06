@@ -18,6 +18,7 @@ use OCP\AppFramework\Http\Attribute\OpenAPI;
 use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\FileDisplayResponse;
+use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http\TemplateResponse;
@@ -251,7 +252,8 @@ class PageController extends Controller
           'backgroundType' => $frame->getBackgroundType(),
           'backgroundColor' => $frame->getBackgroundColor(),
         ],
-        true
+        true,
+        $frame->getBackgroundType() === 'color' ? $frame->getBackgroundColor() : '#000',
       );
     } catch (Exception $error) {
       return $this->errorPage($error);
@@ -273,6 +275,11 @@ class PageController extends Controller
     try {
       $service = new PhotoFrameService($this->entryMapper, $this->frameMapper, $this->rootFolder, $frame);
       $frameFile = $service->getCurrentFrameFile();
+
+      if (!$frameFile) {
+        return new NotFoundResponse();
+      }
+
       $node = $service->getFrameFileNode($frameFile);
 
       $preview = $this->preview->getPreview($node, 1000, 1000);
@@ -289,7 +296,7 @@ class PageController extends Controller
     }
   }
 
-  private function renderPage($name, $props, $blank = false): Response
+  private function renderPage($name, $props, $blank = false, $backgroundColor = '#000'): Response
   {
     $response = new TemplateResponse(
       appName: Application::APP_ID,
@@ -297,6 +304,7 @@ class PageController extends Controller
       params: [
         'pageName' => $name,
         'pageProps' => $props,
+        'backgroundColor' => $backgroundColor,
         "appPath" => $this->appManager->getAppWebPath('photo_frames'),
       ],
       renderAs: $blank ? TemplateResponse::RENDER_AS_BLANK : TemplateResponse::RENDER_AS_USER,
