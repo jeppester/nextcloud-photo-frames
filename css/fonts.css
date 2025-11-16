@@ -1,0 +1,9 @@
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('../fonts/NotoSans.ttf') format('truetype-variations');
+}
+
+@font-face {
+  font-family: 'Noto Serif';
+  src: url('../fonts/NotoSerif.ttf') format('truetype-variations');
+}

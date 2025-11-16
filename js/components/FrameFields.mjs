@@ -136,10 +136,12 @@ const styles = {
 const testImageLandscape = {
   url: `${window.appPath}/img/landscape.jpg`,
   timestamp: new Date(),
+  place: "Photo place",
 };
 const testImagePortrait = {
   url: `${window.appPath}/img/portrait.jpg`,
   timestamp: new Date(),
+  place: "Photo place",
 };
 
 export default function FrameFields(props) {
@@ -155,6 +157,8 @@ export default function FrameFields(props) {
       frame.favorNewAdditions !== null ? frame.favorNewAdditions : false,
     showPhotoTimestamp:
       frame.showPhotoTimestamp !== null ? frame.showPhotoTimestamp : true,
+    showPhotoPlace:
+      frame.showPhotoPlace !== null ? frame.showPhotoPlace : false,
     showClock: frame.showClock !== null ? frame.showClock : false,
     photoSize: frame.photoSize || "smart-fit",
     backgroundType: frame.backgroundType || "aura",
@@ -373,6 +377,7 @@ export default function FrameFields(props) {
               <${Screen} className=${styles.screen}>
                 <${Frame}
                   showPhotoTimestamp=${data.showPhotoTimestamp}
+                  showPhotoPlace=${data.showPhotoPlace}
                   showClock=${data.showClock}
                   photoSize=${data.photoSize}
                   backgroundType=${data.backgroundType}
@@ -383,6 +388,7 @@ export default function FrameFields(props) {
               <${Screen} className=${styles.screen}>
                 <${Frame}
                   showPhotoTimestamp=${data.showPhotoTimestamp}
+                  showPhotoPlace=${data.showPhotoPlace}
                   showClock=${data.showClock}
                   photoSize=${data.photoSize}
                   backgroundType=${data.backgroundType}
@@ -409,7 +415,20 @@ export default function FrameFields(props) {
                     checked=${data.showPhotoTimestamp}
                     onChange=${handleInput}
                   />
-                  <span>Show photo date</span>
+                  <span>Show date</span>
+                </label>
+              </div>
+
+              <div>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="showPhotoPlace"
+                    value="1"
+                    checked=${data.showPhotoPlace}
+                    onChange=${handleInput}
+                  />
+                  <span>Show place</span>
                 </label>
               </div>
 

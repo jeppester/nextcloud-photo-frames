@@ -210,7 +210,7 @@ class FrameMapper extends QBMapper
     return $this->mapRowToFrameFile($row, $metadata);
   }
 
-  public function createFrame(string $name, string $userUid, int $albumId, string $selectionMethod, bool $favorNewAdditions, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp, bool $showClock, string $photoSize, string $backgroundType, string $backgroundColor, string $javascript): Frame
+  public function createFrame(string $name, string $userUid, int $albumId, string $selectionMethod, bool $favorNewAdditions, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp, bool $showPhotoPlace, bool $showClock, string $photoSize, string $backgroundType, string $backgroundColor, string $javascript): Frame
   {
     $frame = new Frame();
     $frame->setName($name);
@@ -223,6 +223,7 @@ class FrameMapper extends QBMapper
     $frame->setStartDayAt($startDayAt);
     $frame->setEndDayAt($endDayAt);
     $frame->setShowPhotoTimestamp($showPhotoTimestamp);
+    $frame->setShowPhotoPlace($showPhotoPlace);
     $frame->setShowClock($showClock);
     $frame->setBackgroundType($backgroundType);
     $frame->setBackgroundColor($backgroundColor);
@@ -236,7 +237,7 @@ class FrameMapper extends QBMapper
     return $this->insert($frame);
   }
 
-  public function updateFrame(Frame $frame, string $name, string $userUid, int $albumId, string $selectionMethod, bool $favorNewAdditions, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp, bool $showClock, string $photoSize, string $backgroundType, string $backgroundColor, string $javascript): Frame
+  public function updateFrame(Frame $frame, string $name, string $userUid, int $albumId, string $selectionMethod, bool $favorNewAdditions, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp, bool $showPhotoPlace, bool $showClock, string $photoSize, string $backgroundType, string $backgroundColor, string $javascript): Frame
   {
     $frame->setName($name);
     $frame->setUserUid($userUid);
@@ -248,6 +249,7 @@ class FrameMapper extends QBMapper
     $frame->setStartDayAt($startDayAt);
     $frame->setEndDayAt($endDayAt);
     $frame->setShowPhotoTimestamp($showPhotoTimestamp);
+    $frame->setShowPhotoPlace($showPhotoPlace);
     $frame->setShowClock($showClock);
     $frame->setBackgroundType($backgroundType);
     $frame->setBackgroundColor($backgroundColor);

@@ -61,6 +61,7 @@ class UpdateImageError extends Error {}
 export default function FramePage(props) {
   const {
     showPhotoTimestamp,
+    showPhotoPlace,
     showClock,
     photoSize,
     backgroundType,
@@ -170,6 +171,7 @@ export default function FramePage(props) {
         html`<${Frame}
           key=${image.expiresAt}
           showPhotoTimestamp=${showPhotoTimestamp}
+          showPhotoPlace=${showPhotoPlace}
           showClock=${showClock}
           photoSize=${photoSize}
           backgroundType=${backgroundType}

@@ -15,6 +15,7 @@ cp -r "$ROOT/css" "$ROOT/build/photo_frames"
 cp -r "$ROOT/img" "$ROOT/build/photo_frames"
 cp -r "$ROOT/js" "$ROOT/build/photo_frames"
 cp -r "$ROOT/lib" "$ROOT/build/photo_frames"
+cp -r "$ROOT/fonts" "$ROOT/build/photo_frames"
 cp -r "$ROOT/templates" "$ROOT/build/photo_frames"
 
 # Add timestamp to all imports

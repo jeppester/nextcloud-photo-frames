@@ -18,6 +18,8 @@ use OCP\AppFramework\Db\Entity;
  * @method string getStartDayAt()
  * @method string getEndDayAt()
  * @method bool getShowPhotoTimestamp()
+ * @method bool getShowPhotoPlace()
+ * @method bool getShowClock()
  * @method string getPhotoSize()
  * @method string getBackgroundType()
  * @method string getBackgroundColor()
@@ -35,6 +37,8 @@ use OCP\AppFramework\Db\Entity;
  * @method void setStartDayAt(string $startDayAt)
  * @method void setEndDayAt(string $endDayAt)
  * @method void setShowPhotoTimestamp(bool $show)
+ * @method void setShowPhotoPlace(bool $show)
+ * @method void setShowClock(bool $show)
  * @method void setPhotoSize(string $show)
  * @method void setBackgroundType(string $backgroundType)
  * @method void setBackgroundColor(string $backgroundColor)
@@ -67,6 +71,8 @@ class Frame extends Entity
   public $createdAt;
   /** @var bool */
   public $showPhotoTimestamp;
+  /** @var bool */
+  public $showPhotoPlace;
   /** @var bool */
   public $showClock;
   /** @var string */
@@ -118,6 +124,7 @@ class Frame extends Entity
     $this->addType('startDayAt', 'string');
     $this->addType('endDayAt', 'string');
     $this->addType('showPhotoTimestamp', 'bool');
+    $this->addType('showPhotoPlace', 'bool');
     $this->addType('showClock', 'bool');
     $this->addType('backgroundType', 'string');
     $this->addType('backgroundColor', 'string');

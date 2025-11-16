@@ -7,7 +7,7 @@ import {
 import { css, keyframes } from "../vendor/emotion-css.min.mjs";
 import getLoadedImage from "../utils/getLoadedImage.mjs";
 import renderSmartFittedImage from "../utils/renderSmartFittedImage.mjs";
-import ImageDate from "./ImageDate.mjs";
+import ImageDetails from "./ImageDetails.mjs";
 import Clock from "./Clock.mjs";
 
 const animations = {
@@ -23,6 +23,7 @@ const styles = {
     position: absolute;
     width: 100%;
     height: 100%;
+    font-family: "Noto Sans", sans-serif;
 
     // Only animate when adding a frame on top of another frame
     & + & {
@@ -75,9 +76,9 @@ const styles = {
     right: 0;
     display: flex;
     justify-content: end;
-    padding: 1.5em;
+    padding: 1.2em;
   `,
-  dateContainer: css`
+  detailsContainer: css`
     position: absolute;
     bottom: 0;
     left: 0;
@@ -91,6 +92,7 @@ const styles = {
 export default function Frame(props) {
   const {
     showPhotoTimestamp,
+    showPhotoPlace,
     showClock,
     photoSize,
     image,
@@ -152,12 +154,13 @@ export default function Frame(props) {
           <${Clock} image=${image} />
         </div>
       `}
-      ${showPhotoTimestamp &&
-      html`
-        <div className=${styles.dateContainer}>
-          <${ImageDate} image=${image} />
-        </div>
-      `}
+      <div className=${styles.detailsContainer}>
+        <${ImageDetails}
+          showTimestamp=${showPhotoTimestamp}
+          showPlace=${showPhotoPlace}
+          image=${image}
+        />
+      </div>
     </div>
   `;
 }

@@ -22,7 +22,6 @@ const styles = {
     line-height: 1;
     text-align: left;
     text-transform: capitalize;
-    font-family: sans-serif;
     margin: 0;
 
     color: #fff;

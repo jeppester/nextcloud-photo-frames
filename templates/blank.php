@@ -2,6 +2,7 @@
 <html>
 
 <head>
+  <link rel="stylesheet" href="<?= $_['appPath'] ?>/css/fonts.css" />
   <style>
     :root {
       background-color:
@@ -9,6 +10,7 @@
       ;
     }
   </style>
+
   <script nonce="<?= $_['cspNonce']; ?>">
     window.appPath = "<?= $_['appPath'] ?>"
   </script>
@@ -21,6 +23,7 @@
       render(html`<${Page} ...${pageProps} />`, document.querySelector('body'));
     })
   </script>
+  <?php emit_css_loading_tags($_); ?>
 
   <?php if (isset($_['javascript'])): ?>
     <script nonce="<?= $_['cspNonce']; ?>">
