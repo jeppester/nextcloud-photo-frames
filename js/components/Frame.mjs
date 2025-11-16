@@ -85,7 +85,7 @@ const styles = {
     right: 0;
     display: flex;
     justify-content: start;
-    padding: 1.2em;
+    padding: 1em 1.2em;
   `,
 };
 
