@@ -10,6 +10,7 @@ use OCP\AppFramework\Db\Entity;
  * @method string getName()
  * @method string getUserUid()
  * @method int getAlbumId()
+ * @method bool getIncludeNonImages()
  * @method string getShareToken()
  * @method string getSelectionMethod()
  * @method bool getFavorNewAdditions()
@@ -29,6 +30,7 @@ use OCP\AppFramework\Db\Entity;
  * @method void setName(string $name)
  * @method void setUserUid(string $userUid)
  * @method void setAlbumId(int $albumId)
+ * @method bool setIncludeNonImages(bool $includeNonImages)
  * @method void setShareToken(string $shareToken)
  * @method void setSelectionMethod(string $selectionMethod)
  * @method void setFavorNewAdditions(bool $favorNewAdditions)
@@ -53,6 +55,8 @@ class Frame extends Entity
   public $userUid;
   /** @var int */
   public $albumId;
+  /** @var bool */
+  public $includeNonImages;
   /** @var string */
   public $shareToken;
   /** @var string */
@@ -116,6 +120,7 @@ class Frame extends Entity
     $this->addType('name', 'string');
     $this->addType('userUid', 'string');
     $this->addType('albumId', 'integer');
+    $this->addType('includeNonImages', 'bool');
     $this->addType('shareToken', 'string');
     $this->addType('selectionMethod', 'string');
     $this->addType('favorNewAdditions', 'bool');

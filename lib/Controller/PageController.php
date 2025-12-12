@@ -16,7 +16,6 @@ use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\Attribute\OpenAPI;
 use OCP\AppFramework\Http\Attribute\PublicPage;
-use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\FileDisplayResponse;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\RedirectResponse;
@@ -147,6 +146,7 @@ class PageController extends Controller
         $params['name'],
         $this->currentUser->getUID(),
         $this->frameMapper->validAlbumForUser($this->currentUser->getUID(), (int) $params['albumId']),
+        (bool) $params['includeNonImages'],
         $params['selectionMethod'],
         (bool) $params['favorNewAdditions'],
         $params['rotationUnit'],
@@ -209,6 +209,7 @@ class PageController extends Controller
         $params['name'],
         $this->currentUser->getUID(),
         $this->frameMapper->validAlbumForUser($this->currentUser->getUID(), (int) $params['albumId']),
+        (bool) $params['includeNonImages'],
         $params['selectionMethod'],
         (bool) $params['favorNewAdditions'],
         $params['rotationUnit'],

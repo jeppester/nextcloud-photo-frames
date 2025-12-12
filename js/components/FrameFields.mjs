@@ -153,6 +153,8 @@ export default function FrameFields(props) {
     name: frame.name || "",
     albumId: frame.albumId || "",
     selectionMethod: frame.selectionMethod || "latest",
+    includeNonImages:
+      frame.includeNonImages !== null ? frame.includeNonImages : false,
     favorNewAdditions:
       frame.favorNewAdditions !== null ? frame.favorNewAdditions : false,
     showPhotoTimestamp:
@@ -251,6 +253,27 @@ export default function FrameFields(props) {
               )}
             </select>
           </div>
+        </div>
+
+        <div>
+          <p>
+            <label>
+              <input
+                type="checkbox"
+                name="includeNonImages"
+                value="1"
+                checked=${data.includeNonImages}
+                onChange=${handleInput}
+              />
+              <span>Include non-image files (like videos).</span>
+            </label>
+          </p>
+
+          <p className=${styles.tip}>
+            Nextcloud's preview generator is used for displaying non-image
+            files.<br />
+            Files with no compatible preview provider are excluded.
+          </p>
         </div>
 
         <div>

@@ -14,6 +14,7 @@ use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\Security\ISecureRandom;
 use OCP\Files\IRootFolder;
+use OCP\IPreview;
 
 class FrameMapper extends QBMapper
 {
@@ -37,8 +38,9 @@ class FrameMapper extends QBMapper
   private IRootFolder $rootFolder;
   private IConfig $config;
   private IFilesMetadataManager $metadataManager;
+  private IPreview $preview;
 
-  public function __construct(IDBConnection $db, ISecureRandom $random, IDBConnection $connection, IMimeTypeLoader $mimeTypeLoader, IConfig $config, IRootFolder $rootFolder, IFilesMetadataManager $metadataManager)
+  public function __construct(IDBConnection $db, ISecureRandom $random, IDBConnection $connection, IMimeTypeLoader $mimeTypeLoader, IConfig $config, IRootFolder $rootFolder, IFilesMetadataManager $metadataManager, IPreview $preview)
   {
     parent::__construct($db, 'photo_frames_frames', Frame::class);
     $this->random = $random;
@@ -47,6 +49,7 @@ class FrameMapper extends QBMapper
     $this->config = $config;
     $this->rootFolder = $rootFolder;
     $this->metadataManager = $metadataManager;
+    $this->preview = $preview;
   }
 
   public function getAllByUser(string $userId)
@@ -186,6 +189,18 @@ class FrameMapper extends QBMapper
 
     foreach ($rows as $row) {
       $metadata = $metadatas[$row['file_id']];
+      $frameFile = $this->mapRowToFrameFile($row, $metadata);
+
+      // Unless specified, only include images
+      if (!$frame->getIncludeNonImages() && !str_starts_with($frameFile->getMimeType(), 'image')) {
+        continue;
+      }
+
+      // Exclude files that nextcloud can't generate previews for
+      if (!$this->preview->isMimeSupported($frameFile->getMimeType())) {
+        continue;
+      }
+
       $frameFiles[] = $this->mapRowToFrameFile($row, $metadata);
     }
 
@@ -210,12 +225,13 @@ class FrameMapper extends QBMapper
     return $this->mapRowToFrameFile($row, $metadata);
   }
 
-  public function createFrame(string $name, string $userUid, int $albumId, string $selectionMethod, bool $favorNewAdditions, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp, bool $showPhotoPlace, bool $showClock, string $photoSize, string $backgroundType, string $backgroundColor, string $javascript): Frame
+  public function createFrame(string $name, string $userUid, int $albumId, bool $includeNonImages, string $selectionMethod, bool $favorNewAdditions, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp, bool $showPhotoPlace, bool $showClock, string $photoSize, string $backgroundType, string $backgroundColor, string $javascript): Frame
   {
     $frame = new Frame();
     $frame->setName($name);
     $frame->setUserUid($userUid);
     $frame->setAlbumId($albumId);
+    $frame->setIncludeNonImages($includeNonImages);
     $frame->setSelectionMethod($selectionMethod);
     $frame->setFavorNewAdditions($favorNewAdditions);
     $frame->setRotationUnit($rotationUnit);
@@ -237,11 +253,12 @@ class FrameMapper extends QBMapper
     return $this->insert($frame);
   }
 
-  public function updateFrame(Frame $frame, string $name, string $userUid, int $albumId, string $selectionMethod, bool $favorNewAdditions, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp, bool $showPhotoPlace, bool $showClock, string $photoSize, string $backgroundType, string $backgroundColor, string $javascript): Frame
+  public function updateFrame(Frame $frame, string $name, string $userUid, int $albumId, bool $includeNonImages, string $selectionMethod, bool $favorNewAdditions, string $rotationUnit, int $rotationsPerUnit, string $startDayAt, string $endDayAt, bool $showPhotoTimestamp, bool $showPhotoPlace, bool $showClock, string $photoSize, string $backgroundType, string $backgroundColor, string $javascript): Frame
   {
     $frame->setName($name);
     $frame->setUserUid($userUid);
     $frame->setAlbumId($albumId);
+    $frame->setIncludeNonImages($includeNonImages);
     $frame->setSelectionMethod($selectionMethod);
     $frame->setFavorNewAdditions($favorNewAdditions);
     $frame->setRotationUnit($rotationUnit);
