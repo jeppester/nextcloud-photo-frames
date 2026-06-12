@@ -13,7 +13,7 @@ import Clock from "./Clock.mjs";
 const animations = {
   fadeIn: keyframes`
     from { opacity: 0; }
-    to { opacity: 100; }
+    to { opacity: 1; }
   `,
 };
 
