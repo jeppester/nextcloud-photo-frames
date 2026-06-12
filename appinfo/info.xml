@@ -20,7 +20,7 @@ The possiblities are endless:
   <screenshot>
     https://raw.githubusercontent.com/jeppester/nextcloud-photo-frames/master/appinfo/screenshot.jpg</screenshot>
   <dependencies>
-    <nextcloud min-version="29" max-version="33" />
+    <nextcloud min-version="29" max-version="34" />
   </dependencies>
   <navigations>
     <navigation>
