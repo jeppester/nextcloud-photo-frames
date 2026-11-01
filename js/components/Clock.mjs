@@ -5,6 +5,9 @@ import {
   useRef,
 } from "../vendor/htm-preact-standalone.min.mjs";
 
+export const CLOCK_SIZE_MIN = 50;
+export const CLOCK_SIZE_MAX = 300;
+
 const animations = {
   blink: keyframes`
     from { transform: scaleX(1) }
@@ -33,12 +36,21 @@ const styles = {
 
     .separator {
       display: inline-block;
+    }
+
+    &[data-style="flip"] .separator {
       animation: ${animations.blink} 1000ms ease-in-out infinite;
     }
   `,
 };
 
-export default function Clock() {
+const clampSize = (size) => {
+  const sizeNumber = Number(size);
+  if (!Number.isFinite(sizeNumber)) return 100;
+  return Math.min(CLOCK_SIZE_MAX, Math.max(CLOCK_SIZE_MIN, sizeNumber));
+};
+
+export default function Clock({ clockStyle = "flip", clockSize = 100 }) {
   const hoursRef = useRef();
   const minutesRef = useRef();
 
@@ -46,7 +58,10 @@ export default function Clock() {
     const updateTime = () => {
       const now = new Date();
 
-      hoursRef.current.innerHTML = now.getHours();
+      hoursRef.current.innerHTML =
+        clockStyle === "plain"
+          ? `${now.getHours()}`.padStart(2, "0")
+          : now.getHours();
       minutesRef.current.innerHTML = `${now.getMinutes()}`.padStart(2, "0");
     };
 
@@ -57,10 +72,13 @@ export default function Clock() {
   });
 
   return html`
-    <div className=${styles.container}>
-      <h1 className=${styles.time}>
+    <div
+      className=${styles.container}
+      style=${{ fontSize: `${clampSize(clockSize)}%` }}
+    >
+      <h1 className=${styles.time} data-style=${clockStyle}>
         <span ref=${hoursRef} className="hours"></span>
-        <span className="separator">.</span>
+        <span className="separator">${clockStyle === "plain" ? ":" : "."}</span>
         <span ref=${minutesRef} className="minuts"></span>
       </h1>
     </div>

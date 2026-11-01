@@ -20,6 +20,8 @@ use OCP\AppFramework\Db\Entity;
  * @method bool getShowPhotoTimestamp()
  * @method bool getShowPhotoPlace()
  * @method bool getShowClock()
+ * @method string getClockStyle()
+ * @method int getClockSize()
  * @method string getPhotoSize()
  * @method string getBackgroundType()
  * @method string getBackgroundColor()
@@ -39,6 +41,8 @@ use OCP\AppFramework\Db\Entity;
  * @method void setShowPhotoTimestamp(bool $show)
  * @method void setShowPhotoPlace(bool $show)
  * @method void setShowClock(bool $show)
+ * @method void setClockStyle(string $clockStyle)
+ * @method void setClockSize(int $clockSize)
  * @method void setPhotoSize(string $show)
  * @method void setBackgroundType(string $backgroundType)
  * @method void setBackgroundColor(string $backgroundColor)
@@ -75,6 +79,10 @@ class Frame extends Entity
   public $showPhotoPlace;
   /** @var bool */
   public $showClock;
+  /** @var string */
+  public $clockStyle;
+  /** @var int */
+  public $clockSize;
   /** @var string */
   public $photoSize;
   /** @var string */
@@ -126,6 +134,8 @@ class Frame extends Entity
     $this->addType('showPhotoTimestamp', 'bool');
     $this->addType('showPhotoPlace', 'bool');
     $this->addType('showClock', 'bool');
+    $this->addType('clockStyle', 'string');
+    $this->addType('clockSize', 'int');
     $this->addType('backgroundType', 'string');
     $this->addType('backgroundColor', 'string');
     $this->addType('photoSize', 'string');
