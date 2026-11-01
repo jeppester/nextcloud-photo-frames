@@ -9,4 +9,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- First release
+- Clock style option per frame: the separator dot can either flip every second (previous behavior) or a static 24-hour `HH:MM` can be shown.
+- Clock size slider per frame (50–300 % of the previous size).
