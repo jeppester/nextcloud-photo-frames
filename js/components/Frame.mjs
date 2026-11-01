@@ -94,6 +94,8 @@ export default function Frame(props) {
     showPhotoTimestamp,
     showPhotoPlace,
     showClock,
+    clockStyle,
+    clockSize,
     photoSize,
     image,
     backgroundType,
@@ -151,7 +153,7 @@ export default function Frame(props) {
       ${showClock &&
       html`
         <div className=${styles.clockContainer}>
-          <${Clock} image=${image} />
+          <${Clock} clockStyle=${clockStyle} clockSize=${clockSize} />
         </div>
       `}
       <div className=${styles.detailsContainer}>

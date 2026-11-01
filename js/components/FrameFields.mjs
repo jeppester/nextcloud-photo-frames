@@ -5,6 +5,7 @@ import {
   useRef,
 } from "../vendor/htm-preact-standalone.min.mjs";
 import Frame from "./Frame.mjs";
+import { CLOCK_SIZE_MIN, CLOCK_SIZE_MAX } from "./Clock.mjs";
 import { css } from "../vendor/emotion-css.min.mjs";
 import Schedule from "./Schedule.mjs";
 import nPhotos from "../utils/nPhotos.mjs";
@@ -160,6 +161,8 @@ export default function FrameFields(props) {
     showPhotoPlace:
       frame.showPhotoPlace !== null ? frame.showPhotoPlace : false,
     showClock: frame.showClock !== null ? frame.showClock : false,
+    clockStyle: frame.clockStyle || "flip",
+    clockSize: frame.clockSize !== null ? frame.clockSize : 100,
     photoSize: frame.photoSize || "smart-fit",
     backgroundType: frame.backgroundType || "aura",
     backgroundColor: frame.backgroundColor || "#000000",
@@ -379,6 +382,8 @@ export default function FrameFields(props) {
                   showPhotoTimestamp=${data.showPhotoTimestamp}
                   showPhotoPlace=${data.showPhotoPlace}
                   showClock=${data.showClock}
+                  clockStyle=${data.clockStyle}
+                  clockSize=${data.clockSize}
                   photoSize=${data.photoSize}
                   backgroundType=${data.backgroundType}
                   backgroundColor=${data.backgroundColor}
@@ -390,6 +395,8 @@ export default function FrameFields(props) {
                   showPhotoTimestamp=${data.showPhotoTimestamp}
                   showPhotoPlace=${data.showPhotoPlace}
                   showClock=${data.showClock}
+                  clockStyle=${data.clockStyle}
+                  clockSize=${data.clockSize}
                   photoSize=${data.photoSize}
                   backgroundType=${data.backgroundType}
                   backgroundColor=${data.backgroundColor}
@@ -452,6 +459,57 @@ export default function FrameFields(props) {
                 available, nothing will be shown.
               </div>
             `}
+            ${data.showClock
+              ? html`
+                  <div>
+                    <h3 className=${styles.fieldTitle}>Clock</h3>
+                    <div className=${styles.radioButtons}>
+                      <${RadioButtons}
+                        name="clockStyle"
+                        required
+                        value=${data.clockStyle}
+                        onChange=${handleInput}
+                        options=${[
+                          {
+                            value: "flip",
+                            label: html`<strong>Flip</strong>: the separator
+                              dot flips every second`,
+                          },
+                          {
+                            value: "plain",
+                            label: html`<strong>24-hour</strong>: static
+                              <strong>HH:MM</strong>`,
+                          },
+                        ]}
+                      />
+                    </div>
+                    <p>
+                      Clock size${" "}
+                      <input
+                        type="range"
+                        name="clockSize"
+                        min="${CLOCK_SIZE_MIN}"
+                        max="${CLOCK_SIZE_MAX}"
+                        step="5"
+                        value="${data.clockSize}"
+                        onInput=${handleInput}
+                      />
+                      ${" "}${data.clockSize}%
+                    </p>
+                  </div>
+                `
+              : html`
+                  <input
+                    type="hidden"
+                    name="clockStyle"
+                    value=${data.clockStyle}
+                  />
+                  <input
+                    type="hidden"
+                    name="clockSize"
+                    value=${data.clockSize}
+                  />
+                `}
             <div className=${styles.radioButtons}>
               <${RadioButtons}
                 name="photoSize"

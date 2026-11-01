@@ -63,6 +63,8 @@ export default function FramePage(props) {
     showPhotoTimestamp,
     showPhotoPlace,
     showClock,
+    clockStyle,
+    clockSize,
     photoSize,
     backgroundType,
     backgroundColor,
@@ -173,6 +175,8 @@ export default function FramePage(props) {
           showPhotoTimestamp=${showPhotoTimestamp}
           showPhotoPlace=${showPhotoPlace}
           showClock=${showClock}
+          clockStyle=${clockStyle}
+          clockSize=${clockSize}
           photoSize=${photoSize}
           backgroundType=${backgroundType}
           backgroundColor=${backgroundColor}
